@@ -14,6 +14,12 @@ await connectMongo();
 app.use("/user", userRouter);
 app.use("/area", areaRouter);
 
+app.all("/uptime", (req, res) => {
+    console.log("Up Time Requested");
+    res.status(200).send("success");
+  });
+
+  
 app.all("*", (req, res, next) => res.send("Api End Point Not Found"));
 
 app.use((error, req, res, next) => {
