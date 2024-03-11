@@ -5,6 +5,7 @@ import areaRouter from "./src/modules/area/area.router.js";
 import userRouter from "./src/modules/user/user.router.js";
 import categoriesRouter from "./src/modules/categories/categories.router.js";
 import resturantRouter from "./src/modules/resturants/resturants.router.js";
+import productRouter from "./src/modules/product/product.router.js";
 import cors from "cors";
 dotenv.config();
 const port = process.env.PORT;
@@ -17,6 +18,7 @@ app.use("/user", userRouter);
 app.use("/area", areaRouter);
 app.use("/categories", categoriesRouter);
 app.use("/resturants", resturantRouter);
+app.use("/products", productRouter);
 
 
 app.all("/uptime", (req, res) => {

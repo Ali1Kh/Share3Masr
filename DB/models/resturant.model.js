@@ -7,6 +7,8 @@ const resturantSchema = Schema({
   address: { type: String, required: true },
   openingTime: { type: String, required: true },
   closingTime: { type: String, required: true },
+  area: { type: Types.ObjectId, ref: "Area" , required: true  },
+  category: { type: Types.ObjectId, ref: "Category" , required: true  },
   image: {
     secure_url: { type: String, required: true },
     public_id: { type: String, required: true },

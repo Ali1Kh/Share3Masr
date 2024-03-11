@@ -28,6 +28,8 @@ export const createResturantSchema = Joi.object({
     "any.only": "Confirm Password is Invaild",
   }),
   address: Joi.string().required(),
+  area: Joi.custom(ObjectIdValidate).required(),
+  category: Joi.custom(ObjectIdValidate).required(),
   openingTime: Joi.string().required(),
   closingTime: Joi.string().required(),
 }).required();

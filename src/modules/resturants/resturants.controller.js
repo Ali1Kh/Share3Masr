@@ -2,8 +2,16 @@ import cloudinary from "../../utils/cloudinary.js";
 import { customAlphabet } from "nanoid";
 import bcrypt from "bcrypt";
 import { Resturant } from "../../../DB/models/resturant.model.js";
+import { Area } from "../../../DB/models/area.model.js";
+import { Category } from "../../../DB/models/category.model.js";
 
 export const createResturant = async (req, res, next) => {
+  let isArea = await Area.findById(req.body.area);
+  if (!isArea) return next(new Error("Area Not Found"));
+
+  let isCategory = await Category.findById(req.body.category);
+  if (!isCategory) return next(new Error("Category Not Found"));
+
   const isResturant = await Resturant.findOne({
     phone: { $in: req.body.phone },
   });
