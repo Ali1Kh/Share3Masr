@@ -20,19 +20,18 @@ app.use("/categories", categoriesRouter);
 app.use("/resturants", resturantRouter);
 app.use("/products", productRouter);
 
-
 app.all("/uptime", (req, res) => {
-    console.log("Up Time Requested");
-    res.status(200).send("success");
-  });
+  console.log("Up Time Requested");
+  res.status(200).send("success");
+});
 
-  
 app.all("*", (req, res, next) => res.send("Api End Point Not Found"));
 
 app.use((error, req, res, next) => {
   return res.json({
     success: false,
-    errors: { error: error.message, stack: error.stack },
+    message: error.message,
+    stack: error.stack,
   });
 });
 

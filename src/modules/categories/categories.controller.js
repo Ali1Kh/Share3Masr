@@ -31,3 +31,41 @@ export const getCategories = async (req, res, next) => {
   const categories = await Category.find();
   return res.json({ success: true, categories });
 };
+
+export const deleteCategory = async (req, res, next) => {
+  const category = await Category.findById(req.params.id);
+  if (!category) {
+    return next(new Error("Category Not Found"));
+  }
+  category.deleteOne();
+  await cloudinary.uploader.destroy(category.image.public_id);
+  await category.save();
+  return res.json({ success: true, message: "Category Deleted Successfully" });
+};
+
+export const updateCategory = async (req, res, next) => {
+  const category = await Category.findById(req.params.id);
+  if (!category) {
+    return next(new Error("Category Not Found"));
+  }
+  if (!req.file && !req.body.categoryName) {
+    return next(new Error("At Least One Field Is Required"));
+  }
+  if (req.file) {
+    let { secure_url, public_id } = await cloudinary.uploader.upload(
+      req.file.path,
+      {
+        public_id: category.image.public_id,
+      }
+    );
+    category.image = {
+      secure_url,
+      public_id,
+    };
+  }
+  if (req.body.categoryName) {
+    category.categoryName = req.body.categoryName;
+  }
+  await category.save();
+  return res.json({ success: true, message: "Category Updated Successfully" });
+};

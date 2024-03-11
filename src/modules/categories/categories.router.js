@@ -19,4 +19,21 @@ router.post(
 
 router.get("/", asyncHandler(categoryController.getCategories));
 
+router.delete(
+  "/:id",
+  isAuthenticated,
+  isAuthorized("admin"),
+  validation(categorySchema.deleteCategorySchema),
+  asyncHandler(categoryController.deleteCategory)
+);
+
+router.patch(
+  "/:id",
+  isAuthenticated,
+  isAuthorized("admin"),
+  uploadFiles().single("categoryImage"),
+  validation(categorySchema.updateCategorySchema),
+  asyncHandler(categoryController.updateCategory)
+);
+
 export default router;

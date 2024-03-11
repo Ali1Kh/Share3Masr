@@ -2,29 +2,36 @@ import React from "react";
 import $ from "jquery";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
 export default function Login() {
+  const navigate = useNavigate();
   async function login() {
-    let email = $("#email").val();
+    let phone = $("#phone").val();
     let password = $("#password").val();
 
-    if (email == "" || password == "") {
+    if (phone == "" || password == "") {
       toast.error("Please fill all the fields");
       return;
     }
 
-    let { data } = await axios.post(
-      "https://foodyproj.onrender.com/user/login",
-      {
-        email,
-        password,
+    try {
+      let { data } = await axios.post(
+        "https://foodyproj.onrender.com/user/adminLogin",
+        {
+          phone,
+          password,
+        }
+      );
+      console.log(data);
+      if (data.success) {
+        navigate("dashboard");
+        sessionStorage.setItem("token", data.token);
+      } else {
+        toast.error(data.message);
       }
-    );
-    console.log(data);
-    if (data.success) {
-      toast.success(data.message);
-      localStorage.setItem("token", data.token);
-    } else {
-      toast.error(data.errors.error);
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -35,16 +42,16 @@ export default function Login() {
         <div className="form">
           <div className="mb-3 mt-4 ">
             <input
-              type="email"
-              className="form-control px-3"
-              placeholder="Email"
-              id="email"
+              type="tel"
+              className="form-control pe-3"
+              placeholder="Phone Number"
+              id="phone"
             />
           </div>
           <div className="mb-3">
             <input
               type="password"
-              className="form-control px-3"
+              className="form-control pe-3"
               placeholder="Password"
               id="password"
             />

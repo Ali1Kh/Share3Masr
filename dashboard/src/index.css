@@ -3,3 +3,11 @@ body {
   color: white !important;
   font-family: "Roboto", sans-serif !important;
 }
+
+.w-fit {
+  width: fit-content !important;
+}
+
+.cursorPointer {
+  cursor: pointer !important;
+}
