@@ -37,9 +37,8 @@ export const deleteCategory = async (req, res, next) => {
   if (!category) {
     return next(new Error("Category Not Found"));
   }
-  category.deleteOne();
   await cloudinary.uploader.destroy(category.image.public_id);
-  await category.save();
+  await category.deleteOne();
   return res.json({ success: true, message: "Category Deleted Successfully" });
 };
 

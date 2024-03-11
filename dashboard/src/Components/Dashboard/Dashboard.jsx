@@ -51,6 +51,24 @@ export default function Dashboard() {
     }
   }
 
+  async function deleteCategory(id) {
+    let { data } = await axios.delete(
+      `https://foodyproj.onrender.com/categories/${id}`,
+      {
+        headers: {
+          token: sessionStorage.getItem("token"),
+        },
+      }
+    );
+
+    if (data.success) {
+      toast.success(data.message);
+      getCategories();
+    } else {
+      toast.error(data.message);
+    }
+  }
+
   async function getCategories() {
     let { data } = await axios.get("https://foodyproj.onrender.com/categories");
     if (data.success) {
@@ -153,7 +171,7 @@ export default function Dashboard() {
                                 <button className="btn btn-warning">
                                   Update
                                 </button>
-                                <button className="btn btn-danger">
+                            <button onClick={()=>deleteCategory(category._id)} className="btn btn-danger">
                                   <i className="fa fa-trash-can"></i>
                                 </button>
                               </div>
