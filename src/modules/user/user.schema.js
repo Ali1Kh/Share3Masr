@@ -36,3 +36,8 @@ export const loginSchema = Joi.object({
   }),
   password: Joi.string().required(),
 }).required();
+
+export const adminLoginSchema = Joi.object({
+  phone: Joi.string().required(),
+  password: Joi.string().required(),
+}).required();
