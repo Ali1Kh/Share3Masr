@@ -129,7 +129,7 @@ export default function Products() {
 
   async function deleteProduct(id) {
     let { data } = await axios.delete(
-      `https://foodyproj.onrender.com/Products/${id}`,
+      `https://foodyproj.onrender.com/products/${id}`,
       {
         headers: {
           token: sessionStorage.getItem("token"),
