@@ -2,27 +2,96 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import $ from "jquery";
+import Chip from "@mui/material/Chip";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
 
 export default function Resturants() {
   let [resturants, setResturants] = useState([]);
+  let [categories, setCategories] = useState([]);
+  let [areas, setAreas] = useState([]);
+
+  let [phones, setPhones] = useState([]);
+
   useEffect(() => {
     getResturants();
+    getCategories();
+    getAreas();
   }, []);
+
+  async function getAreas() {
+    let { data } = await axios.get("https://foodyproj.onrender.com/area");
+    if (data.success) {
+      setAreas(data.areas);
+    }
+  }
+  async function getCategories() {
+    let { data } = await axios.get("https://foodyproj.onrender.com/categories");
+    if (data.success) {
+      setCategories(data.categories);
+    }
+  }
+  async function getResturants() {
+    let { data } = await axios.get("https://foodyproj.onrender.com/resturants");
+    if (data.success) {
+      setResturants(data.resturants);
+    }
+  }
+
   async function addResturant() {
-    if ($("#ResturantName").val() == "") {
+    let name = $("#ResturantName").val();
+    let category = $("#category").val();
+    let area = $("#area").val();
+    let password = $("#password").val();
+    let address = $("#address").val();
+    let openingTime = $("#openingTime").val();
+    let closingTime = $("#closingTime").val();
+    let image = $("#ResturantImage")[0].files[0];
+
+    if (
+      name == "" ||
+      password == "" ||
+      address == "" ||
+      openingTime == "" ||
+      closingTime == "" ||
+      category == "" ||
+      area == ""
+    ) {
       toast.error("Please fill all the fields");
       return;
     }
+
+    if (!image) {
+      toast.error("Please add an image");
+      return;
+    }
+
+    if (phones.length == 0) {
+      toast.error("Please add at least one phone number ");
+      return;
+    }
+
+    let formdata = new FormData();
+    formdata.append("name", name);
+    formdata.append("category", category);
+    formdata.append("area", area);
+    formdata.append("password", password);
+    formdata.append("address", address);
+    formdata.append("openingTime", openingTime);
+    formdata.append("closingTime", closingTime);
+    formdata.append("resturantImage", image);
+    phones.forEach((phone, index) => {
+      formdata.append('phone[]', phone);
+  });
 
     $("#addResturantBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
     let { data } = await axios.post(
-      "https://foodyproj.onrender.com/Resturant",
-      {
-        ResturantName: $("#ResturantName").val(),
-      },
+      "https://foodyproj.onrender.com/resturants",
+      formdata,
       {
         headers: {
           token: sessionStorage.getItem("token"),
@@ -48,7 +117,7 @@ export default function Resturants() {
        <span class="sr-only">Loading...</span>
      </div>`);
     let { data } = await axios.patch(
-      `https://foodyproj.onrender.com/Resturant/${id}`,
+      `https://foodyproj.onrender.com/resturants/${id}`,
       {
         ResturantName: $("#ResturantName").val(),
       },
@@ -69,7 +138,7 @@ export default function Resturants() {
 
   async function deleteResturant(id) {
     let { data } = await axios.delete(
-      `https://foodyproj.onrender.com/Resturant/${id}`,
+      `https://foodyproj.onrender.com/resturants/${id}`,
       {
         headers: {
           token: sessionStorage.getItem("token"),
@@ -85,18 +154,11 @@ export default function Resturants() {
     }
   }
 
-  async function getResturants() {
-    let { data } = await axios.get("https://foodyproj.onrender.com/Resturant");
-    if (data.success) {
-      setResturants(data.Resturants);
-    }
-  }
-
   function updateClicked(Resturant) {
-    $("#ResturantName").val(Resturant.ResturantName);
+    $("#ResturantName").val(Resturant.name);
     $("#ResturantImage").val("");
 
-    $("#headOfForm").text(`Update ${Resturant.ResturantName} Resturant`);
+    $("#headOfForm").text(`Update ${Resturant.name} Resturant`);
     $("#updateResturantBtn").removeClass("d-none");
     $("#closeUpdateResturantBtn").removeClass("d-none");
     $("#addResturantBtn").addClass("d-none");
@@ -114,17 +176,128 @@ export default function Resturants() {
     $("#addResturantBtn").removeClass("d-none");
   }
 
+  const handlePhoneChange = (event, value) => {
+    setPhones(value);
+  };
+
   return (
     <div className="container d-flex flex-column /align-items-center justify-content-center">
       <div className="form w-fit text-center mb-4 mx-auto  ">
-        <h6 id="headOfForm">Add New Resturant</h6>
-        <div className="mb-3 w-100 mt-3">
-          <input
-            className="form-control"
-            type="text"
-            placeholder="Resturant Name"
-            id="ResturantName"
-          />
+        <h5 id="headOfForm">Add New Resturant</h5>
+
+        <div className="row mt-4">
+          <div className="col-md-6 d-flex align-items-center">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control "
+                type="text"
+                placeholder="Resturant Name"
+                id="ResturantName"
+              />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 d-flex ">
+              <Stack spacing={3} sx={{ width: 500 }}>
+                <Autocomplete
+                  multiple
+                  className="-form-control py-0"
+                  id="tags-filled"
+                  options={[]}
+                  defaultValue={[]}
+                  onChange={handlePhoneChange}
+                  freeSolo
+                  renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                      <Chip
+                        variant="outlined"
+                        label={option}
+                        {...getTagProps({ index })}
+                      />
+                    ))
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="filled"
+                      className="bg-white form-control"
+                      label="Phone Numbers"
+                      placeholder="Phone Numbers"
+                    />
+                  )}
+                />
+              </Stack>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control"
+                type="password"
+                placeholder="Resturant Password"
+                id="password"
+              />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Resturant Address"
+                id="address"
+              />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control"
+                type="time"
+                placeholder="Opening Time"
+                id="openingTime"
+              />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control"
+                type="time"
+                placeholder="Closing Time"
+                id="closingTime"
+              />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <select name="category" id="category" className="form-control">
+                <option value="">Select Category</option>
+                {categories.map((category) => {
+                  return (
+                    <option value={category._id}>
+                      {category.categoryName}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <select name="area" id="area" className="form-control">
+                <option value="">Select Area</option>
+                {areas.map((area) => {
+                  return <option value={area._id}>{area.areaName}</option>;
+                })}
+              </select>
+            </div>
+          </div>
+          <div className="col">
+            <div className="mb-3 w-100">
+              <input className="form-control" type="file" id="ResturantImage" />
+            </div>
+          </div>
         </div>
 
         <div className="mb-3 w-100">
@@ -154,23 +327,31 @@ export default function Resturants() {
               <th>Resturant Name</th>
               <th>Phones</th>
               <th>Address</th>
-              <th>Opening Time </th>
-              <th>Closinging Time</th>
+              <th>Working Time </th>
               <th>Area</th>
               <th>Category</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {resturants.map((Resturant) => (
               <tr className="mb-3">
-                <td>{Resturant.ResturantName}</td>
+                <td>{Resturant.name}</td>
+                <td>{Resturant.phone.join(" , ")}</td>
+                <td>{Resturant.address}</td>
+                <td>
+                  {Resturant.openingTime} : {Resturant.closingTime}
+                </td>
+                <td>{Resturant.area.areaName}</td>
+                <td>{Resturant.category.categoryName}</td>
+
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
                     <button
                       onClick={() => updateClicked(Resturant)}
                       className="btn btn-warning"
                     >
-                      Update
+                      <i className="fa fa-pen"></i>
                     </button>
                     <button
                       onClick={() => deleteResturant(Resturant._id)}

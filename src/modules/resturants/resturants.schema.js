@@ -20,13 +20,10 @@ export const createResturantSchema = Joi.object({
   password: Joi.string()
     .min(8)
     .required()
-    .pattern(new RegExp("^.{7,30}$"))
+    .pattern(new RegExp("^.{5,30}$"))
     .messages({
-      "string.min": "Password Must Be At least 8 characters.",
+      "string.min": "Password Must Be At least 5 characters.",
     }),
-  confirmPass: Joi.string().valid(Joi.ref("password")).required().messages({
-    "any.only": "Confirm Password is Invaild",
-  }),
   address: Joi.string().required(),
   area: Joi.custom(ObjectIdValidate).required(),
   category: Joi.custom(ObjectIdValidate).required(),
