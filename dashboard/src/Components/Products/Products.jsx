@@ -181,6 +181,12 @@ export default function Products() {
     setPriceInputSets(updatedPriceInputSets);
   };
 
+  const deletePriceInputSet = (index) => {
+    const updatedPriceInputSets = [...priceInputSets];
+    updatedPriceInputSets.splice(index, 1);
+    setPriceInputSets(updatedPriceInputSets);
+  };
+
   //
 
   const [extraInputSets, setExtraInputSets] = useState([
@@ -194,6 +200,12 @@ export default function Products() {
   const handleExtraInputChange = (index, field, value) => {
     const updatedExtraInputSets = [...extraInputSets];
     updatedExtraInputSets[index][field] = value;
+    setExtraInputSets(updatedExtraInputSets);
+  };
+
+  const deleteExtraInputSet = (index) => {
+    const updatedExtraInputSets = [...extraInputSets];
+    updatedExtraInputSets.splice(index, 1);
     setExtraInputSets(updatedExtraInputSets);
   };
 
@@ -281,6 +293,13 @@ export default function Products() {
                     <i className="fa fa-plus"></i>
                   </button>
                 )}
+                <button
+                  className="btn btn-danger"
+                  onClick={() => deletePriceInputSet(index)}
+                  disabled={priceInputSets.length === 1}
+                >
+                  <i className="fa fa-trash"></i>
+                </button>
               </div>
             ))}
           </div>
@@ -313,6 +332,13 @@ export default function Products() {
                     <i className="fa fa-plus"></i>
                   </button>
                 )}
+                <button
+                  className="btn btn-danger"
+                  onClick={() => deleteExtraInputSet(index)}
+                  disabled={extraInputSets.length === 1}
+                >
+                  <i className="fa fa-trash"></i>
+                </button>
               </div>
             ))}
           </div>
