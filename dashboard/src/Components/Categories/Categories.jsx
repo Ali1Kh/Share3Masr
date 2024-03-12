@@ -161,7 +161,7 @@ export default function Categories() {
       </div>
       <div className="categories border-top pt-4 text-start w-100">
         <h6 className="mb-4">All Categories :</h6>
-        <div className="row">
+        <div className="row gy-4">
           {categories.map((category) => (
             <div className="col-md-2 border-end">
               <div className="inner cursorPointer d-flex flex-column text-center h-100">

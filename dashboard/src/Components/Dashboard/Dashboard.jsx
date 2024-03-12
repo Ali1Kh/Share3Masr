@@ -27,45 +27,76 @@ export default function Dashboard() {
         <div className="row ">
           <div className="col-md-3">
             <div className="overflow-hidden ">
-              <Box
-                sx={{
-                  bgcolor: "background.paper",
-                  display: "flex",
-                  width: "fit-content",
-                  padding: "20px",
-                  position: "fixed",
-                  top: "0",
-                  bottom: "0",
-                }}
+              <button
+                class="btn btn-secondary m-2"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasScrolling"
+                aria-controls="offcanvasScrolling"
               >
-                <Tabs
-                  orientation="vertical"
-                  value={tab}
-                  onChange={handleChange}
-                  aria-label="Vertical tabs example "
-                >
-                  <Tab
-                    sx={{ fontSize: "14px" }}
-                    label="Manage Categories"
-                    {...a11yProps(0)}
-                  />
-                  <Tab
-                    sx={{ fontSize: "14px" }}
-                    label="Manage Resturants"
-                    {...a11yProps(1)}
-                  />
-                  <Tab
-                    sx={{ fontSize: "14px" }}
-                    label="Manage Menu"
-                    {...a11yProps(2)}
-                  />
-                  <Tab
-                    sx={{ fontSize: "14px" }}
-                    label="Manage Areas"
-                    {...a11yProps(3)}
-                  />
-                </Tabs>
-              </Box>
+                <i className="fa fa-bars"></i>
+              </button>
+
+              <div
+                class="offcanvas show w-auto offcanvas-start"
+                data-bs-scroll="true"
+                data-bs-backdrop="false"
+                tabindex="-1"
+                id="offcanvasScrolling"
+                aria-labelledby="offcanvasScrollingLabel"
+              >
+                <div class="offcanvas-header">
+                  <button
+                    type="button"
+                    class="btn btn-secondary position-absolute top-0"
+                    style={{ left: "100%" }}
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                  >
+                    <i class="fa fa-xmark"></i>
+                  </button>
+                </div>
+                <div class="offcanvas-body w-fit">
+                  <Box
+                    sx={{
+                      bgcolor: "background.paper",
+                      display: "flex",
+                      width: "fit-content",
+                      padding: "20px",
+                      top: "0",
+                      bottom: "0",
+                    }}
+                  >
+                    <Tabs
+                      orientation="vertical"
+                      value={tab}
+                      onChange={handleChange}
+                      aria-label="Vertical tabs example "
+                    >
+                      <Tab
+                        sx={{ fontSize: "14px" }}
+                        label="Manage Categories"
+                        {...a11yProps(0)}
+                      />
+                      <Tab
+                        sx={{ fontSize: "14px" }}
+                        label="Manage Resturants"
+                        {...a11yProps(1)}
+                      />
+                      <Tab
+                        sx={{ fontSize: "14px" }}
+                        label="Manage Menu"
+                        {...a11yProps(2)}
+                      />
+                      <Tab
+                        sx={{ fontSize: "14px" }}
+                        label="Manage Areas"
+                        {...a11yProps(3)}
+                      />
+                    </Tabs>
+                  </Box>
+                </div>
+              </div>
             </div>
           </div>
           <div className="col-md-9">
