@@ -7,47 +7,41 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 
-export default function Resturants() {
-  let [resturants, setResturants] = useState([]);
+export default function Products() {
+  let [products, setProducts] = useState([]);
   let [categories, setCategories] = useState([]);
-  let [areas, setAreas] = useState([]);
+
 
   let [phones, setPhones] = useState([]);
 
   useEffect(() => {
-    getResturants();
+    getProducts();
     getCategories();
-    getAreas();
   }, []);
 
-  async function getAreas() {
-    let { data } = await axios.get("https://foodyproj.onrender.com/area");
-    if (data.success) {
-      setAreas(data.areas);
-    }
-  }
+ 
   async function getCategories() {
     let { data } = await axios.get("https://foodyproj.onrender.com/categories");
     if (data.success) {
       setCategories(data.categories);
     }
   }
-  async function getResturants() {
-    let { data } = await axios.get("https://foodyproj.onrender.com/resturants");
+  async function getProducts() {
+    let { data } = await axios.get("https://foodyproj.onrender.com/products");
     if (data.success) {
-      setResturants(data.resturants);
+      setProducts(data.products);
     }
   }
 
-  async function addResturant() {
-    let name = $("#ResturantName").val();
+  async function addProduct() {
+    let name = $("#ProductName").val();
     let category = $("#category").val();
     let area = $("#area").val();
     let password = $("#password").val();
     let address = $("#address").val();
     let openingTime = $("#openingTime").val();
     let closingTime = $("#closingTime").val();
-    let image = $("#ResturantImage")[0].files[0];
+    let image = $("#ProductImage")[0].files[0];
 
     if (
       name == "" ||
@@ -80,17 +74,17 @@ export default function Resturants() {
     formdata.append("address", address);
     formdata.append("openingTime", openingTime);
     formdata.append("closingTime", closingTime);
-    formdata.append("resturantImage", image);
+    formdata.append("ProductImage", image);
     phones.forEach((phone, index) => {
       formdata.append("phone[]", phone);
     });
 
-    $("#addResturantBtn")
+    $("#addProductBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
     let { data } = await axios.post(
-      "https://foodyproj.onrender.com/resturants",
+      "https://foodyproj.onrender.com/Products",
       formdata,
       {
         headers: {
@@ -100,26 +94,26 @@ export default function Resturants() {
     );
     if (data.success) {
       toast.success(data.message);
-      getResturants();
+      getProducts();
     } else {
       toast.error(data.message);
     }
-    $("#addResturantBtn").html("Add Resturant");
+    $("#addProductBtn").html("Add Product");
   }
 
-  async function updateResturant(id) {
-    if ($("#ResturantName").val() == "") {
+  async function updateProduct(id) {
+    if ($("#ProductName").val() == "") {
       toast.error("Please fill all the fields");
       return;
     }
-    $("#updateResturantBtn")
+    $("#updateProductBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
     let { data } = await axios.patch(
-      `https://foodyproj.onrender.com/resturants/${id}`,
+      `https://foodyproj.onrender.com/Products/${id}`,
       {
-        ResturantName: $("#ResturantName").val(),
+        ProductName: $("#ProductName").val(),
       },
       {
         headers: {
@@ -129,16 +123,16 @@ export default function Resturants() {
     );
     if (data.success) {
       toast.success(data.message);
-      getResturants();
+      getProducts();
     } else {
       toast.error(data.message);
     }
-    $("#updateResturantBtn").html("Update Resturant");
+    $("#updateProductBtn").html("Update Product");
   }
 
-  async function deleteResturant(id) {
+  async function deleteProduct(id) {
     let { data } = await axios.delete(
-      `https://foodyproj.onrender.com/resturants/${id}`,
+      `https://foodyproj.onrender.com/Products/${id}`,
       {
         headers: {
           token: sessionStorage.getItem("token"),
@@ -148,32 +142,32 @@ export default function Resturants() {
 
     if (data.success) {
       toast.success(data.message);
-      getResturants();
+      getProducts();
     } else {
       toast.error(data.message);
     }
   }
 
-  function updateClicked(Resturant) {
-    $("#ResturantName").val(Resturant.name);
-    $("#ResturantImage").val("");
+  function updateClicked(Product) {
+    $("#ProductName").val(Product.name);
+    $("#ProductImage").val("");
 
-    $("#headOfForm").text(`Update ${Resturant.name} Resturant`);
-    $("#updateResturantBtn").removeClass("d-none");
-    $("#closeUpdateResturantBtn").removeClass("d-none");
-    $("#addResturantBtn").addClass("d-none");
-    $("#updateResturantBtn").on("click", () => {
-      return updateResturant(Resturant._id);
+    $("#headOfForm").text(`Update ${Product.name} Product`);
+    $("#updateProductBtn").removeClass("d-none");
+    $("#closeUpdateProductBtn").removeClass("d-none");
+    $("#addProductBtn").addClass("d-none");
+    $("#updateProductBtn").on("click", () => {
+      return updateProduct(Product._id);
     });
   }
 
-  function closeUpdateResturant() {
-    $("#ResturantName").val("");
-    $("#ResturantImage").val("");
-    $("#headOfForm").text(`Add New Resturant`);
-    $("#updateResturantBtn").addClass("d-none");
-    $("#closeUpdateResturantBtn").addClass("d-none");
-    $("#addResturantBtn").removeClass("d-none");
+  function closeUpdateProduct() {
+    $("#ProductName").val("");
+    $("#ProductImage").val("");
+    $("#headOfForm").text(`Add New Product`);
+    $("#updateProductBtn").addClass("d-none");
+    $("#closeUpdateProductBtn").addClass("d-none");
+    $("#addProductBtn").removeClass("d-none");
   }
 
   const handlePhoneChange = (event, value) => {
@@ -183,7 +177,7 @@ export default function Resturants() {
   return (
     <div className="container d-flex flex-column /align-items-center justify-content-center">
       <div className="form w-fit text-center mb-4 mx-auto  ">
-        <h5 id="headOfForm">Add New Resturant</h5>
+        <h5 id="headOfForm">Add New Product</h5>
 
         <div className="row mt-4">
           <div className="col-md-6 d-flex align-items-center">
@@ -191,8 +185,8 @@ export default function Resturants() {
               <input
                 className="form-control "
                 type="text"
-                placeholder="Resturant Name"
-                id="ResturantName"
+                placeholder="Product Name"
+                id="ProductName"
               />
             </div>
           </div>
@@ -234,7 +228,7 @@ export default function Resturants() {
               <input
                 className="form-control"
                 type="password"
-                placeholder="Resturant Password"
+                placeholder="Product Password"
                 id="password"
               />
             </div>
@@ -244,7 +238,7 @@ export default function Resturants() {
               <input
                 className="form-control"
                 type="text"
-                placeholder="Resturant Address"
+                placeholder="Product Address"
                 id="address"
               />
             </div>
@@ -295,37 +289,37 @@ export default function Resturants() {
           </div>
           <div className="col">
             <div className="mb-3 w-100">
-              <input className="form-control" type="file" id="ResturantImage" />
+              <input className="form-control" type="file" id="ProductImage" />
             </div>
           </div>
         </div>
 
         <div className="mb-3 w-100">
           <button
-            onClick={addResturant}
+            onClick={addProduct}
             className="btn btn-primary"
-            id="addResturantBtn"
+            id="addProductBtn"
           >
-            Add Resturant
+            Add Product
           </button>
-          <button className="btn btn-warning d-none" id="updateResturantBtn">
-            Update Resturant
+          <button className="btn btn-warning d-none" id="updateProductBtn">
+            Update Product
           </button>
           <button
-            id="closeUpdateResturantBtn"
+            id="closeUpdateProductBtn"
             className="btn btn-dark ms-2 d-none"
-            onClick={closeUpdateResturant}
+            onClick={closeUpdateProduct}
           >
             <i className="fa fa-xmark "></i>
           </button>
         </div>
       </div>
-      <div className="Resturants border-top pt-4 text-start w-100">
+      <div className="Products border-top pt-4 text-start w-100">
         <table className="table table-dark rounded-1 overflow-hidden shadow">
           <thead>
             <tr>
-              <th>Resturant Name</th>
-              <th>Phones</th>
+              <th>Product Name</th>
+              <th>Description</th>
               <th>Address</th>
               <th>Working Time </th>
               <th>Area</th>
@@ -334,28 +328,28 @@ export default function Resturants() {
             </tr>
           </thead>
           <tbody>
-            {resturants.map((Resturant) => (
+            {products.map((Product) => (
               <tr className="mb-3">
-                <td>{Resturant.name}</td>
-                <td>{Resturant.phone.join(" , ")}</td>
-                <td>{Resturant.address}</td>
+                <td>{Product.name}</td>
+                <td>{Product.description}</td>
+                <td>{Product.address}</td>
                 <td>
-                  {Resturant.openingTime} : {Resturant.closingTime}
+                  {Product.openingTime} : {Product.closingTime}
                 </td>
-                <td>{Resturant.area.areaName}</td>
-                <td>{Resturant.category.categoryName}</td>
+                <td>{Product.area.areaName}</td>
+                <td>{Product.category.categoryName}</td>
 
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
                     <button
                       disabled
-                      onClick={() => updateClicked(Resturant)}
+                      onClick={() => updateClicked(Product)}
                       className="btn btn-warning"
                     >
                       <i className="fa fa-pen"></i>
                     </button>
                     <button
-                      onClick={() => deleteResturant(Resturant._id)}
+                      onClick={() => deleteProduct(Product._id)}
                       className="btn btn-danger"
                     >
                       <i className="fa fa-trash-can"></i>
