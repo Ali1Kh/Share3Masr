@@ -38,7 +38,7 @@ export default function Dashboard() {
               </button>
 
               <div
-                class="offcanvas -show w-auto offcanvas-start"
+                class="offcanvas show w-auto offcanvas-start"
                 data-bs-scroll="true"
                 data-bs-backdrop="false"
                 tabindex="-1"
