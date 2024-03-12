@@ -49,7 +49,7 @@ export default function Dashboard() {
                   <button
                     type="button"
                     class="btn btn-secondary position-absolute top-0"
-                    style={{ left: "100%" }}
+                    style={{ left: "100%" , zIndex:9999999999 }}
                     data-bs-dismiss="offcanvas"
                     aria-label="Close"
                   >
