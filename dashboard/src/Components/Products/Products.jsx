@@ -11,7 +11,7 @@ export default function Products() {
   let [products, setProducts] = useState([]);
   let [categories, setCategories] = useState([]);
   let [resturants, setResturants] = useState([]);
-  let [phones, setPhones] = useState([]);
+  let [subCategories, setSubCategories] = useState([]);
 
   useEffect(() => {
     getProducts();
@@ -38,16 +38,43 @@ export default function Products() {
     }
   }
 
+  async function getSubCategoires(id) {
+    let { data } = await axios.get(
+      "https://foodyproj.onrender.com/resturants/subCategories/" + id
+    );
+    if (data.success) {
+      setSubCategories(data.subCategories);
+    }
+  }
+
   async function addProduct() {
     let name = $("#ProductName").val();
     let description = $("#description").val();
     let category = $("#category").val();
     let resturant = $("#resturant").val();
+    let resturantCategory = $("#resturantCategory").val();
 
-    if (name == "" || description == "" || category == "" || resturant == "") {
+    if (
+      name == "" ||
+      description == "" ||
+      category == "" ||
+      resturant == "" ||
+      resturantCategory == ""
+    ) {
       toast.error("Please fill all the fields");
       return;
     }
+
+    let initData = {
+      name,
+      description,
+      category,
+      resturant,
+      resturantCategory,
+      prices: priceInputSets,
+      extra: extraInputSets,
+    };
+
 
     let priceError = false;
     priceInputSets.forEach((element) => {
@@ -58,8 +85,14 @@ export default function Products() {
       }
     });
     if (priceError) return;
+
     let extraError = false;
     extraInputSets.forEach((element) => {
+      if (element.price === "" && element.itemName === "") {
+        extraError = false;
+       delete initData.extra
+        return;
+      }
       if (element.price === "" || element.itemName === "") {
         extraError = true;
         toast.error("Please fill all extra fields");
@@ -69,20 +102,15 @@ export default function Products() {
 
     if (extraError) return;
 
+
+
     $("#addProductBtn")
       .html(`<div  style="width:15px;height:15px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
     let { data } = await axios.post(
       "https://foodyproj.onrender.com/Products",
-      {
-        name,
-        description,
-        category,
-        resturant,
-        prices: priceInputSets,
-        extra: extraInputSets,
-      },
+      initData,
       {
         headers: {
           token: sessionStorage.getItem("token"),
@@ -253,13 +281,42 @@ export default function Products() {
           </div>
           <div className="col-md-6">
             <div className="mb-3 w-100">
-              <select name="resturant" id="resturant" className="form-control">
+              <select
+                name="resturant"
+                onChange={(e) => getSubCategoires(e.target.value)}
+                id="resturant"
+                className="form-control"
+              >
                 <option value="">Select Resturant</option>
                 {resturants.map((resturant) => {
                   return (
                     <option value={resturant._id}>{resturant.name}</option>
                   );
                 })}
+              </select>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <select
+                name="resturantCategory"
+                id="resturantCategory"
+                className="form-control"
+              >
+                <option value="">Select Sub Category</option>
+                {subCategories.length > 0 ? (
+                  subCategories.map((subCategory) => {
+                    return (
+                      <option value={subCategory._id}>
+                        {subCategory.name}
+                      </option>
+                    );
+                  })
+                ) : (
+                  <option disabled>
+                    Select Resturant First To Get Sub Categories
+                  </option>
+                )}
               </select>
             </div>
           </div>
@@ -303,7 +360,7 @@ export default function Products() {
               </div>
             ))}
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6  .mx-auto">
             {extraInputSets.map((inputSet, index) => (
               <div key={index} className="mb-3 d-flex gap-2">
                 <input

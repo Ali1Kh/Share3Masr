@@ -23,8 +23,7 @@ export const createProductSchema = joi.object({
         itemName: joi.string().required(),
         price: joi.string().required(),
       })
-    )
-    .required(),
+    ),
 });
 
 export const deleteProductSchema = joi.object({

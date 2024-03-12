@@ -19,12 +19,18 @@ router.post(
 
 router.get("/", asyncHandler(resturantController.getResturants));
 
+router.get(
+  "/subCategories/:id",
+  validation(resturantSchema.deleteResturantSchema),
+  asyncHandler(resturantController.getResturantSubCategories)
+);
+
 router.delete(
-  "/:id", 
+  "/:id",
   isAuthenticated,
   isAuthorized("admin"),
   validation(resturantSchema.deleteResturantSchema),
   asyncHandler(resturantController.deleteResturant)
-)
+);
 
 export default router;

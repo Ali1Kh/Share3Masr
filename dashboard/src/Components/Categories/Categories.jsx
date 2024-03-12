@@ -16,6 +16,9 @@ export default function Categories() {
     let formdata = new FormData();
     formdata.append("categoryImage", $("#categoryImage")[0].files[0]);
     formdata.append("categoryName", $("#categoryName").val());
+
+    
+
     $("#addCategoryBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>

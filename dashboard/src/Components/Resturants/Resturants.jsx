@@ -72,6 +72,23 @@ export default function Resturants() {
       return;
     }
 
+    if (resturantSubCategoryInputSets.length == 0) {
+      toast.error("Please add at least one Sub Category");
+      return;
+    }
+
+
+    let subCategoryError = false;
+    resturantSubCategoryInputSets.forEach((element) => {
+      if (element.name === "") {
+        subCategoryError = true;
+        toast.error("Please fill all Sub Category fields");
+        return;
+      }
+    });
+
+    if (subCategoryError) return;
+
     let formdata = new FormData();
     formdata.append("name", name);
     formdata.append("category", category);
@@ -83,6 +100,10 @@ export default function Resturants() {
     formdata.append("resturantImage", image);
     phones.forEach((phone, index) => {
       formdata.append("phone[]", phone);
+    });
+    resturantSubCategoryInputSets.forEach((subCategory, index) => {
+      console.log(subCategory);
+      formdata.append(`subCategories[${index}][name]`, subCategory.name);
     });
 
     $("#addResturantBtn")
@@ -98,6 +119,7 @@ export default function Resturants() {
         },
       }
     );
+    console.log(data);
     if (data.success) {
       toast.success(data.message);
       getResturants();
@@ -178,6 +200,28 @@ export default function Resturants() {
 
   const handlePhoneChange = (event, value) => {
     setPhones(value);
+  };
+
+  const [resturantSubCategoryInputSets, setResturantSubCategoryInputSets] =
+    useState([{ name: "" }]);
+
+  const addResturantCategoryInputSet = () => {
+    setResturantSubCategoryInputSets([
+      ...resturantSubCategoryInputSets,
+      { name:""},
+    ]);
+  };
+
+  const handleResturantInputChange = (index, field, value) => {
+    const updatedResturantInputSets = [...resturantSubCategoryInputSets];
+    updatedResturantInputSets[index][field] = value;
+    setResturantSubCategoryInputSets(updatedResturantInputSets);
+  };
+
+  const deleteResturantInputSet = (index) => {
+    const updatedResturantInputSets = [...resturantSubCategoryInputSets];
+    updatedResturantInputSets.splice(index, 1);
+    setResturantSubCategoryInputSets(updatedResturantInputSets);
   };
 
   return (
@@ -283,6 +327,7 @@ export default function Resturants() {
               </select>
             </div>
           </div>
+
           <div className="col-md-6">
             <div className="mb-3 w-100">
               <select name="area" id="area" className="form-control">
@@ -292,6 +337,40 @@ export default function Resturants() {
                 })}
               </select>
             </div>
+          </div>
+          <div className="col-md-6">
+            {resturantSubCategoryInputSets.map((inputSet, index) => (
+              <div key={index} className="mb-3 d-flex gap-2">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Sub Category Name"
+                  value={inputSet.name}
+                  onChange={(e) =>
+                    handleResturantInputChange(
+                      index,
+                      "name",
+                      e.target.value
+                    )
+                  }
+                />
+                {index === resturantSubCategoryInputSets.length - 1 && (
+                  <button
+                    className="btn btn-secondary"
+                    onClick={addResturantCategoryInputSet}
+                  >
+                    <i className="fa fa-plus"></i>
+                  </button>
+                )}
+                <button
+                  className="btn btn-danger"
+                  onClick={() => deleteResturantInputSet(index)}
+                  disabled={resturantSubCategoryInputSets.length === 1}
+                >
+                  <i className="fa fa-trash"></i>
+                </button>
+              </div>
+            ))}
           </div>
           <div className="col">
             <div className="mb-3 w-100">

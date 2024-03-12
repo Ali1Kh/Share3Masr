@@ -62,3 +62,11 @@ export const deleteResturant = async (req, res, next) => {
   await resturant.deleteOne();
   return res.json({ success: true, message: "Resturant Deleted Successfully" });
 };
+
+export const getResturantSubCategories = async (req, res, next) => {
+  const resturant = await Resturant.findById(req.params.id);
+  if (!resturant) {
+    return next(new Error("Resturant Not Found"));
+  }
+  return res.json({ success: true, subCategories: resturant.subCategories });
+};

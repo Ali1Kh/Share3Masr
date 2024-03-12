@@ -16,10 +16,11 @@ const productSchema = Schema({
       price: { type: String, required: true },
     },
   ],
-//   image: {
-//     secure_url: { type: String, required: true },
-//     public_id: { type: String, required: true },
-//   },
+  resturantCategory: {
+    type: Schema.Types.ObjectId,
+    ref: "Resturant.subCategories",
+    required: true,
+  },
 });
 
 export const Product = model("Product", productSchema);

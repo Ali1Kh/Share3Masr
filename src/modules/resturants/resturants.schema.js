@@ -28,6 +28,9 @@ export const createResturantSchema = Joi.object({
   address: Joi.string().required(),
   area: Joi.custom(ObjectIdValidate).required(),
   category: Joi.custom(ObjectIdValidate).required(),
+  subCategories: Joi.array().items(Joi.object({
+    name: Joi.string().required(),
+  }).required()),
   openingTime: Joi.string().required(),
   closingTime: Joi.string().required(),
 }).required();
