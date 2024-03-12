@@ -15,7 +15,8 @@ export const createResturantSchema = Joi.object({
           .required()
           .messages({ "any.required": "Please enter a valid phone number." })
       )
-    ) .messages({ "alternatives.match": "Please enter a valid phone number." })
+    )
+    .messages({ "alternatives.match": "Please enter a valid phone number." })
     .required(),
   password: Joi.string()
     .min(8)
@@ -29,4 +30,8 @@ export const createResturantSchema = Joi.object({
   category: Joi.custom(ObjectIdValidate).required(),
   openingTime: Joi.string().required(),
   closingTime: Joi.string().required(),
+}).required();
+
+export const deleteResturantSchema = Joi.object({
+  id: Joi.custom(ObjectIdValidate).required(),
 }).required();

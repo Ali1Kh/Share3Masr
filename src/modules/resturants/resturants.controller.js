@@ -47,6 +47,18 @@ export const createResturant = async (req, res, next) => {
 };
 
 export const getResturants = async (req, res, next) => {
-const resturants = await Resturant.find().populate(["area", "category"]).select("-password -__v");
+  const resturants = await Resturant.find()
+    .populate(["area", "category"])
+    .select("-password -__v");
   return res.json({ success: true, resturants });
+};
+
+export const deleteResturant = async (req, res, next) => {
+  const resturant = await Resturant.findById(req.params.id);
+  if (!resturant) {
+    return next(new Error("Resturant Not Found"));
+  }
+  await cloudinary.uploader.destroy(resturant.image.public_id);
+  await resturant.deleteOne();
+  return res.json({ success: true, message: "Resturant Deleted Successfully" });
 };

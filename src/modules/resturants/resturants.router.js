@@ -19,4 +19,12 @@ router.post(
 
 router.get("/", asyncHandler(resturantController.getResturants));
 
+router.delete(
+  "/:id", 
+  isAuthenticated,
+  isAuthorized("admin"),
+  validation(resturantSchema.deleteResturantSchema),
+  asyncHandler(resturantController.deleteResturant)
+)
+
 export default router;
