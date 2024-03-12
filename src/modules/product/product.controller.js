@@ -15,3 +15,13 @@ export const getProducts = async (req, res, next) => {
   const products = await Product.find().populate(["resturant", "category"]);
   return res.json({ success: true, products });
 }
+ 
+ export const deleteProduct = async (req, res, next) => {
+   const product = await Product.findById(req.params.id);
+   if (!product) {
+     return next(new Error("Product Not Found"));
+   }
+   await product.deleteOne();
+   return res.json({ success: true, message: "Product Deleted Successfully" });
+ }
+ 

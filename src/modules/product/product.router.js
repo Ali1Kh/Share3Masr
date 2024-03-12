@@ -18,4 +18,12 @@ router.post(
 
 router.get("/", asyncHandler(productController.getProducts));
 
+router.delete(
+  "/:id",
+  isAuthenticated,
+  isAuthorized("admin"),
+  validation(productSchema.deleteProductSchema),
+  asyncHandler(productController.deleteProduct)
+);
+
 export default router;

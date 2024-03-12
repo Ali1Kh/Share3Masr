@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import Categories from "../Categories/Categories";
 import Areas from "../Areas/Areas";
 import Resturants from "../Resturants/Resturants";
+import Products from "../Products/Products";
 
 export default function Dashboard() {
   const [tab, setTab] = useState(0);
@@ -78,7 +79,7 @@ export default function Dashboard() {
                 <Resturants />
               </TabPanel>
               <TabPanel value={tab} index={2}>
-                2
+                <Products />
               </TabPanel>
               <TabPanel value={tab} index={3}>
                 <Areas />

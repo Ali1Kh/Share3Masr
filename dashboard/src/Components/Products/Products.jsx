@@ -10,20 +10,25 @@ import Stack from "@mui/material/Stack";
 export default function Products() {
   let [products, setProducts] = useState([]);
   let [categories, setCategories] = useState([]);
-
-
+  let [resturants, setResturants] = useState([]);
   let [phones, setPhones] = useState([]);
 
   useEffect(() => {
     getProducts();
     getCategories();
+    getResturants();
   }, []);
 
- 
   async function getCategories() {
     let { data } = await axios.get("https://foodyproj.onrender.com/categories");
     if (data.success) {
       setCategories(data.categories);
+    }
+  }
+  async function getResturants() {
+    let { data } = await axios.get("https://foodyproj.onrender.com/resturants");
+    if (data.success) {
+      setResturants(data.resturants);
     }
   }
   async function getProducts() {
@@ -35,57 +40,49 @@ export default function Products() {
 
   async function addProduct() {
     let name = $("#ProductName").val();
+    let description = $("#description").val();
     let category = $("#category").val();
-    let area = $("#area").val();
-    let password = $("#password").val();
-    let address = $("#address").val();
-    let openingTime = $("#openingTime").val();
-    let closingTime = $("#closingTime").val();
-    let image = $("#ProductImage")[0].files[0];
+    let resturant = $("#resturant").val();
 
-    if (
-      name == "" ||
-      password == "" ||
-      address == "" ||
-      openingTime == "" ||
-      closingTime == "" ||
-      category == "" ||
-      area == ""
-    ) {
+    if (name == "" || description == "" || category == "" || resturant == "") {
       toast.error("Please fill all the fields");
       return;
     }
 
-    if (!image) {
-      toast.error("Please add an image");
-      return;
-    }
-
-    if (phones.length == 0) {
-      toast.error("Please add at least one phone number ");
-      return;
-    }
-
-    let formdata = new FormData();
-    formdata.append("name", name);
-    formdata.append("category", category);
-    formdata.append("area", area);
-    formdata.append("password", password);
-    formdata.append("address", address);
-    formdata.append("openingTime", openingTime);
-    formdata.append("closingTime", closingTime);
-    formdata.append("ProductImage", image);
-    phones.forEach((phone, index) => {
-      formdata.append("phone[]", phone);
+    let priceError = false;
+    priceInputSets.forEach((element) => {
+      if (element.sizePrice === "" || element.sizeName === "") {
+        priceError = true;
+        toast.error("Please fill all price fields");
+        return;
+      }
+    });
+    if (priceError) return;
+    let extraError = false;
+    extraInputSets.forEach((element) => {
+      if (element.price === "" || element.itemName === "") {
+        extraError = true;
+        toast.error("Please fill all extra fields");
+        return;
+      }
     });
 
+    if (extraError) return;
+
     $("#addProductBtn")
-      .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
+      .html(`<div  style="width:15px;height:15px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
     let { data } = await axios.post(
       "https://foodyproj.onrender.com/Products",
-      formdata,
+      {
+        name,
+        description,
+        category,
+        resturant,
+        prices: priceInputSets,
+        extra: extraInputSets,
+      },
       {
         headers: {
           token: sessionStorage.getItem("token"),
@@ -170,8 +167,34 @@ export default function Products() {
     $("#addProductBtn").removeClass("d-none");
   }
 
-  const handlePhoneChange = (event, value) => {
-    setPhones(value);
+  const [priceInputSets, setPriceInputSets] = useState([
+    { sizeName: "", sizePrice: "" },
+  ]);
+
+  const addPriceInputSet = () => {
+    setPriceInputSets([...priceInputSets, { sizeName: "", sizePrice: "" }]);
+  };
+
+  const handlePriceInputChange = (index, field, value) => {
+    const updatedPriceInputSets = [...priceInputSets];
+    updatedPriceInputSets[index][field] = value;
+    setPriceInputSets(updatedPriceInputSets);
+  };
+
+  //
+
+  const [extraInputSets, setExtraInputSets] = useState([
+    { itemName: "", price: "" },
+  ]);
+
+  const addExtraInputSet = () => {
+    setExtraInputSets([...extraInputSets, { itemName: "", price: "" }]);
+  };
+
+  const handleExtraInputChange = (index, field, value) => {
+    const updatedExtraInputSets = [...extraInputSets];
+    updatedExtraInputSets[index][field] = value;
+    setExtraInputSets(updatedExtraInputSets);
   };
 
   return (
@@ -190,79 +213,18 @@ export default function Products() {
               />
             </div>
           </div>
-          <div className="col-md-6">
-            <div className="mb-3 d-flex ">
-              <Stack spacing={3} sx={{ width: 500 }}>
-                <Autocomplete
-                  multiple
-                  className="-form-control py-0"
-                  id="tags-filled"
-                  options={[]}
-                  defaultValue={[]}
-                  onChange={handlePhoneChange}
-                  freeSolo
-                  renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                      <Chip
-                        variant="outlined"
-                        label={option}
-                        {...getTagProps({ index })}
-                      />
-                    ))
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="filled"
-                      className="bg-white form-control"
-                      label="Phone Numbers"
-                      placeholder="Phone Numbers"
-                    />
-                  )}
-                />
-              </Stack>
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="mb-3 w-100">
-              <input
-                className="form-control"
-                type="password"
-                placeholder="Product Password"
-                id="password"
-              />
-            </div>
-          </div>
+
           <div className="col-md-6">
             <div className="mb-3 w-100">
               <input
                 className="form-control"
                 type="text"
-                placeholder="Product Address"
-                id="address"
+                placeholder="Product Description"
+                id="description"
               />
             </div>
           </div>
-          <div className="col-md-6">
-            <div className="mb-3 w-100">
-              <input
-                className="form-control"
-                type="time"
-                placeholder="Opening Time"
-                id="openingTime"
-              />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="mb-3 w-100">
-              <input
-                className="form-control"
-                type="time"
-                placeholder="Closing Time"
-                id="closingTime"
-              />
-            </div>
-          </div>
+
           <div className="col-md-6">
             <div className="mb-3 w-100">
               <select name="category" id="category" className="form-control">
@@ -279,18 +241,80 @@ export default function Products() {
           </div>
           <div className="col-md-6">
             <div className="mb-3 w-100">
-              <select name="area" id="area" className="form-control">
-                <option value="">Select Area</option>
-                {areas.map((area) => {
-                  return <option value={area._id}>{area.areaName}</option>;
+              <select name="resturant" id="resturant" className="form-control">
+                <option value="">Select Resturant</option>
+                {resturants.map((resturant) => {
+                  return (
+                    <option value={resturant._id}>{resturant.name}</option>
+                  );
                 })}
               </select>
             </div>
           </div>
-          <div className="col">
-            <div className="mb-3 w-100">
-              <input className="form-control" type="file" id="ProductImage" />
-            </div>
+
+          <div className="col-md-6">
+            {priceInputSets.map((inputSet, index) => (
+              <div key={index} className="mb-3 d-flex gap-2">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Size Name"
+                  value={inputSet.sizeName}
+                  onChange={(e) =>
+                    handlePriceInputChange(index, "sizeName", e.target.value)
+                  }
+                />
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Size Price"
+                  value={inputSet.sizePrice}
+                  onChange={(e) =>
+                    handlePriceInputChange(index, "sizePrice", e.target.value)
+                  }
+                />
+                {index === priceInputSets.length - 1 && (
+                  <button
+                    className="btn btn-secondary"
+                    onClick={addPriceInputSet}
+                  >
+                    <i className="fa fa-plus"></i>
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="col-md-6">
+            {extraInputSets.map((inputSet, index) => (
+              <div key={index} className="mb-3 d-flex gap-2">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Item Name"
+                  value={inputSet.itemName}
+                  onChange={(e) =>
+                    handleExtraInputChange(index, "itemName", e.target.value)
+                  }
+                />
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="Item Price"
+                  value={inputSet.price}
+                  onChange={(e) =>
+                    handleExtraInputChange(index, "price", e.target.value)
+                  }
+                />
+                {index === extraInputSets.length - 1 && (
+                  <button
+                    className="btn btn-secondary"
+                    onClick={addExtraInputSet}
+                  >
+                    <i className="fa fa-plus"></i>
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -318,12 +342,12 @@ export default function Products() {
         <table className="table table-dark rounded-1 overflow-hidden shadow">
           <thead>
             <tr>
-              <th>Product Name</th>
+              <th>Name</th>
               <th>Description</th>
-              <th>Address</th>
-              <th>Working Time </th>
-              <th>Area</th>
               <th>Category</th>
+              <th>Resturant</th>
+              <th>Prices</th>
+              <th>Extra Items</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -331,13 +355,46 @@ export default function Products() {
             {products.map((Product) => (
               <tr className="mb-3">
                 <td>{Product.name}</td>
+
                 <td>{Product.description}</td>
-                <td>{Product.address}</td>
-                <td>
-                  {Product.openingTime} : {Product.closingTime}
-                </td>
-                <td>{Product.area.areaName}</td>
                 <td>{Product.category.categoryName}</td>
+                <td>{Product.resturant.name}</td>
+                <td>
+                  <table className="table table-dark">
+                    {/* <thead>
+                      <tr>
+                        <th className="small"> Name</th>
+                        <th className="small">Price</th>
+                      </tr>
+                    </thead> */}
+                    <tbody>
+                      {Product.prices.map((priceItem) => (
+                        <tr>
+                          <td>{priceItem.sizeName}</td>
+                          <td>{priceItem.sizePrice}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </td>
+                <td>
+                  <table className="table table-dark">
+                    {/* <thead>
+                      <tr>
+                        <th className="small"> Name</th>
+                        <th className="small">Price</th>
+                      </tr>
+                    </thead> */}
+                    <tbody>
+                      {Product.extra.map((extra) => (
+                        <tr>
+                          <td>{extra.itemName}</td>
+                          <td>{extra.price}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </td>
 
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
