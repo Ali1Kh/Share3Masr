@@ -75,7 +75,6 @@ export default function Products() {
       extra: extraInputSets,
     };
 
-
     let priceError = false;
     priceInputSets.forEach((element) => {
       if (element.sizePrice === "" || element.sizeName === "") {
@@ -90,7 +89,7 @@ export default function Products() {
     extraInputSets.forEach((element) => {
       if (element.price === "" && element.itemName === "") {
         extraError = false;
-       delete initData.extra
+        delete initData.extra;
         return;
       }
       if (element.price === "" || element.itemName === "") {
@@ -101,8 +100,6 @@ export default function Products() {
     });
 
     if (extraError) return;
-
-
 
     $("#addProductBtn")
       .html(`<div  style="width:15px;height:15px;" class="spinner-border text-dark"  role="status">
@@ -428,6 +425,7 @@ export default function Products() {
               <th>Name</th>
               <th>Description</th>
               <th>Category</th>
+              <th>Sub Category</th>
               <th>Resturant</th>
               <th>Prices</th>
               <th>Extra Items</th>
@@ -441,6 +439,8 @@ export default function Products() {
 
                 <td>{Product.description}</td>
                 <td>{Product.category.categoryName}</td>
+                <td>{Product.resturantSubCategory[0].name}</td>
+
                 <td>{Product.resturant.name}</td>
                 <td>
                   <table className="table table-dark">
