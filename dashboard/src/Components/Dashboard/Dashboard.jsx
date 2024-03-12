@@ -9,10 +9,17 @@ import Categories from "../Categories/Categories";
 import Areas from "../Areas/Areas";
 import Resturants from "../Resturants/Resturants";
 import Products from "../Products/Products";
+import $ from "jquery";
 
 export default function Dashboard() {
   const [tab, setTab] = useState(0);
 
+  useEffect(() => {
+    if (window.innerWidth >= 768) {
+      $("#offcanvasScrolling").addClass("show");
+    }
+  }, []);
+  
   if (sessionStorage.getItem("token") === null) {
     return <Navigate to="/" />;
   }
@@ -38,7 +45,7 @@ export default function Dashboard() {
               </button>
 
               <div
-                class="offcanvas show w-auto offcanvas-start"
+                class="offcanvas w-auto offcanvas-start"
                 data-bs-scroll="true"
                 data-bs-backdrop="false"
                 tabindex="-1"
@@ -49,7 +56,7 @@ export default function Dashboard() {
                   <button
                     type="button"
                     class="btn btn-secondary position-absolute top-0"
-                    style={{ left: "100%" , zIndex:9999999999 }}
+                    style={{ left: "100%", zIndex: 9999999999 }}
                     data-bs-dismiss="offcanvas"
                     aria-label="Close"
                   >
