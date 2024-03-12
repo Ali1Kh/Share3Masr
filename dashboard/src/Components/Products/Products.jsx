@@ -309,7 +309,7 @@ export default function Products() {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Item Name"
+                  placeholder="Extra Name"
                   value={inputSet.itemName}
                   onChange={(e) =>
                     handleExtraInputChange(index, "itemName", e.target.value)
@@ -318,7 +318,7 @@ export default function Products() {
                 <input
                   type="number"
                   className="form-control"
-                  placeholder="Item Price"
+                  placeholder="Extra Price"
                   value={inputSet.price}
                   onChange={(e) =>
                     handleExtraInputChange(index, "price", e.target.value)
