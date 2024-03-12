@@ -5,17 +5,12 @@ import Typography from "@mui/material/Typography";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import axios from "axios";
-import { toast } from "react-hot-toast";
-import $ from "jquery";
+import Categories from "../Categories/Categories";
+import Areas from "../Areas/Areas";
+import Resturants from "../Resturants/Resturants";
 
 export default function Dashboard() {
   const [tab, setTab] = useState(0);
-  let [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    getCategories();
-  }, []);
 
   if (sessionStorage.getItem("token") === null) {
     return <Navigate to="/" />;
@@ -24,57 +19,6 @@ export default function Dashboard() {
   const handleChange = (event, newValue) => {
     setTab(newValue);
   };
-
-  async function addCategory() {
-    if ($("#categoryName").val() == "") {
-      toast.error("Please fill all the fields");
-    }
-    let formdata = new FormData();
-    formdata.append("categoryImage", $("#categoryImage")[0].files[0]);
-    formdata.append("categoryName", $("#categoryName").val());
-
-    let { data } = await axios.post(
-      "https://foodyproj.onrender.com/categories",
-      formdata,
-      {
-        headers: {
-          token: sessionStorage.getItem("token"),
-        },
-      }
-    );
-
-    if (data.success) {
-      toast.success(data.message);
-      getCategories();
-    } else {
-      toast.error(data.message);
-    }
-  }
-
-  async function deleteCategory(id) {
-    let { data } = await axios.delete(
-      `https://foodyproj.onrender.com/categories/${id}`,
-      {
-        headers: {
-          token: sessionStorage.getItem("token"),
-        },
-      }
-    );
-
-    if (data.success) {
-      toast.success(data.message);
-      getCategories();
-    } else {
-      toast.error(data.message);
-    }
-  }
-
-  async function getCategories() {
-    let { data } = await axios.get("https://foodyproj.onrender.com/categories");
-    if (data.success) {
-      setCategories(data.categories);
-    }
-  }
 
   return (
     <>
@@ -100,22 +44,22 @@ export default function Dashboard() {
                   aria-label="Vertical tabs example "
                 >
                   <Tab
-                    sx={{ fontSize: "17px" }}
+                    sx={{ fontSize: "14px" }}
                     label="Manage Categories"
                     {...a11yProps(0)}
                   />
                   <Tab
-                    sx={{ fontSize: "17px" }}
+                    sx={{ fontSize: "14px" }}
                     label="Manage Resturants"
                     {...a11yProps(1)}
                   />
                   <Tab
-                    sx={{ fontSize: "17px" }}
+                    sx={{ fontSize: "14px" }}
                     label="Manage Menu"
                     {...a11yProps(2)}
                   />
                   <Tab
-                    sx={{ fontSize: "17px" }}
+                    sx={{ fontSize: "14px" }}
                     label="Manage Areas"
                     {...a11yProps(3)}
                   />
@@ -127,70 +71,17 @@ export default function Dashboard() {
             <div className="inner">
               <TabPanel value={tab} index={0}>
                 <>
-                  <div className="container d-flex flex-column /align-items-center justify-content-center">
-                    <div className="form w-fit text-center mb-4 mx-auto  ">
-                      <h6>Add New Category</h6>
-                      <div className="mb-3 w-100 mt-3">
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Category Name"
-                          id="categoryName"
-                        />
-                      </div>
-                      <div className="mb-3 w-100">
-                        <input
-                          className="form-control"
-                          type="file"
-                          placeholder="Category Image"
-                          id="categoryImage"
-                        />
-                      </div>
-                      <div className="mb-3 w-100">
-                        <button
-                          onClick={addCategory}
-                          className="btn btn-primary"
-                        >
-                          Add Category
-                        </button>
-                      </div>
-                    </div>
-                    <div className="categories border-top pt-4 text-start w-100">
-                      <h6 className="mb-4">All Categories :</h6>
-                      <div className="row">
-                        {categories.map((category) => (
-                          <div className="col-md-2 border-end">
-                            <div className="inner cursorPointer d-flex flex-column text-center h-100">
-                              <img
-                                className="w-100 mb-3"
-                                src={category.image.secure_url}
-                                alt=""
-                              />
-                              <p className="mt-auto">{category.categoryName}</p>
-                              <div className="d-flex gap-3 mt-2">
-                                <button className="btn btn-warning">
-                                  Update
-                                </button>
-                            <button onClick={()=>deleteCategory(category._id)} className="btn btn-danger">
-                                  <i className="fa fa-trash-can"></i>
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  <Categories />
                 </>
               </TabPanel>
               <TabPanel value={tab} index={1}>
-                1
+                <Resturants />
               </TabPanel>
               <TabPanel value={tab} index={2}>
                 2
               </TabPanel>
               <TabPanel value={tab} index={3}>
-                3
+                <Areas />
               </TabPanel>
               <TabPanel value={tab} index={4}>
                 4

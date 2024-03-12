@@ -47,6 +47,6 @@ export const createResturant = async (req, res, next) => {
 };
 
 export const getResturants = async (req, res, next) => {
-  const resturants = await Resturant.find().select("-password -__v");
+const resturants = await Resturant.find().populate(["area", "category"]).select("-password -__v");
   return res.json({ success: true, resturants });
 };
