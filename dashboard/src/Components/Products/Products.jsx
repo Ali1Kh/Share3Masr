@@ -438,8 +438,8 @@ export default function Products() {
                 <td>{Product.name}</td>
 
                 <td>{Product.description}</td>
-                <td>{Product.category.categoryName}</td>
-                <td>{Product.resturantSubCategory[0].name}</td>
+                <td>{Product.category?.categoryName}</td>
+                <td>{Product.resturantSubCategory[0]?.name}</td>
 
                 <td>{Product.resturant.name}</td>
                 <td>

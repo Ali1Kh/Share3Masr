@@ -320,7 +320,7 @@ export default function Resturants() {
                 {categories.map((category) => {
                   return (
                     <option value={category._id}>
-                      {category.categoryName}
+                      {category?.categoryName}
                     </option>
                   );
                 })}
@@ -422,7 +422,7 @@ export default function Resturants() {
                   {Resturant.openingTime} : {Resturant.closingTime}
                 </td>
                 <td>{Resturant.area.areaName}</td>
-                <td>{Resturant.category.categoryName}</td>
+                <td>{Resturant.category?.categoryName}</td>
 
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
