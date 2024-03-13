@@ -6,11 +6,13 @@ import { Area } from "../../../DB/models/area.model.js";
 import { Category } from "../../../DB/models/category.model.js";
 
 export const createResturant = async (req, res, next) => {
-  let isArea = await Area.findById(req.body.area);
-  if (!isArea) return next(new Error("Area Not Found"));
+  // let isArea = await Area.findById(req.body.area);
+  // if (!isArea) return next(new Error("Area Not Found"));
 
-  let isCategory = await Category.findById(req.body.category);
-  if (!isCategory) return next(new Error("Category Not Found"));
+  for (let index = 0; index < req.body.category.length; index++) {
+    let isCategory = await Category.findById(req.body.category[index]);
+    if (!isCategory) return next(new Error("Category Not Found"));
+  }
 
   const isResturant = await Resturant.findOne({
     phone: { $in: req.body.phone },

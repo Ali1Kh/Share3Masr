@@ -25,12 +25,18 @@ export const createResturantSchema = Joi.object({
     .messages({
       "string.min": "Password Must Be At least 5 characters.",
     }),
-  address: Joi.string().required(),
-  area: Joi.custom(ObjectIdValidate).required(),
-  category: Joi.custom(ObjectIdValidate).required(),
-  subCategories: Joi.array().items(Joi.object({
-    name: Joi.string().required(),
-  }).required()),
+  address: Joi.string(),
+  owner: Joi.string().required(),
+
+  area: Joi.custom(ObjectIdValidate),
+  category: Joi.array()
+    .items(Joi.custom(ObjectIdValidate).required())
+    .required(),
+  subCategories: Joi.array().items(
+    Joi.object({
+      name: Joi.string().required(),
+    }).required()
+  ),
   openingTime: Joi.string().required(),
   closingTime: Joi.string().required(),
 }).required();

@@ -6,6 +6,24 @@ import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import ListItemText from "@mui/material/ListItemText";
+import Select from "@mui/material/Select";
+import Checkbox from "@mui/material/Checkbox";
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 export default function Resturants() {
   let [resturants, setResturants] = useState([]);
@@ -41,10 +59,11 @@ export default function Resturants() {
 
   async function addResturant() {
     let name = $("#ResturantName").val();
-    let category = $("#category").val();
-    let area = $("#area").val();
+    let owner = $("#ResturantOwner").val();
+
+    // let area = $("#area").val();
     let password = $("#password").val();
-    let address = $("#address").val();
+    // let address = $("#address").val();
     let openingTime = $("#openingTime").val();
     let closingTime = $("#closingTime").val();
     let image = $("#ResturantImage")[0].files[0];
@@ -52,11 +71,10 @@ export default function Resturants() {
     if (
       name == "" ||
       password == "" ||
-      address == "" ||
+      owner == "" ||
       openingTime == "" ||
-      closingTime == "" ||
-      category == "" ||
-      area == ""
+      closingTime == ""
+      //   ||   area == ""
     ) {
       toast.error("Please fill all the fields");
       return;
@@ -72,11 +90,15 @@ export default function Resturants() {
       return;
     }
 
+    if (selectedCategories.length == 0) {
+      toast.error("Please add at least one category");
+      return;
+    }
+
     if (resturantSubCategoryInputSets.length == 0) {
       toast.error("Please add at least one Sub Category");
       return;
     }
-
 
     let subCategoryError = false;
     resturantSubCategoryInputSets.forEach((element) => {
@@ -91,10 +113,14 @@ export default function Resturants() {
 
     let formdata = new FormData();
     formdata.append("name", name);
-    formdata.append("category", category);
-    formdata.append("area", area);
+    formdata.append("owner", owner);
+
+    selectedCategories.forEach((category, index) => {
+      formdata.append("category[]", category);
+    });
+    // formdata.append("area", area);
     formdata.append("password", password);
-    formdata.append("address", address);
+    // formdata.append("address", address);
     formdata.append("openingTime", openingTime);
     formdata.append("closingTime", closingTime);
     formdata.append("resturantImage", image);
@@ -102,7 +128,6 @@ export default function Resturants() {
       formdata.append("phone[]", phone);
     });
     resturantSubCategoryInputSets.forEach((subCategory, index) => {
-      console.log(subCategory);
       formdata.append(`subCategories[${index}][name]`, subCategory.name);
     });
 
@@ -119,7 +144,6 @@ export default function Resturants() {
         },
       }
     );
-    console.log(data);
     if (data.success) {
       toast.success(data.message);
       getResturants();
@@ -208,7 +232,7 @@ export default function Resturants() {
   const addResturantCategoryInputSet = () => {
     setResturantSubCategoryInputSets([
       ...resturantSubCategoryInputSets,
-      { name:""},
+      { name: "" },
     ]);
   };
 
@@ -224,13 +248,25 @@ export default function Resturants() {
     setResturantSubCategoryInputSets(updatedResturantInputSets);
   };
 
+  const [selectedCategories, setSelectedCategories] = React.useState([]);
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedCategories(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+
   return (
     <div className="container d-flex flex-column /align-items-center justify-content-center">
       <div className="form w-fit text-center mb-4 mx-auto  ">
         <h5 id="headOfForm">Add New Resturant</h5>
 
         <div className="row mt-4">
-          <div className="col-md-6 d-flex align-items-center">
+          <div className="col-md-4 d-flex align-items-center">
             <div className="mb-3 w-100">
               <input
                 className="form-control "
@@ -240,12 +276,116 @@ export default function Resturants() {
               />
             </div>
           </div>
+
+          <div className="col-md-4 d-flex align-items-center">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control "
+                type="text"
+                placeholder="Resturant Owner"
+                id="ResturantOwner"
+              />
+            </div>
+          </div>
+
+          <div className="col-md-4">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control"
+                type="password"
+                placeholder="Resturant Password"
+                id="password"
+              />
+            </div>
+          </div>
+
+          {/* <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Resturant Address"
+                id="address"
+              />
+            </div>
+          </div> */}
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control"
+                type="time"
+                placeholder="Opening Time"
+                id="openingTime"
+              />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control"
+                type="time"
+                placeholder="Closing Time"
+                id="closingTime"
+              />
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <FormControl sx={{ width: "100%" }}>
+                <InputLabel
+                  sx={{ backgroundColor: "white", borderRadius: "2px" }}
+                  id="demo-multiple-checkbox-label"
+                >
+                  Select Categories
+                </InputLabel>
+                <Select
+                  labelId="demo-multiple-checkbox-label"
+                  id="demo-multiple-checkbox"
+                  multiple
+                  value={selectedCategories}
+                  onChange={handleChange}
+                  input={<OutlinedInput label="Select Categories" />}
+                  renderValue={(selected) =>
+                    selected
+                      .map((categoryId) => {
+                        const category = categories.find(
+                          (c) => c._id === categoryId
+                        );
+                        return category ? category.categoryName : "";
+                      })
+                      .join(", ")
+                  }
+                  MenuProps={MenuProps}
+                  className="form-control p-0"
+                >
+                  {categories.map((category) => (
+                    <MenuItem key={category?._id} value={category?._id}>
+                      <Checkbox
+                        checked={selectedCategories.indexOf(category?._id) > -1}
+                      />
+                      <ListItemText primary={category?.categoryName} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {/* <select name="category" id="category" className="form-control">
+                <option value="">Select Category</option>
+                {categories.map((category) => {
+                  return (
+                    <option value={category._id}>
+                      {category?.categoryName}
+                    </option>
+                  );
+                })}
+              </select> */}
+            </div>
+          </div>
           <div className="col-md-6">
             <div className="mb-3 d-flex ">
-              <Stack spacing={3} sx={{ width: 500 }}>
+              <Stack spacing={3} sx={{ width: "100%" }}>
                 <Autocomplete
                   multiple
-                  className="-form-control py-0"
+                  className="form-control p-0"
                   id="tags-filled"
                   options={[]}
                   defaultValue={[]}
@@ -273,62 +413,8 @@ export default function Resturants() {
               </Stack>
             </div>
           </div>
-          <div className="col-md-6">
-            <div className="mb-3 w-100">
-              <input
-                className="form-control"
-                type="password"
-                placeholder="Resturant Password"
-                id="password"
-              />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="mb-3 w-100">
-              <input
-                className="form-control"
-                type="text"
-                placeholder="Resturant Address"
-                id="address"
-              />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="mb-3 w-100">
-              <input
-                className="form-control"
-                type="time"
-                placeholder="Opening Time"
-                id="openingTime"
-              />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="mb-3 w-100">
-              <input
-                className="form-control"
-                type="time"
-                placeholder="Closing Time"
-                id="closingTime"
-              />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div className="mb-3 w-100">
-              <select name="category" id="category" className="form-control">
-                <option value="">Select Category</option>
-                {categories.map((category) => {
-                  return (
-                    <option value={category._id}>
-                      {category?.categoryName}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          </div>
 
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             <div className="mb-3 w-100">
               <select name="area" id="area" className="form-control">
                 <option value="">Select Area</option>
@@ -337,7 +423,7 @@ export default function Resturants() {
                 })}
               </select>
             </div>
-          </div>
+          </div> */}
           <div className="col-md-6">
             {resturantSubCategoryInputSets.map((inputSet, index) => (
               <div key={index} className="mb-3 d-flex gap-2">
@@ -347,11 +433,7 @@ export default function Resturants() {
                   placeholder="Sub Category Name"
                   value={inputSet.name}
                   onChange={(e) =>
-                    handleResturantInputChange(
-                      index,
-                      "name",
-                      e.target.value
-                    )
+                    handleResturantInputChange(index, "name", e.target.value)
                   }
                 />
                 {index === resturantSubCategoryInputSets.length - 1 && (
