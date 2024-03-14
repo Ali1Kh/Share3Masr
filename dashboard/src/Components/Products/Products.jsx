@@ -32,155 +32,214 @@ export default function Products() {
     }
   }
   async function getProducts() {
-    let { data } = await axios.get("https://foodyproj.onrender.com/products");
-    if (data.success) {
-      setProducts(data.products);
-    }
+    try {
+      let { data } = await axios.get("https://foodyproj.onrender.com/products");
+      if (data.success) {
+        setProducts(data.products);
+      }
+    } catch (error) {}
   }
 
   async function getSubCategoires(id) {
-    let { data } = await axios.get(
-      "https://foodyproj.onrender.com/resturants/subCategories/" + id
-    );
-    if (data.success) {
-      setSubCategories(data.subCategories);
-    }
+    try {
+      let { data } = await axios.get(
+        "https://foodyproj.onrender.com/resturants/subCategories/" + id
+      );
+      if (data.success) {
+        setSubCategories(data.subCategories);
+      }
+    } catch (error) {}
   }
 
   async function addProduct() {
-    let name = $("#ProductName").val();
-    let description = $("#description").val();
-    let category = $("#category").val();
-    let resturant = $("#resturant").val();
-    let resturantCategory = $("#resturantCategory").val();
+    try {
+      let name = $("#ProductName").val();
+      let description = $("#description").val();
+      let category = $("#category").val();
+      let resturant = $("#resturant").val();
+      let resturantCategory = $("#resturantCategory").val();
 
-    if (
-      name == "" ||
-      description == "" ||
-      category == "" ||
-      resturant == "" ||
-      resturantCategory == ""
-    ) {
-      toast.error("Please fill all the fields");
-      return;
-    }
-
-    let initData = {
-      name,
-      description,
-      category,
-      resturant,
-      resturantCategory,
-      prices: priceInputSets,
-      extra: extraInputSets,
-    };
-
-    let priceError = false;
-    priceInputSets.forEach((element) => {
-      if (element.sizePrice === "" || element.sizeName === "") {
-        priceError = true;
-        toast.error("Please fill all price fields");
+      if (
+        name == "" ||
+        description == "" ||
+        category == "" ||
+        resturant == "" ||
+        resturantCategory == ""
+      ) {
+        toast.error("Please fill all the fields");
         return;
       }
-    });
-    if (priceError) return;
 
-    let extraError = false;
-    extraInputSets.forEach((element) => {
-      if (element.price === "" && element.itemName === "") {
-        extraError = false;
-        delete initData.extra;
-        return;
-      }
-      if (element.price === "" || element.itemName === "") {
-        extraError = true;
-        toast.error("Please fill all extra fields");
-        return;
-      }
-    });
+      let initData = {
+        name,
+        description,
+        category,
+        resturant,
+        resturantCategory,
+        prices: priceInputSets,
+        extra: extraInputSets,
+      };
 
-    if (extraError) return;
+      let priceError = false;
+      priceInputSets.forEach((element) => {
+        if (element.sizePrice === "" || element.sizeName === "") {
+          priceError = true;
+          toast.error("Please fill all price fields");
+          return;
+        }
+      });
+      if (priceError) return;
 
-    $("#addProductBtn")
-      .html(`<div  style="width:15px;height:15px;" class="spinner-border text-dark"  role="status">
+      let extraError = false;
+      extraInputSets.forEach((element) => {
+        if (element.price === "" && element.itemName === "") {
+          extraError = false;
+          delete initData.extra;
+          return;
+        }
+        if (element.price === "" || element.itemName === "") {
+          extraError = true;
+          toast.error("Please fill all extra fields");
+          return;
+        }
+      });
+
+      if (extraError) return;
+
+      $("#addProductBtn")
+        .html(`<div  style="width:15px;height:15px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
-    let { data } = await axios.post(
-      "https://foodyproj.onrender.com/Products",
-      initData,
-      {
-        headers: {
-          token: sessionStorage.getItem("token"),
-        },
+      let { data } = await axios.post(
+        "https://foodyproj.onrender.com/Products",
+        initData,
+        {
+          headers: {
+            token: sessionStorage.getItem("token"),
+          },
+        }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        getProducts();
+      } else {
+        toast.error(data.message);
       }
-    );
-    if (data.success) {
-      toast.success(data.message);
-      getProducts();
-    } else {
-      toast.error(data.message);
-    }
-    $("#addProductBtn").html("Add Product");
+      $("#addProductBtn").html("Add Product");
+    } catch (error) {}
   }
 
-  async function updateProduct(id) {
-    if ($("#ProductName").val() == "") {
-      toast.error("Please fill all the fields");
-      return;
-    }
-    $("#updateProductBtn")
-      .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
+  async function updateProduct() {
+    try {
+      let id = $("#updateProductBtn").attr("data-id");
+      let name = $("#ProductName").val();
+      let description = $("#description").val();
+
+      if (name == "" || description == "") {
+        toast.error("Please fill all the fields");
+        return;
+      }
+
+      let initData = {
+        name,
+        description,
+        prices: priceInputSets,
+        extra: extraInputSets,
+      };
+
+      let priceError = false;
+      priceInputSets.forEach((element) => {
+        if (element.sizePrice === "" || element.sizeName === "") {
+          priceError = true;
+          toast.error("Please fill all price fields");
+          return;
+        }
+      });
+      if (priceError) return;
+
+      let extraError = false;
+      extraInputSets.forEach((element) => {
+        if (element.price === "" && element.itemName === "") {
+          extraError = false;
+          initData.extra = [];
+          return;
+        }
+        if (element.price === "" || element.itemName === "") {
+          extraError = true;
+          toast.error("Please fill all extra fields");
+          return;
+        }
+      });
+
+      if (extraError) return;
+
+      $("#updateProductBtn")
+        .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
-    let { data } = await axios.patch(
-      `https://foodyproj.onrender.com/Products/${id}`,
-      {
-        ProductName: $("#ProductName").val(),
-      },
-      {
-        headers: {
-          token: sessionStorage.getItem("token"),
-        },
+
+      let { data } = await axios.patch(
+        `https://foodyproj.onrender.com/Products/${id}`,
+        initData,
+        {
+          headers: {
+            token: sessionStorage.getItem("token"),
+          },
+        }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        getProducts();
+      } else {
+        toast.error(data.message);
       }
-    );
-    if (data.success) {
-      toast.success(data.message);
-      getProducts();
-    } else {
-      toast.error(data.message);
-    }
-    $("#updateProductBtn").html("Update Product");
+      $("#updateProductBtn").html("Update Product");
+    } catch (error) {}
   }
 
   async function deleteProduct(id) {
-    let { data } = await axios.delete(
-      `https://foodyproj.onrender.com/products/${id}`,
-      {
-        headers: {
-          token: sessionStorage.getItem("token"),
-        },
-      }
-    );
+    try {
+      let { data } = await axios.delete(
+        `https://foodyproj.onrender.com/products/${id}`,
+        {
+          headers: {
+            token: sessionStorage.getItem("token"),
+          },
+        }
+      );
 
-    if (data.success) {
-      toast.success(data.message);
-      getProducts();
-    } else {
-      toast.error(data.message);
-    }
+      if (data.success) {
+        toast.success(data.message);
+        getProducts();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {}
   }
 
   function updateClicked(Product) {
     $("#ProductName").val(Product.name);
+    $("#description").val(Product.description);
+    $("#category").prop("disabled", true);
+    $("#resturant").prop("disabled", true);
+    $("#resturantCategory").prop("disabled", true);
     $("#ProductImage").val("");
+    let productPrices = Product.prices.map((item) => {
+      return { sizeName: item.sizeName, sizePrice: item.sizePrice };
+    });
+    setPriceInputSets(productPrices);
+    if (Product.extra.length > 0) {
+      let extraInputSets = Product.extra.map((item) => {
+        return { itemName: item.itemName, price: item.price };
+      });
+      setExtraInputSets(extraInputSets);
+    }
 
     $("#headOfForm").text(`Update ${Product.name} Product`);
     $("#updateProductBtn").removeClass("d-none");
     $("#closeUpdateProductBtn").removeClass("d-none");
     $("#addProductBtn").addClass("d-none");
-    $("#updateProductBtn").on("click", () => {
-      return updateProduct(Product._id);
-    });
+    $("#updateProductBtn").attr("data-id", Product._id);
   }
 
   function closeUpdateProduct() {
@@ -269,7 +328,7 @@ export default function Products() {
                 {categories.map((category) => {
                   return (
                     <option value={category._id}>
-                      {category.categoryName}
+                      {category?.categoryName}
                     </option>
                   );
                 })}
@@ -406,7 +465,11 @@ export default function Products() {
           >
             Add Product
           </button>
-          <button className="btn btn-warning d-none" id="updateProductBtn">
+          <button
+            onClick={updateProduct}
+            className="btn btn-warning d-none"
+            id="updateProductBtn"
+          >
             Update Product
           </button>
           <button
@@ -433,15 +496,19 @@ export default function Products() {
             </tr>
           </thead>
           <tbody>
-            {products.map((Product) => (
+            {products?.map((Product) => (
               <tr className="mb-3">
                 <td>{Product.name}</td>
 
                 <td>{Product.description}</td>
                 <td>{Product.category?.categoryName}</td>
-                <td>{Product.resturantSubCategory[0]?.name}</td>
+                <td>
+                  {Product.resturantSubCategory[0]?.name
+                    ? Product.resturantSubCategory[0]?.name
+                    : ""}
+                </td>
 
-                <td>{Product.resturant.name}</td>
+                <td>{Product.resturant?.name}</td>
                 <td>
                   <table className="table table-dark">
                     {/* <thead>
@@ -482,7 +549,6 @@ export default function Products() {
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
                     <button
-                      disabled
                       onClick={() => updateClicked(Product)}
                       className="btn btn-warning"
                     >

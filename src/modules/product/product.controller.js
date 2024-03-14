@@ -25,7 +25,7 @@ export const getProducts = async (req, res, next) => {
   ]);
 
   products.map((product) => {
-    let subCategory = product.resturantSubCategory[0].subCategories.filter(
+    let subCategory = product.resturantSubCategory[0]?.subCategories?.filter(
       (subCategoryItem) =>
         subCategoryItem._id.toString() == product.resturantCategory.toString()
     )[0];
@@ -43,4 +43,13 @@ export const deleteProduct = async (req, res, next) => {
   }
   await product.deleteOne();
   return res.json({ success: true, message: "Product Deleted Successfully" });
-};
+};  
+
+ export const updateProduct = async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return next(new Error("Product Not Found"));
+  } 
+  await product.updateOne(req.body);
+  return res.json({ success: true, message: "Product Updated Successfully" });
+ }

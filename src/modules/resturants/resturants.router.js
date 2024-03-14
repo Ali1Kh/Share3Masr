@@ -33,4 +33,13 @@ router.delete(
   asyncHandler(resturantController.deleteResturant)
 );
 
+router.patch(
+  "/:id", 
+  isAuthenticated, 
+  isAuthorized("admin"),
+  uploadFiles().single("resturantImage"),
+  validation(resturantSchema.updateResturantSchema),
+  asyncHandler(resturantController.updateResturant)
+)
+
 export default router;

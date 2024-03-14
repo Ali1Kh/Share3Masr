@@ -72,3 +72,32 @@ export const getResturantSubCategories = async (req, res, next) => {
   }
   return res.json({ success: true, subCategories: resturant.subCategories });
 };
+
+export const updateResturant = async (req, res, next) => {
+  const resturant = await Resturant.findById(req.params.id);
+  if (!resturant) {
+    return next(new Error("Resturant Not Found"));
+  }
+
+  if (req.file) {
+    let { secure_url, public_id } = await cloudinary.uploader.upload(
+      req.file.path,
+      {
+        public_id: resturant.image.public_id,
+      }
+    );
+    resturant.image = {
+      secure_url,
+      public_id,
+    };
+    await resturant.save();
+  }
+  if (req.body.password) {
+    req.body.password  = await bcrypt.hashSync(
+      req.body.password,
+      parseInt(process.env.SALT_ROUND)
+    );
+  }
+  await Resturant.findByIdAndUpdate(req.params.id, req.body);
+  return res.json({ success: true, message: "Resturant Updated Successfully" });
+};

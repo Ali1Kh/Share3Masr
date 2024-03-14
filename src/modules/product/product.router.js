@@ -26,4 +26,12 @@ router.delete(
   asyncHandler(productController.deleteProduct)
 );
 
+router.patch(
+  "/:id",
+  isAuthenticated,
+  isAuthorized("admin"),
+  validation(productSchema.updateProductSchema),
+  asyncHandler(productController.updateProduct)
+)
+
 export default router;

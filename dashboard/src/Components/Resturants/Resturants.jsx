@@ -28,22 +28,22 @@ const MenuProps = {
 export default function Resturants() {
   let [resturants, setResturants] = useState([]);
   let [categories, setCategories] = useState([]);
-  let [areas, setAreas] = useState([]);
+  // let [areas, setAreas] = useState([]);
 
   let [phones, setPhones] = useState([]);
 
   useEffect(() => {
     getResturants();
     getCategories();
-    getAreas();
+    // getAreas();
   }, []);
 
-  async function getAreas() {
-    let { data } = await axios.get("https://foodyproj.onrender.com/area");
-    if (data.success) {
-      setAreas(data.areas);
-    }
-  }
+  // async function getAreas() {
+  //   let { data } = await axios.get("https://foodyproj.onrender.com/area");
+  //   if (data.success) {
+  //     setAreas(data.areas);
+  //   }
+  // }
   async function getCategories() {
     let { data } = await axios.get("https://foodyproj.onrender.com/categories");
     if (data.success) {
@@ -144,7 +144,6 @@ export default function Resturants() {
         },
       }
     );
-    console.log(data);
     if (data.success) {
       toast.success(data.message);
       getResturants();
@@ -154,20 +153,75 @@ export default function Resturants() {
     $("#addResturantBtn").html("Add Resturant");
   }
 
-  async function updateResturant(id) {
-    if ($("#ResturantName").val() == "") {
+  async function updateResturant() {
+    let id = $("#updateResturantBtn").attr("data-id");
+    let name = $("#ResturantName").val();
+    let owner = $("#ResturantOwner").val();
+    let password = $("#password").val();
+    let openingTime = $("#openingTime").val();
+    let closingTime = $("#closingTime").val();
+    let image = $("#ResturantImage")[0].files[0];
+
+    if (name == "" || owner == "" || openingTime == "" || closingTime == "") {
       toast.error("Please fill all the fields");
       return;
     }
+
+    if (phones.length == 0) {
+      toast.error("Please add at least one phone number ");
+      return;
+    }
+
+    if (selectedCategories.length == 0) {
+      toast.error("Please add at least one category");
+      return;
+    }
+
+    if (resturantSubCategoryInputSets.length == 0) {
+      toast.error("Please add at least one Sub Category");
+      return;
+    }
+
+    let subCategoryError = false;
+    resturantSubCategoryInputSets.forEach((element) => {
+      if (element.name === "") {
+        subCategoryError = true;
+        toast.error("Please fill all Sub Category fields");
+        return;
+      }
+    });
+
+    if (subCategoryError) return;
+
+    let formdata = new FormData();
+    formdata.append("name", name);
+    formdata.append("owner", owner);
+
+    selectedCategories.forEach((category, index) => {
+      formdata.append("category[]", category);
+    });
+    if (password != "") {
+      formdata.append("password", password);
+    }
+    formdata.append("openingTime", openingTime);
+    formdata.append("closingTime", closingTime);
+    if (image) {
+      formdata.append("resturantImage", image);
+    }
+    phones.forEach((phone, index) => {
+      formdata.append("phone[]", phone);
+    });
+    resturantSubCategoryInputSets.forEach((subCategory, index) => {
+      formdata.append(`subCategories[${index}][name]`, subCategory.name);
+    });
+
     $("#updateResturantBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
     let { data } = await axios.patch(
       `https://foodyproj.onrender.com/resturants/${id}`,
-      {
-        ResturantName: $("#ResturantName").val(),
-      },
+      formdata,
       {
         headers: {
           token: sessionStorage.getItem("token"),
@@ -203,20 +257,37 @@ export default function Resturants() {
 
   function updateClicked(Resturant) {
     $("#ResturantName").val(Resturant.name);
-    $("#ResturantImage").val("");
-
+    $("#ResturantOwner").val(Resturant.owner);
+    $("#password").val("");
+    $("#openingTime").val(Resturant.openingTime);
+    $("#closingTime").val(Resturant.closingTime);
+    handleChange({
+      target: { value: Resturant.category.map((category) => category._id) },
+    });
+    setPhones(Resturant.phone);
+    setResturantSubCategoryInputSets(Resturant.subCategories);
+    //
     $("#headOfForm").text(`Update ${Resturant.name} Resturant`);
     $("#updateResturantBtn").removeClass("d-none");
     $("#closeUpdateResturantBtn").removeClass("d-none");
     $("#addResturantBtn").addClass("d-none");
-    $("#updateResturantBtn").on("click", () => {
-      return updateResturant(Resturant._id);
-    });
+    $("#updateResturantBtn").attr("data-id", Resturant._id);
   }
 
   function closeUpdateResturant() {
     $("#ResturantName").val("");
-    $("#ResturantImage").val("");
+    $("#ResturantOwner").val("");
+    $("#password").val("");
+    $("#openingTime").val("");
+    $("#closingTime").val("");
+$("#ResturantImage").val("");
+    handleChange({
+      target: { value: [] },
+    });
+    setPhones([]);
+    setResturantSubCategoryInputSets([{ name: "" }]);
+
+
     $("#headOfForm").text(`Add New Resturant`);
     $("#updateResturantBtn").addClass("d-none");
     $("#closeUpdateResturantBtn").addClass("d-none");
@@ -389,7 +460,7 @@ export default function Resturants() {
                   className="form-control p-0"
                   id="tags-filled"
                   options={[]}
-                  defaultValue={[]}
+                  value={phones}
                   onChange={handlePhoneChange}
                   freeSolo
                   renderTags={(value, getTagProps) =>
@@ -470,7 +541,11 @@ export default function Resturants() {
           >
             Add Resturant
           </button>
-          <button className="btn btn-warning d-none" id="updateResturantBtn">
+          <button
+            onClick={updateResturant}
+            className="btn btn-warning d-none"
+            id="updateResturantBtn"
+          >
             Update Resturant
           </button>
           <button
@@ -487,11 +562,13 @@ export default function Resturants() {
           <thead>
             <tr>
               <th>Resturant Name</th>
+              <th>Owner</th>
               <th>Phones</th>
               {/* <th>Address</th> */}
               <th>Working Time </th>
-              <th>Owner</th>
               <th>Category</th>
+              <th>Sub Categories</th>
+              <th>Image</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -499,22 +576,33 @@ export default function Resturants() {
             {resturants.map((Resturant) => (
               <tr className="mb-3">
                 <td>{Resturant.name}</td>
+                <td>{Resturant.owner}</td>
                 <td>{Resturant.phone.join(" , ")}</td>
                 {/* <td>{Resturant.address}</td> */}
                 <td>
                   {Resturant.openingTime} : {Resturant.closingTime}
                 </td>
-                <td>{Resturant.owner}</td>
                 <td>
-                  {Resturant.category?.map(
-                    (categoryItem) => categoryItem.categoryName
-                  ).join(",")}
+                  {Resturant.category
+                    ?.map((categoryItem) => categoryItem.categoryName)
+                    .join(",")}
                 </td>
-
+                <td>
+                  {Resturant.subCategories
+                    ?.map((subCategoryyItem) => subCategoryyItem.name)
+                    .join(",")}
+                </td>
+                <td>
+                  <img
+                    width={90}
+                    height={90}
+                    src={Resturant.image.secure_url}
+                    className="w-100"
+                  />
+                </td>
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
                     <button
-                      disabled
                       onClick={() => updateClicked(Resturant)}
                       className="btn btn-warning"
                     >
