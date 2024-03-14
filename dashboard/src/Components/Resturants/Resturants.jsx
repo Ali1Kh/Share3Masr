@@ -488,9 +488,9 @@ export default function Resturants() {
             <tr>
               <th>Resturant Name</th>
               <th>Phones</th>
-              <th>Address</th>
+              {/* <th>Address</th> */}
               <th>Working Time </th>
-              <th>Area</th>
+              <th>Owner</th>
               <th>Category</th>
               <th>Actions</th>
             </tr>
@@ -500,12 +500,16 @@ export default function Resturants() {
               <tr className="mb-3">
                 <td>{Resturant.name}</td>
                 <td>{Resturant.phone.join(" , ")}</td>
-                <td>{Resturant.address}</td>
+                {/* <td>{Resturant.address}</td> */}
                 <td>
                   {Resturant.openingTime} : {Resturant.closingTime}
                 </td>
-                <td>{Resturant.area.areaName}</td>
-                <td>{Resturant.category?.categoryName}</td>
+                <td>{Resturant.owner}</td>
+                <td>
+                  {Resturant.category?.map(
+                    (categoryItem) => categoryItem.categoryName
+                  ).join(",")}
+                </td>
 
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
