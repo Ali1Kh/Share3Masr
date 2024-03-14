@@ -5,6 +5,9 @@ import { Category } from "../../../DB/models/category.model.js";
 export const createProduct = async (req, res, next) => {
   let isResturant = await Resturant.findById(req.body.resturant);
   if (!isResturant) return next(new Error("Resturant Not Found"));
+  if (isResturant.isDeleted) {
+    return next(new Error("Resturant Is Deleted"));
+  }
   let isCategory = await Category.findById(req.body.category);
   if (!isCategory) return next(new Error("Category Not Found"));
   await Product.create(req.body);
@@ -12,7 +15,7 @@ export const createProduct = async (req, res, next) => {
 };
 
 export const getProducts = async (req, res, next) => {
-  let products = await Product.find().populate([
+  let products = await Product.find({ isDeleted: false }).populate([
     {
       path: "resturant",
       select: "name phone address openingTime closingTime",
@@ -43,13 +46,13 @@ export const deleteProduct = async (req, res, next) => {
   }
   await product.deleteOne();
   return res.json({ success: true, message: "Product Deleted Successfully" });
-};  
+};
 
- export const updateProduct = async (req, res, next) => {
+export const updateProduct = async (req, res, next) => {
   const product = await Product.findById(req.params.id);
   if (!product) {
     return next(new Error("Product Not Found"));
-  } 
+  }
   await product.updateOne(req.body);
   return res.json({ success: true, message: "Product Updated Successfully" });
- }
+};

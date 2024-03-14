@@ -15,6 +15,7 @@ const resturantSchema = Schema({
     secure_url: { type: String, required: true },
     public_id: { type: String, required: true },
   },
+  isDeleted: { type: Boolean, default: false },
 });
 
 export const Resturant = model("Resturant", resturantSchema);

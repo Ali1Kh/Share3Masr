@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { Resturant } from "../../../DB/models/resturant.model.js";
 import { Area } from "../../../DB/models/area.model.js";
 import { Category } from "../../../DB/models/category.model.js";
+import { Product } from "../../../DB/models/product.model.js";
 
 export const createResturant = async (req, res, next) => {
   // let isArea = await Area.findById(req.body.area);
@@ -49,7 +50,7 @@ export const createResturant = async (req, res, next) => {
 };
 
 export const getResturants = async (req, res, next) => {
-  const resturants = await Resturant.find()
+  const resturants = await Resturant.find({ isDeleted: false })
     .populate(["area", "category"])
     .select("-password -__v");
   return res.json({ success: true, resturants });
@@ -60,8 +61,18 @@ export const deleteResturant = async (req, res, next) => {
   if (!resturant) {
     return next(new Error("Resturant Not Found"));
   }
-  await cloudinary.uploader.destroy(resturant.image.public_id);
-  await resturant.deleteOne();
+
+  if (resturant.isDeleted) {
+    return next(new Error("Resturant Is Already Deleted"));
+  }
+  
+  resturant.isDeleted = true;
+  await resturant.save();
+  await Product.updateMany(
+    { resturant: resturant._id },
+    { isDeleted: true }
+  );
+
   return res.json({ success: true, message: "Resturant Deleted Successfully" });
 };
 
@@ -93,7 +104,7 @@ export const updateResturant = async (req, res, next) => {
     await resturant.save();
   }
   if (req.body.password) {
-    req.body.password  = await bcrypt.hashSync(
+    req.body.password = await bcrypt.hashSync(
       req.body.password,
       parseInt(process.env.SALT_ROUND)
     );

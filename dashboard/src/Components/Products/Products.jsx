@@ -220,6 +220,9 @@ export default function Products() {
   function updateClicked(Product) {
     $("#ProductName").val(Product.name);
     $("#description").val(Product.description);
+    $("#category").val("");
+    $("#resturant").val("");
+    $("#resturantCategory").val("");
     $("#category").prop("disabled", true);
     $("#resturant").prop("disabled", true);
     $("#resturantCategory").prop("disabled", true);
@@ -244,7 +247,15 @@ export default function Products() {
 
   function closeUpdateProduct() {
     $("#ProductName").val("");
+    $("#description").val("");
+    $("#category").prop("disabled", false);
+    $("#resturant").prop("disabled", false);
+    $("#resturantCategory").prop("disabled", false);
     $("#ProductImage").val("");
+
+    setPriceInputSets([{ sizeName: "", sizePrice: "" }]);
+    setExtraInputSets([{ itemName: "", price: "" }]);
+
     $("#headOfForm").text(`Add New Product`);
     $("#updateProductBtn").addClass("d-none");
     $("#closeUpdateProductBtn").addClass("d-none");

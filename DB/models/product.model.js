@@ -22,6 +22,7 @@ const productSchema = Schema(
       ref: "Resturant.subCategories",
       required: true,
     },
+    isDeleted: { type: Boolean, default: false },
   },
   {
     timestamps: true,
