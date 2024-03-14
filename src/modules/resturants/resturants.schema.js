@@ -19,7 +19,7 @@ export const createResturantSchema = Joi.object({
     .messages({ "alternatives.match": "Please enter a valid phone number." })
     .required(),
   password: Joi.string()
-    .min(8)
+    .min(5)
     .required()
     .pattern(new RegExp("^.{5,30}$"))
     .messages({

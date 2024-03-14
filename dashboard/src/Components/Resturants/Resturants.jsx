@@ -144,6 +144,7 @@ export default function Resturants() {
         },
       }
     );
+    console.log(data);
     if (data.success) {
       toast.success(data.message);
       getResturants();
