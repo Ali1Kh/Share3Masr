@@ -30,6 +30,7 @@ const productSchema = Schema(
   },
   {
     timestamps: true,
+    strictQuery: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }

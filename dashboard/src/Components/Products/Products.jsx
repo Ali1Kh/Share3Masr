@@ -129,7 +129,7 @@ export default function Products() {
        <span class="sr-only">Loading...</span>
      </div>`);
       let { data } = await axios.post(
-        "http://localhost:4000/Products",
+        "https://foodyproj.onrender.com/Products",
         formData,
         {
           headers: {
@@ -218,7 +218,7 @@ export default function Products() {
      </div>`);
 
       let { data } = await axios.patch(
-    `http://localhost:4000/Products/${id}`,
+    `https://foodyproj.onrender.com/Products/${id}`,
         initData,
         {
           headers: {
