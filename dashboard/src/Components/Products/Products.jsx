@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import $ from "jquery";
-import Chip from "@mui/material/Chip";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import Stack from "@mui/material/Stack";
+
 
 export default function Products() {
   let [products, setProducts] = useState([]);
@@ -34,6 +31,18 @@ export default function Products() {
   async function getProducts() {
     try {
       let { data } = await axios.get("https://foodyproj.onrender.com/products");
+      if (data.success) {
+        setProducts(data.products);
+      }
+    } catch (error) {}
+  }
+
+  async function searchProducts(search) {
+    console.log(search);
+    try {
+      let { data } = await axios.get(
+    "https://foodyproj.onrender.com/products?search=" + search
+      );
       if (data.success) {
         setProducts(data.products);
       }
@@ -218,7 +227,7 @@ export default function Products() {
      </div>`);
 
       let { data } = await axios.patch(
-    `https://foodyproj.onrender.com/Products/${id}`,
+        `https://foodyproj.onrender.com/Products/${id}`,
         initData,
         {
           headers: {
@@ -541,6 +550,14 @@ export default function Products() {
         </div>
       </div>
       <div className="Products border-top pt-4 text-start w-100">
+        <div className="searchINput w-75 mx-auto">
+          <input
+            type="search"
+            placeholder="Search Products"
+            className="form-control my-3 mt-0 mx-auto"
+            onChange={(e) => searchProducts(e.target.value)}
+          />
+        </div>
         <table className="table table-dark rounded-1 overflow-hidden shadow">
           <thead>
             <tr>

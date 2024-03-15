@@ -30,7 +30,31 @@ export const createProduct = async (req, res, next) => {
 };
 
 export const getProducts = async (req, res, next) => {
-  let products = await Product.find({ isDeleted: false }).populate([
+  let searchConditions = [];
+
+  const regex = { $regex: req.query.search, $options: "i" };
+
+  if (req.query.search) {
+    searchConditions = [
+      { name: regex },
+      { description: regex },
+      {
+        "category.categoryName": regex,
+      },
+      {
+        "resturant.name": regex,
+      }
+    ];
+  }
+
+  let query = {
+    isDeleted: false,
+    $or: searchConditions,
+  };
+  if (searchConditions.length == 0) {
+    delete query.$or;
+  }
+  let products = await Product.find(query).populate([
     {
       path: "resturant",
       select: "name phone address openingTime closingTime",
@@ -51,7 +75,7 @@ export const getProducts = async (req, res, next) => {
     product.resturantSubCategory = subCategory;
   });
 
-  return res.json({ success: true, products });
+  return res.json({ success: true, count: products.length, products });
 };
 
 export const deleteProduct = async (req, res, next) => {
