@@ -12,6 +12,7 @@ router.post(
   "/",
   isAuthenticated,
   isAuthorized("admin"),
+  uploadFiles().single("productImage"),
   validation(productSchema.createProductSchema),
   asyncHandler(productController.createProduct)
 );
@@ -30,8 +31,9 @@ router.patch(
   "/:id",
   isAuthenticated,
   isAuthorized("admin"),
+  uploadFiles().single("productImage"),
   validation(productSchema.updateProductSchema),
   asyncHandler(productController.updateProduct)
-)
+);
 
 export default router;

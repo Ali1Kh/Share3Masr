@@ -22,6 +22,10 @@ const productSchema = Schema(
       ref: "Resturant.subCategories",
       required: true,
     },
+    image: {
+      secure_url: { type: String, required: false },
+      public_id: { type: String, required: false },
+    },
     isDeleted: { type: Boolean, default: false },
   },
   {

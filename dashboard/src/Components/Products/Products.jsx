@@ -58,6 +58,7 @@ export default function Products() {
       let category = $("#category").val();
       let resturant = $("#resturant").val();
       let resturantCategory = $("#resturantCategory").val();
+      let image = $("#productImage")[0].files[0];
 
       if (
         name == "" ||
@@ -106,13 +107,30 @@ export default function Products() {
 
       if (extraError) return;
 
+      const formData = new FormData();
+
+      for (const key in initData) {
+        if (Array.isArray(initData[key])) {
+          initData[key].forEach((item, index) => {
+            for (const subKey in item) {
+              formData.append(`${key}[${index}][${subKey}]`, item[subKey]);
+            }
+          });
+        } else {
+          formData.append(key, initData[key]);
+        }
+      }
+      if (image) {
+        formData.append("productImage", image);
+      }
+
       $("#addProductBtn")
         .html(`<div  style="width:15px;height:15px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
       let { data } = await axios.post(
-        "https://foodyproj.onrender.com/Products",
-        initData,
+        "http://localhost:4000/Products",
+        formData,
         {
           headers: {
             token: sessionStorage.getItem("token"),
@@ -121,12 +139,15 @@ export default function Products() {
       );
       if (data.success) {
         toast.success(data.message);
+        closeUpdateProduct();
         getProducts();
       } else {
         toast.error(data.message);
       }
       $("#addProductBtn").html("Add Product");
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function updateProduct() {
@@ -134,6 +155,7 @@ export default function Products() {
       let id = $("#updateProductBtn").attr("data-id");
       let name = $("#ProductName").val();
       let description = $("#description").val();
+      let image = $("#productImage")[0].files[0];
 
       if (name == "" || description == "") {
         toast.error("Please fill all the fields");
@@ -173,13 +195,30 @@ export default function Products() {
 
       if (extraError) return;
 
+      const formData = new FormData();
+
+      for (const key in initData) {
+        if (Array.isArray(initData[key])) {
+          initData[key].forEach((item, index) => {
+            for (const subKey in item) {
+              formData.append(`${key}[${index}][${subKey}]`, item[subKey]);
+            }
+          });
+        } else {
+          formData.append(key, initData[key]);
+        }
+      }
+      if (image) {
+        formData.append("productImage", image);
+      }
+
       $("#updateProductBtn")
         .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
 
       let { data } = await axios.patch(
-        `https://foodyproj.onrender.com/Products/${id}`,
+    `http://localhost:4000/Products/${id}`,
         initData,
         {
           headers: {
@@ -248,10 +287,13 @@ export default function Products() {
   function closeUpdateProduct() {
     $("#ProductName").val("");
     $("#description").val("");
+    $("#category").val("");
+    $("#resturant").val("");
+    $("#resturantCategory").val("");
     $("#category").prop("disabled", false);
     $("#resturant").prop("disabled", false);
     $("#resturantCategory").prop("disabled", false);
-    $("#ProductImage").val("");
+    $("#productImage").val("");
 
     setPriceInputSets([{ sizeName: "", sizePrice: "" }]);
     setExtraInputSets([{ itemName: "", price: "" }]);
@@ -389,6 +431,12 @@ export default function Products() {
           </div>
 
           <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input className="form-control" type="file" id="productImage" />
+            </div>
+          </div>
+
+          <div className="col-md-6">
             {priceInputSets.map((inputSet, index) => (
               <div key={index} className="mb-3 d-flex gap-2">
                 <input
@@ -503,6 +551,7 @@ export default function Products() {
               <th>Resturant</th>
               <th>Prices</th>
               <th>Extra Items</th>
+              <th>Image</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -556,7 +605,19 @@ export default function Products() {
                     </tbody>
                   </table>
                 </td>
-
+                <td>
+                  {Product.image ? (
+                    <img
+                      width={90}
+                      height={90}
+                      src={Product.image?.secure_url}
+                      alt={Product.name}
+                      className="img-fluid"
+                    />
+                  ) : (
+                    "No Image"
+                  )}
+                </td>
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
                     <button
