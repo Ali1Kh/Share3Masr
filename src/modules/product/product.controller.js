@@ -16,7 +16,7 @@ export const createProduct = async (req, res, next) => {
     let { secure_url, public_id } = await cloudinary.uploader.upload(
       req.file.path,
       {
-        folder: `Share3Masr/ProductsImages/${isResturant.name}/${req.body.name}`,
+        folder: `Share3Masr/ProductsImages/${isResturant.nameEN}/${req.body.nameEN}`,
       }
     );
     req.body.image = {
@@ -35,13 +35,15 @@ export const getProducts = async (req, res, next) => {
   const regex = { $regex: req.query.search, $options: "i" };
   if (req.query.search) {
     searchConditions = [
-      { name: regex },
-      { description: regex },
+      { nameEN: regex },
+      { nameAR: regex },
+      { descriptionEN: regex },
+      { descriptionAR: regex },
       {
-        "category.categoryName": regex,
+        "category.categoryNameEN": regex,
       },
       {
-        "resturant.name": regex,
+        "resturant.nameEN": regex,
       },
     ];
   }
@@ -56,7 +58,7 @@ export const getProducts = async (req, res, next) => {
   let products = await Product.find(query).populate([
     {
       path: "resturant",
-      select: "name phone address openingTime closingTime",
+      select: "nameEN nameAR phone addressEN addressAR openingTime closingTime",
     },
     "category",
     {
@@ -107,7 +109,7 @@ export const updateProduct = async (req, res, next) => {
       let { secure_url, public_id } = await cloudinary.uploader.upload(
         req.file.path,
         {
-          folder: `Share3Masr/ProductsImages/${isResturant.name}/${req.body.name}`,
+          folder: `Share3Masr/ProductsImages/${isResturant.nameEN}/${req.body.nameEN}`,
         }
       );
       req.body.image = {

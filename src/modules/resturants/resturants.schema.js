@@ -2,7 +2,8 @@ import Joi from "joi";
 import { ObjectIdValidate } from "../../middlewares/validation.middleware.js";
 
 export const createResturantSchema = Joi.object({
-  name: Joi.string().required(),
+  nameEN: Joi.string().required(),
+  nameAR: Joi.string().required(),
   phone: Joi.array()
     .items(
       Joi.alternatives().try(
@@ -25,16 +26,17 @@ export const createResturantSchema = Joi.object({
     .messages({
       "string.min": "Password Must Be At least 5 characters.",
     }),
-  address: Joi.string(),
+  addressEN: Joi.string(),
+  addressAR: Joi.string(),
   owner: Joi.string().required(),
-
   area: Joi.custom(ObjectIdValidate),
   category: Joi.array()
     .items(Joi.custom(ObjectIdValidate).required())
     .required(),
   subCategories: Joi.array().items(
     Joi.object({
-      name: Joi.string().required(),
+      nameEN: Joi.string().required(),
+      nameAR: Joi.string().required(),
     }).required()
   ),
   openingTime: Joi.string().required(),
@@ -47,7 +49,8 @@ export const idRequiredSchema = Joi.object({
 
 export const updateResturantSchema = Joi.object({
   id: Joi.custom(ObjectIdValidate).required(),
-  name: Joi.string().required(),
+  nameEN: Joi.string().required(),
+  nameAR: Joi.string().required(),
   phone: Joi.array()
     .items(
       Joi.alternatives().try(
@@ -66,16 +69,17 @@ export const updateResturantSchema = Joi.object({
   password: Joi.string().min(5).pattern(new RegExp("^.{5,30}$")).messages({
     "string.min": "Password Must Be At least 5 characters.",
   }),
-  address: Joi.string(),
+  addressEN: Joi.string(),
+  addressAR: Joi.string(),
   owner: Joi.string().required(),
-
   area: Joi.custom(ObjectIdValidate),
   category: Joi.array()
     .items(Joi.custom(ObjectIdValidate).required())
     .required(),
   subCategories: Joi.array().items(
     Joi.object({
-      name: Joi.string().required(),
+      nameEN: Joi.string().required(),
+      nameAR: Joi.string().required(),
     }).required()
   ),
   openingTime: Joi.string().required(),

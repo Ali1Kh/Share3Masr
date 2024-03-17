@@ -7,9 +7,6 @@ import { Category } from "../../../DB/models/category.model.js";
 import { Product } from "../../../DB/models/product.model.js";
 
 export const createResturant = async (req, res, next) => {
-  // let isArea = await Area.findById(req.body.area);
-  // if (!isArea) return next(new Error("Area Not Found"));
-
   for (let index = 0; index < req.body.category.length; index++) {
     let isCategory = await Category.findById(req.body.category[index]);
     if (!isCategory) return next(new Error("Category Not Found"));
@@ -35,7 +32,7 @@ export const createResturant = async (req, res, next) => {
   let { secure_url, public_id } = await cloudinary.uploader.upload(
     req.file.path,
     {
-      folder: `Share3Masr/Resturants/${req.body.name}${cloudFolderId}`,
+      folder: `Share3Masr/Resturants/${req.body.nameEN}${cloudFolderId}`,
     }
   );
   await Resturant.create({
