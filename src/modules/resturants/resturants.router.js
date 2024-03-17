@@ -21,7 +21,7 @@ router.get("/", asyncHandler(resturantController.getResturants));
 
 router.get(
   "/subCategories/:id",
-  validation(resturantSchema.deleteResturantSchema),
+  validation(resturantSchema.idRequiredSchema),
   asyncHandler(resturantController.getResturantSubCategories)
 );
 
@@ -29,17 +29,23 @@ router.delete(
   "/:id",
   isAuthenticated,
   isAuthorized("admin"),
-  validation(resturantSchema.deleteResturantSchema),
+  validation(resturantSchema.idRequiredSchema),
   asyncHandler(resturantController.deleteResturant)
 );
 
 router.patch(
-  "/:id", 
-  isAuthenticated, 
+  "/:id",
+  isAuthenticated,
   isAuthorized("admin"),
   uploadFiles().single("resturantImage"),
   validation(resturantSchema.updateResturantSchema),
   asyncHandler(resturantController.updateResturant)
-)
+);
+
+router.get(
+  "/getCategoryResturants/:id",
+  validation(resturantSchema.idRequiredSchema),
+  asyncHandler(resturantController.getCategoryResturants)
+);
 
 export default router;

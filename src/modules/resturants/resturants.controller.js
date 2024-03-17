@@ -65,13 +65,10 @@ export const deleteResturant = async (req, res, next) => {
   if (resturant.isDeleted) {
     return next(new Error("Resturant Is Already Deleted"));
   }
-  
+
   resturant.isDeleted = true;
   await resturant.save();
-  await Product.updateMany(
-    { resturant: resturant._id },
-    { isDeleted: true }
-  );
+  await Product.updateMany({ resturant: resturant._id }, { isDeleted: true });
 
   return res.json({ success: true, message: "Resturant Deleted Successfully" });
 };
@@ -111,4 +108,14 @@ export const updateResturant = async (req, res, next) => {
   }
   await Resturant.findByIdAndUpdate(req.params.id, req.body);
   return res.json({ success: true, message: "Resturant Updated Successfully" });
+};
+
+export const getCategoryResturants = async (req, res, next) => {
+  let isCategory = await Category.findById(req.params.id);
+  if (!isCategory) return next(new Error("Category Not Found"));
+  const resturants = await Resturant.find({
+    category: req.params.id,
+    isDeleted: false,
+  });
+  return res.json({ success: true, resturants });
 };

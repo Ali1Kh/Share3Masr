@@ -41,7 +41,7 @@ export const createResturantSchema = Joi.object({
   closingTime: Joi.string().required(),
 }).required();
 
-export const deleteResturantSchema = Joi.object({
+export const idRequiredSchema = Joi.object({
   id: Joi.custom(ObjectIdValidate).required(),
 }).required();
 

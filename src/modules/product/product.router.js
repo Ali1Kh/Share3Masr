@@ -23,7 +23,7 @@ router.delete(
   "/:id",
   isAuthenticated,
   isAuthorized("admin"),
-  validation(productSchema.deleteProductSchema),
+  validation(productSchema.idRequiredSchema),
   asyncHandler(productController.deleteProduct)
 );
 
@@ -34,6 +34,12 @@ router.patch(
   uploadFiles().single("productImage"),
   validation(productSchema.updateProductSchema),
   asyncHandler(productController.updateProduct)
+);
+
+router.get(
+  "/getResturantProducts/:id",
+  validation(productSchema.idRequiredSchema),
+  asyncHandler(productController.getResturantProducts)
 );
 
 export default router;

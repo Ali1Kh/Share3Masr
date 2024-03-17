@@ -33,7 +33,6 @@ export const getProducts = async (req, res, next) => {
   let searchConditions = [];
 
   const regex = { $regex: req.query.search, $options: "i" };
-
   if (req.query.search) {
     searchConditions = [
       { name: regex },
@@ -43,7 +42,7 @@ export const getProducts = async (req, res, next) => {
       },
       {
         "resturant.name": regex,
-      }
+      },
     ];
   }
 
@@ -119,4 +118,27 @@ export const updateProduct = async (req, res, next) => {
   }
   await product.updateOne(req.body);
   return res.json({ success: true, message: "Product Updated Successfully" });
+};
+
+export const getResturantProducts = async (req, res, next) => {
+  const resturant = await Resturant.findById(req.params.id);
+  if (!resturant) return next(new Error("Resturant Not Found"));
+
+  let products = await Product.find({ resturant: req.params.id }).populate([
+    {
+      path: "resturantSubCategory",
+      select: "subCategories",
+    },
+  ]);
+
+  products.map((product) => {
+    let subCategory = product.resturantSubCategory[0]?.subCategories?.filter(
+      (subCategoryItem) =>
+        subCategoryItem._id.toString() == product.resturantCategory.toString()
+    )[0];
+
+    product.resturantSubCategory = subCategory;
+  });
+
+  return res.json({ success: true, count: products.length, products });
 };

@@ -41,7 +41,7 @@ export default function Products() {
     console.log(search);
     try {
       let { data } = await axios.get(
-    "https://foodyproj.onrender.com/products?search=" + search
+        "http://localhost:4000/products?search=" + search
       );
       if (data.success) {
         setProducts(data.products);
