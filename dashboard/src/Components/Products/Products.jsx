@@ -183,13 +183,16 @@ export default function Products() {
       let nameAR = $("#ProductNameAR").val();
       let descriptionEN = $("#descriptionEN").val();
       let descriptionAR = $("#descriptionAR").val();
+      let resturantCategory = $("#resturantCategory").val();
       let image = $("#productImage")[0].files[0];
 
       if (
         nameEN == "" ||
         nameAR == "" ||
         descriptionEN == "" ||
-        descriptionAR == ""
+        descriptionAR == "" || 
+        resturantCategory == ""
+
       ) {
         toast.error("Please fill all the fields");
         return;
@@ -200,6 +203,7 @@ export default function Products() {
         nameAR,
         descriptionEN,
         descriptionAR,
+        resturantCategory,
         prices: priceInputSets,
         extra: extraInputSets,
       };
@@ -303,17 +307,18 @@ export default function Products() {
     } catch (error) {}
   }
 
-  function updateClicked(Product) {
+  async function updateClicked(Product) {
+    await getSubCategoires(Product.resturant._id);
     $("#ProductNameEN").val(Product.nameEN);
     $("#ProductNameAR").val(Product.nameAR);
     $("#descriptionEN").val(Product.descriptionEN);
     $("#descriptionAR").val(Product.descriptionAR);
-    $("#category").val("");
-    $("#resturant").val("");
-    $("#resturantCategory").val("");
+    $("#category").val(Product.category._id);
+    $("#resturant").val(Product.resturant._id);
     $("#category").prop("disabled", true);
     $("#resturant").prop("disabled", true);
-    $("#resturantCategory").prop("disabled", true);
+    console.log($("#resturantCategory"));
+    $("#resturantCategory").val(Product.resturantCategory);
     $("#ProductImage").val("");
     let productPrices = Product.prices.map((item) => {
       return {
@@ -349,7 +354,6 @@ export default function Products() {
     $("#resturantCategory").val("");
     $("#category").prop("disabled", false);
     $("#resturant").prop("disabled", false);
-    $("#resturantCategory").prop("disabled", false);
     $("#productImage").val("");
 
     setPriceInputSets([{ sizeNameEN: "", sizeNameAR: "", sizePrice: "" }]);
