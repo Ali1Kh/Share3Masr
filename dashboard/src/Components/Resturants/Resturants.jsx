@@ -58,7 +58,8 @@ export default function Resturants() {
   }
 
   async function addResturant() {
-    let name = $("#ResturantName").val();
+    let nameEN = $("#ResturantNameEN").val();
+    let nameAR = $("#ResturantNameAR").val();
     let owner = $("#ResturantOwner").val();
 
     // let area = $("#area").val();
@@ -69,7 +70,8 @@ export default function Resturants() {
     let image = $("#ResturantImage")[0].files[0];
 
     if (
-      name == "" ||
+      nameEN == "" ||
+      nameAR == "" ||
       password == "" ||
       owner == "" ||
       openingTime == "" ||
@@ -102,7 +104,7 @@ export default function Resturants() {
 
     let subCategoryError = false;
     resturantSubCategoryInputSets.forEach((element) => {
-      if (element.name === "") {
+      if (element.nameEN === "" || element.nameAR === "") {
         subCategoryError = true;
         toast.error("Please fill all Sub Category fields");
         return;
@@ -112,7 +114,8 @@ export default function Resturants() {
     if (subCategoryError) return;
 
     let formdata = new FormData();
-    formdata.append("name", name);
+    formdata.append("nameEN", nameEN);
+    formdata.append("nameAR", nameAR);
     formdata.append("owner", owner);
 
     selectedCategories.forEach((category, index) => {
@@ -128,7 +131,8 @@ export default function Resturants() {
       formdata.append("phone[]", phone);
     });
     resturantSubCategoryInputSets.forEach((subCategory, index) => {
-      formdata.append(`subCategories[${index}][name]`, subCategory.name);
+      formdata.append(`subCategories[${index}][nameEN]`, subCategory.nameEN);
+      formdata.append(`subCategories[${index}][nameAR]`, subCategory.nameAR);
     });
 
     $("#addResturantBtn")
@@ -155,14 +159,21 @@ export default function Resturants() {
 
   async function updateResturant() {
     let id = $("#updateResturantBtn").attr("data-id");
-    let name = $("#ResturantName").val();
+    let nameEN = $("#ResturantNameEN").val();
+    let nameAR = $("#ResturantNameAR").val();
     let owner = $("#ResturantOwner").val();
     let password = $("#password").val();
     let openingTime = $("#openingTime").val();
     let closingTime = $("#closingTime").val();
     let image = $("#ResturantImage")[0].files[0];
 
-    if (name == "" || owner == "" || openingTime == "" || closingTime == "") {
+    if (
+      nameEN == "" ||
+      nameAR == "" ||
+      owner == "" ||
+      openingTime == "" ||
+      closingTime == ""
+    ) {
       toast.error("Please fill all the fields");
       return;
     }
@@ -184,7 +195,7 @@ export default function Resturants() {
 
     let subCategoryError = false;
     resturantSubCategoryInputSets.forEach((element) => {
-      if (element.name === "") {
+      if (element.nameEN === "" || element.nameAR === "") {
         subCategoryError = true;
         toast.error("Please fill all Sub Category fields");
         return;
@@ -194,7 +205,8 @@ export default function Resturants() {
     if (subCategoryError) return;
 
     let formdata = new FormData();
-    formdata.append("name", name);
+    formdata.append("nameEN", nameEN);
+    formdata.append("nameAR", nameAR);
     formdata.append("owner", owner);
 
     selectedCategories.forEach((category, index) => {
@@ -212,7 +224,8 @@ export default function Resturants() {
       formdata.append("phone[]", phone);
     });
     resturantSubCategoryInputSets.forEach((subCategory, index) => {
-      formdata.append(`subCategories[${index}][name]`, subCategory.name);
+      formdata.append(`subCategories[${index}][nameEN]`, subCategory.nameEN);
+      formdata.append(`subCategories[${index}][nameAR]`, subCategory.nameAR);
     });
 
     $("#updateResturantBtn")
@@ -256,7 +269,8 @@ export default function Resturants() {
   }
 
   function updateClicked(Resturant) {
-    $("#ResturantName").val(Resturant.name);
+    $("#ResturantNameEN").val(Resturant.nameEN);
+    $("#ResturantNameAR").val(Resturant.nameAR);
     $("#ResturantOwner").val(Resturant.owner);
     $("#password").val("");
     $("#openingTime").val(Resturant.openingTime);
@@ -267,7 +281,7 @@ export default function Resturants() {
     setPhones(Resturant.phone);
     setResturantSubCategoryInputSets(Resturant.subCategories);
     //
-    $("#headOfForm").text(`Update ${Resturant.name} Resturant`);
+    $("#headOfForm").text(`Update ${Resturant.nameEN} Resturant`);
     $("#updateResturantBtn").removeClass("d-none");
     $("#closeUpdateResturantBtn").removeClass("d-none");
     $("#addResturantBtn").addClass("d-none");
@@ -275,18 +289,18 @@ export default function Resturants() {
   }
 
   function closeUpdateResturant() {
-    $("#ResturantName").val("");
+    $("#ResturantNameEN").val("");
+    $("#ResturantNameAR").val("");
     $("#ResturantOwner").val("");
     $("#password").val("");
     $("#openingTime").val("");
     $("#closingTime").val("");
-$("#ResturantImage").val("");
+    $("#ResturantImage").val("");
     handleChange({
       target: { value: [] },
     });
     setPhones([]);
     setResturantSubCategoryInputSets([{ name: "" }]);
-
 
     $("#headOfForm").text(`Add New Resturant`);
     $("#updateResturantBtn").addClass("d-none");
@@ -299,12 +313,12 @@ $("#ResturantImage").val("");
   };
 
   const [resturantSubCategoryInputSets, setResturantSubCategoryInputSets] =
-    useState([{ name: "" }]);
+    useState([{ nameEN: "", nameAR: "" }]);
 
   const addResturantCategoryInputSet = () => {
     setResturantSubCategoryInputSets([
       ...resturantSubCategoryInputSets,
-      { name: "" },
+      { nameEN: "", nameAR: "" },
     ]);
   };
 
@@ -338,18 +352,30 @@ $("#ResturantImage").val("");
         <h5 id="headOfForm">Add New Resturant</h5>
 
         <div className="row mt-4">
-          <div className="col-md-4 d-flex align-items-center">
+          <div className="col-md-6">
             <div className="mb-3 w-100">
               <input
                 className="form-control "
                 type="text"
                 placeholder="Resturant Name"
-                id="ResturantName"
+                id="ResturantNameEN"
               />
             </div>
           </div>
 
-          <div className="col-md-4 d-flex align-items-center">
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control "
+                type="text"
+                dir="rtl"
+                placeholder="اسم المطعم"
+                id="ResturantNameAR"
+              />
+            </div>
+          </div>
+
+          <div className="col-md-6 d-flex align-items-center">
             <div className="mb-3 w-100">
               <input
                 className="form-control "
@@ -360,7 +386,7 @@ $("#ResturantImage").val("");
             </div>
           </div>
 
-          <div className="col-md-4">
+          <div className="col-md-6">
             <div className="mb-3 w-100">
               <input
                 className="form-control"
@@ -423,7 +449,7 @@ $("#ResturantImage").val("");
                         const category = categories.find(
                           (c) => c._id === categoryId
                         );
-                        return category ? category.categoryName : "";
+                        return category ? category.categoryNameEN : "";
                       })
                       .join(", ")
                   }
@@ -435,7 +461,13 @@ $("#ResturantImage").val("");
                       <Checkbox
                         checked={selectedCategories.indexOf(category?._id) > -1}
                       />
-                      <ListItemText primary={category?.categoryName} />
+                      <ListItemText
+                        primary={
+                          category?.categoryNameEN +
+                          "/" +
+                          category.categoryNameAR
+                        }
+                      />
                     </MenuItem>
                   ))}
                 </Select>
@@ -504,9 +536,20 @@ $("#ResturantImage").val("");
                   className="form-control"
                   placeholder="Sub Category Name"
                   value={inputSet.name}
-                  onChange={(e) =>
-                    handleResturantInputChange(index, "name", e.target.value)
-                  }
+                  onChange={(e) => {
+                    handleResturantInputChange(index, "nameEN", e.target.value);
+                  }}
+                />
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="اسم الفئة الفرعية"
+                  dir="rtl"
+                  id="nameAR"
+                  value={inputSet.nameAR}
+                  onChange={(e) => {
+                    handleResturantInputChange(index, "nameAR", e.target.value);
+                  }}
                 />
                 {index === resturantSubCategoryInputSets.length - 1 && (
                   <button
@@ -575,7 +618,9 @@ $("#ResturantImage").val("");
           <tbody>
             {resturants.map((Resturant) => (
               <tr className="mb-3">
-                <td>{Resturant.name}</td>
+                <td>
+                  {Resturant.nameEN}/{Resturant.nameAR}
+                </td>
                 <td>{Resturant.owner}</td>
                 <td>{Resturant.phone.join(" , ")}</td>
                 {/* <td>{Resturant.address}</td> */}
@@ -589,7 +634,14 @@ $("#ResturantImage").val("");
                 </td>
                 <td>
                   {Resturant.subCategories
-                    ?.map((subCategoryyItem) => subCategoryyItem.name)
+                    ?.map(
+                      (subCategoryyItem) =>
+                        "(" +
+                        subCategoryyItem.nameEN +
+                        "-" +
+                        subCategoryyItem.nameAR +
+                        ")"
+                    )
                     .join(",")}
                 </td>
                 <td>

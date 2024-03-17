@@ -3,7 +3,6 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import $ from "jquery";
 
-
 export default function Products() {
   let [products, setProducts] = useState([]);
   let [categories, setCategories] = useState([]);
@@ -62,16 +61,20 @@ export default function Products() {
 
   async function addProduct() {
     try {
-      let name = $("#ProductName").val();
-      let description = $("#description").val();
+      let nameEN = $("#ProductNameEN").val();
+      let nameAR = $("#ProductNameAR").val();
+      let descriptionEN = $("#descriptionEN").val();
+      let descriptionAR = $("#descriptionAR").val();
       let category = $("#category").val();
       let resturant = $("#resturant").val();
       let resturantCategory = $("#resturantCategory").val();
       let image = $("#productImage")[0].files[0];
 
       if (
-        name == "" ||
-        description == "" ||
+        nameEN == "" ||
+        nameAR == "" ||
+        descriptionEN == "" ||
+        descriptionAR == "" ||
         category == "" ||
         resturant == "" ||
         resturantCategory == ""
@@ -81,8 +84,10 @@ export default function Products() {
       }
 
       let initData = {
-        name,
-        description,
+        nameEN,
+        nameAR,
+        descriptionEN,
+        descriptionAR,
         category,
         resturant,
         resturantCategory,
@@ -92,7 +97,11 @@ export default function Products() {
 
       let priceError = false;
       priceInputSets.forEach((element) => {
-        if (element.sizePrice === "" || element.sizeName === "") {
+        if (
+          element.sizePrice === "" ||
+          element.sizeNameEN === "" ||
+          element.sizeNameAR === ""
+        ) {
           priceError = true;
           toast.error("Please fill all price fields");
           return;
@@ -102,12 +111,20 @@ export default function Products() {
 
       let extraError = false;
       extraInputSets.forEach((element) => {
-        if (element.price === "" && element.itemName === "") {
+        if (
+          element.price === "" &&
+          element.itemNameEN === "" &&
+          element.itemNameAR === ""
+        ) {
           extraError = false;
           delete initData.extra;
           return;
         }
-        if (element.price === "" || element.itemName === "") {
+        if (
+          element.price === "" ||
+          element.itemNameEN === "" ||
+          element.itemNameAR === ""
+        ) {
           extraError = true;
           toast.error("Please fill all extra fields");
           return;
@@ -162,25 +179,38 @@ export default function Products() {
   async function updateProduct() {
     try {
       let id = $("#updateProductBtn").attr("data-id");
-      let name = $("#ProductName").val();
-      let description = $("#description").val();
+      let nameEN = $("#ProductNameEN").val();
+      let nameAR = $("#ProductNameAR").val();
+      let descriptionEN = $("#descriptionEN").val();
+      let descriptionAR = $("#descriptionAR").val();
       let image = $("#productImage")[0].files[0];
 
-      if (name == "" || description == "") {
+      if (
+        nameEN == "" ||
+        nameAR == "" ||
+        descriptionEN == "" ||
+        descriptionAR == ""
+      ) {
         toast.error("Please fill all the fields");
         return;
       }
 
       let initData = {
-        name,
-        description,
+        nameEN,
+        nameAR,
+        descriptionEN,
+        descriptionAR,
         prices: priceInputSets,
         extra: extraInputSets,
       };
 
       let priceError = false;
       priceInputSets.forEach((element) => {
-        if (element.sizePrice === "" || element.sizeName === "") {
+        if (
+          element.sizePrice === "" ||
+          element.sizeNameEN === "" ||
+          element.sizeNameAR === ""
+        ) {
           priceError = true;
           toast.error("Please fill all price fields");
           return;
@@ -190,12 +220,20 @@ export default function Products() {
 
       let extraError = false;
       extraInputSets.forEach((element) => {
-        if (element.price === "" && element.itemName === "") {
+        if (
+          element.price === "" &&
+          element.itemNameEN === "" &&
+          element.itemNameAR === ""
+        ) {
           extraError = false;
           initData.extra = [];
           return;
         }
-        if (element.price === "" || element.itemName === "") {
+        if (
+          element.price === "" ||
+          element.itemNameEN === "" ||
+          element.itemNameAR === ""
+        ) {
           extraError = true;
           toast.error("Please fill all extra fields");
           return;
@@ -266,8 +304,10 @@ export default function Products() {
   }
 
   function updateClicked(Product) {
-    $("#ProductName").val(Product.name);
-    $("#description").val(Product.description);
+    $("#ProductNameEN").val(Product.nameEN);
+    $("#ProductNameAR").val(Product.nameAR);
+    $("#descriptionEN").val(Product.descriptionEN);
+    $("#descriptionAR").val(Product.descriptionAR);
     $("#category").val("");
     $("#resturant").val("");
     $("#resturantCategory").val("");
@@ -276,17 +316,25 @@ export default function Products() {
     $("#resturantCategory").prop("disabled", true);
     $("#ProductImage").val("");
     let productPrices = Product.prices.map((item) => {
-      return { sizeName: item.sizeName, sizePrice: item.sizePrice };
+      return {
+        sizeNameEN: item.sizeNameEN,
+        sizeNameAR: item.sizeNameAR,
+        sizePrice: item.sizePrice,
+      };
     });
     setPriceInputSets(productPrices);
     if (Product.extra.length > 0) {
       let extraInputSets = Product.extra.map((item) => {
-        return { itemName: item.itemName, price: item.price };
+        return {
+          itemNameEN: item.itemNameEN,
+          itemNameAR: item.itemNameAR,
+          price: item.price,
+        };
       });
       setExtraInputSets(extraInputSets);
     }
 
-    $("#headOfForm").text(`Update ${Product.name} Product`);
+    $("#headOfForm").text(`Update ${Product.nameEN} Product`);
     $("#updateProductBtn").removeClass("d-none");
     $("#closeUpdateProductBtn").removeClass("d-none");
     $("#addProductBtn").addClass("d-none");
@@ -304,8 +352,8 @@ export default function Products() {
     $("#resturantCategory").prop("disabled", false);
     $("#productImage").val("");
 
-    setPriceInputSets([{ sizeName: "", sizePrice: "" }]);
-    setExtraInputSets([{ itemName: "", price: "" }]);
+    setPriceInputSets([{ sizeNameEN: "", sizeNameAR: "", sizePrice: "" }]);
+    setExtraInputSets([{ itemNameEN: "", itemNameAR: "", price: "" }]);
 
     $("#headOfForm").text(`Add New Product`);
     $("#updateProductBtn").addClass("d-none");
@@ -314,11 +362,14 @@ export default function Products() {
   }
 
   const [priceInputSets, setPriceInputSets] = useState([
-    { sizeName: "", sizePrice: "" },
+    { sizeNameEN: "", sizeNameAR: "", sizePrice: "" },
   ]);
 
   const addPriceInputSet = () => {
-    setPriceInputSets([...priceInputSets, { sizeName: "", sizePrice: "" }]);
+    setPriceInputSets([
+      ...priceInputSets,
+      { sizeNameEN: "", sizeNameAR: "", sizePrice: "" },
+    ]);
   };
 
   const handlePriceInputChange = (index, field, value) => {
@@ -336,11 +387,14 @@ export default function Products() {
   //
 
   const [extraInputSets, setExtraInputSets] = useState([
-    { itemName: "", price: "" },
+    { itemNameEN: "", itemNameAR: "", price: "" },
   ]);
 
   const addExtraInputSet = () => {
-    setExtraInputSets([...extraInputSets, { itemName: "", price: "" }]);
+    setExtraInputSets([
+      ...extraInputSets,
+      { itemNameEN: "", itemNameAR: "", price: "" },
+    ]);
   };
 
   const handleExtraInputChange = (index, field, value) => {
@@ -367,7 +421,19 @@ export default function Products() {
                 className="form-control "
                 type="text"
                 placeholder="Product Name"
-                id="ProductName"
+                id="ProductNameEN"
+              />
+            </div>
+          </div>
+
+          <div className="col-md-6 d-flex align-items-center">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control "
+                type="text"
+                dir="rtl"
+                placeholder="اسم الصنف"
+                id="ProductNameAR"
               />
             </div>
           </div>
@@ -378,7 +444,19 @@ export default function Products() {
                 className="form-control"
                 type="text"
                 placeholder="Product Description"
-                id="description"
+                id="descriptionEN"
+              />
+            </div>
+          </div>
+
+          <div className="col-md-6">
+            <div className="mb-3 w-100">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="وصف الصنف"
+                dir="rtl"
+                id="descriptionAR"
               />
             </div>
           </div>
@@ -390,7 +468,7 @@ export default function Products() {
                 {categories.map((category) => {
                   return (
                     <option value={category._id}>
-                      {category?.categoryName}
+                      {category?.categoryNameEN}
                     </option>
                   );
                 })}
@@ -408,7 +486,7 @@ export default function Products() {
                 <option value="">Select Resturant</option>
                 {resturants.map((resturant) => {
                   return (
-                    <option value={resturant._id}>{resturant.name}</option>
+                    <option value={resturant._id}>{resturant.nameEN}</option>
                   );
                 })}
               </select>
@@ -426,7 +504,7 @@ export default function Products() {
                   subCategories.map((subCategory) => {
                     return (
                       <option value={subCategory._id}>
-                        {subCategory.name}
+                        {subCategory.nameEN}
                       </option>
                     );
                   })
@@ -452,9 +530,19 @@ export default function Products() {
                   type="text"
                   className="form-control"
                   placeholder="Size Name"
-                  value={inputSet.sizeName}
+                  value={inputSet.sizeNameEN}
                   onChange={(e) =>
-                    handlePriceInputChange(index, "sizeName", e.target.value)
+                    handlePriceInputChange(index, "sizeNameEN", e.target.value)
+                  }
+                />
+                <input
+                  type="text"
+                  className="form-control"
+                  dir="rtl"
+                  placeholder="اسم الحجم"
+                  value={inputSet.sizeNameAR}
+                  onChange={(e) =>
+                    handlePriceInputChange(index, "sizeNameAR", e.target.value)
                   }
                 />
                 <input
@@ -491,14 +579,24 @@ export default function Products() {
                   type="text"
                   className="form-control"
                   placeholder="Extra Name"
-                  value={inputSet.itemName}
+                  value={inputSet.itemNameEN}
                   onChange={(e) =>
-                    handleExtraInputChange(index, "itemName", e.target.value)
+                    handleExtraInputChange(index, "itemNameEN", e.target.value)
+                  }
+                />
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="أسم الأضافة"
+                  dir="rtl"
+                  value={inputSet.itemNameAR}
+                  onChange={(e) =>
+                    handleExtraInputChange(index, "itemNameAR", e.target.value)
                   }
                 />
                 <input
                   type="number"
-                  className="form-control"
+                  className="form-control pe-0"
                   placeholder="Extra Price"
                   value={inputSet.price}
                   onChange={(e) =>
@@ -575,17 +673,30 @@ export default function Products() {
           <tbody>
             {products?.map((Product) => (
               <tr className="mb-3">
-                <td>{Product.name}</td>
-
-                <td>{Product.description}</td>
-                <td>{Product.category?.categoryName}</td>
                 <td>
-                  {Product.resturantSubCategory[0]?.name
-                    ? Product.resturantSubCategory[0]?.name
+                  {Product.nameEN}/{Product.nameAR}
+                </td>
+
+                <td>
+                  {Product.descriptionEN}/{Product.descriptionAR}
+                </td>
+                <td>
+                  {Product.category?.categoryNameEN}/
+                  {Product.category?.categoryNameAR}
+                </td>
+                <td>
+                  {Product.resturantSubCategory[0]?.nameEN
+                    ? Product.resturantSubCategory[0]?.nameEN
+                    : ""}{" "}
+                  /{" "}
+                  {Product.resturantSubCategory[0]?.nameAR
+                    ? Product.resturantSubCategory[0]?.nameAR
                     : ""}
                 </td>
 
-                <td>{Product.resturant?.name}</td>
+                <td>
+                  {Product.resturant?.nameEN}/{Product.resturant?.nameAR}
+                </td>
                 <td>
                   <table className="table table-dark">
                     {/* <thead>
@@ -597,7 +708,9 @@ export default function Products() {
                     <tbody>
                       {Product.prices.map((priceItem) => (
                         <tr>
-                          <td>{priceItem.sizeName}</td>
+                          <td>
+                            {priceItem.sizeNameEN} / {priceItem.sizeNameAR}
+                          </td>
                           <td>{priceItem.sizePrice}</td>
                         </tr>
                       ))}

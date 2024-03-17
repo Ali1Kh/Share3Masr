@@ -38,6 +38,7 @@ export const updateProductSchema = joi.object({
   nameAR: joi.string().required(),
   descriptionEN: joi.string().required(),
   descriptionAR: joi.string().required(),
+  resturantCategory: joi.custom(ObjectIdValidate).required(),
   prices: joi
     .array()
     .items(
