@@ -9,7 +9,7 @@ export default function Areas() {
     getAreas();
   }, []);
   async function addArea() {
-    if ($("#AreaName").val() == "") {
+    if ($("#AreaNameEN").val() == "" || $("#AreaNameAR").val() == "") {
       toast.error("Please fill all the fields");
       return;
     }
@@ -21,7 +21,8 @@ export default function Areas() {
     let { data } = await axios.post(
       "https://foodyproj.onrender.com/area",
       {
-        areaName: $("#AreaName").val(),
+        areaNameEN: $("#AreaNameEN").val(),
+        areaNameAR: $("#AreaNameAR").val(),
       },
       {
         headers: {
@@ -38,8 +39,9 @@ export default function Areas() {
     $("#addAreaBtn").html("Add Area");
   }
 
-  async function updateArea(id) {
-    if ($("#AreaName").val() == "") {
+  async function updateArea() {
+    let id = $("#updateAreaBtn").attr("data-id");
+    if ($("#AreaNameEN").val() == "" || $("#AreaNameAR").val() == "") {
       toast.error("Please fill all the fields");
       return;
     }
@@ -50,7 +52,8 @@ export default function Areas() {
     let { data } = await axios.patch(
       `https://foodyproj.onrender.com/area/${id}`,
       {
-        areaName: $("#AreaName").val(),
+        areaNameEN: $("#AreaNameEN").val(),
+        areaNameAR: $("#AreaNameAR").val(),
       },
       {
         headers: {
@@ -93,20 +96,18 @@ export default function Areas() {
   }
 
   function updateClicked(Area) {
-    $("#AreaName").val(Area.areaName);
+    $("#AreaNameEN").val(Area.areaNameEN);
+    $("#AreaNameAR").val(Area.areaNameAR);
     $("#AreaImage").val("");
-
-    $("#headOfForm").text(`Update ${Area.areaName} Area`);
+    $("#headOfForm").text(`Update ${Area.areaNameEN} Area`);
     $("#updateAreaBtn").removeClass("d-none");
     $("#closeUpdateAreaBtn").removeClass("d-none");
     $("#addAreaBtn").addClass("d-none");
-    $("#updateAreaBtn").on("click", () => {
-      return updateArea(Area._id);
-    });
+    $("#updateAreaBtn").attr("data-id", Area._id);
   }
 
   function closeUpdateArea() {
-    $("#AreaName").val("");
+    $("#AreaNameEN").val("");
     $("#AreaImage").val("");
     $("#headOfForm").text(`Add New Area`);
     $("#updateAreaBtn").addClass("d-none");
@@ -123,15 +124,23 @@ export default function Areas() {
             className="form-control"
             type="text"
             placeholder="Area Name"
-            id="AreaName"
+            id="AreaNameEN"
           />
         </div>
-
+        <div className="mb-3 w-100 mt-3">
+          <input
+            className="form-control"
+            type="text"
+            dir="rtl"
+            placeholder="أسم المنطقة"
+            id="AreaNameAR"
+          />
+        </div>
         <div className="mb-3 w-100">
           <button onClick={addArea} className="btn btn-primary" id="addAreaBtn">
             Add Area
           </button>
-          <button className="btn btn-warning d-none" id="updateAreaBtn">
+          <button onClick={updateArea} className="btn btn-warning d-none" id="updateAreaBtn">
             Update Area
           </button>
           <button
@@ -154,7 +163,7 @@ export default function Areas() {
           <tbody>
             {areas.map((Area) => (
               <tr className="mb-3">
-                <td>{Area.areaName}</td>
+                <td>{Area.areaNameEN}/{Area.areaNameAR}</td>
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
                     <button

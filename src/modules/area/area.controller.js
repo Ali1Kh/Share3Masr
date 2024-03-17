@@ -27,16 +27,21 @@ export const updateArea = async (req, res, next) => {
     return next(new Error("Area Not Found"));
   }
 
-  const areaNameExits = await Area.findOne({
-    $or: [
-      { areaNameEN: req.body.areaNameEN },
-      {
-        areaNameAR: req.body.areaNameAR,
-      },
-    ],
-  });
-  if (areaNameExits) {
-    return next(new Error("New Area Already Exists"));
+  if (req.body.areaNameEN != isArea.areaNameEN) {
+    const areaNameExits = await Area.findOne({
+      areaNameEN: req.body.areaNameEN,
+    });
+    if (areaNameExits) {
+      return next(new Error("New English Area Already Exists"));
+    }
+  }
+  if (req.body.areaNameAR != isArea.areaNameAR) {
+    const areaNameExits = await Area.findOne({
+      areaNameAR: req.body.areaNameAR,
+    });
+    if (areaNameExits) {
+      return next(new Error("New Arabic Area Already Exists"));
+    }
   }
 
   isArea.areaNameEN = req.body.areaNameEN;
