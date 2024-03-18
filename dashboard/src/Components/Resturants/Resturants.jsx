@@ -629,7 +629,11 @@ export default function Resturants() {
                 </td>
                 <td>
                   {Resturant.category
-                    ?.map((categoryItem) => categoryItem.categoryName)
+                    ?.map((categoryItem) =>  "(" +
+                    categoryItem.categoryNameEN +
+                    "-" +
+                    categoryItem.categoryNameAR +
+                    ")")
                     .join(",")}
                 </td>
                 <td>
