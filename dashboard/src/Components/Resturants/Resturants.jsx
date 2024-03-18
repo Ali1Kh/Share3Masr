@@ -279,7 +279,16 @@ export default function Resturants() {
       target: { value: Resturant.category.map((category) => category._id) },
     });
     setPhones(Resturant.phone);
-    setResturantSubCategoryInputSets(Resturant.subCategories);
+
+    let subCategories = Resturant.subCategories.map((item) => {
+      return {
+        nameEN: item.nameEN,
+        nameAR: item.nameAR,
+      };
+    });
+    setResturantSubCategoryInputSets(subCategories);
+    console.log(subCategories);
+    console.log(resturantSubCategoryInputSets);
     //
     $("#headOfForm").text(`Update ${Resturant.nameEN} Resturant`);
     $("#updateResturantBtn").removeClass("d-none");
@@ -300,7 +309,7 @@ export default function Resturants() {
       target: { value: [] },
     });
     setPhones([]);
-    setResturantSubCategoryInputSets([{ name: "" }]);
+    setResturantSubCategoryInputSets([{ nameEN: "", nameAR: "" }]);
 
     $("#headOfForm").text(`Add New Resturant`);
     $("#updateResturantBtn").addClass("d-none");
@@ -535,7 +544,7 @@ export default function Resturants() {
                   type="text"
                   className="form-control"
                   placeholder="Sub Category Name"
-                  value={inputSet.name}
+                  value={inputSet.nameEN}
                   onChange={(e) => {
                     handleResturantInputChange(index, "nameEN", e.target.value);
                   }}
@@ -629,11 +638,14 @@ export default function Resturants() {
                 </td>
                 <td>
                   {Resturant.category
-                    ?.map((categoryItem) =>  "(" +
-                    categoryItem.categoryNameEN +
-                    "-" +
-                    categoryItem.categoryNameAR +
-                    ")")
+                    ?.map(
+                      (categoryItem) =>
+                        "(" +
+                        categoryItem.categoryNameEN +
+                        "-" +
+                        categoryItem.categoryNameAR +
+                        ")"
+                    )
                     .join(",")}
                 </td>
                 <td>

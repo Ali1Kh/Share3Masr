@@ -732,7 +732,7 @@ export default function Products() {
                     <tbody>
                       {Product.extra.map((extra) => (
                         <tr>
-                          <td>{extra.itemName}</td>
+                          <td>{extra.itemNameEN} / {extra.itemNameAR}</td>
                           <td>{extra.price}</td>
                         </tr>
                       ))}
