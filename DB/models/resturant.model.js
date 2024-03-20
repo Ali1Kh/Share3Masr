@@ -22,6 +22,7 @@ const resturantSchema = Schema({
     secure_url: { type: String, required: true },
     public_id: { type: String, required: true },
   },
+  isActive: { type: Boolean, default: false },
   isDeleted: { type: Boolean, default: false },
 });
 

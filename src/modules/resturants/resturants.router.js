@@ -48,4 +48,7 @@ router.get(
   asyncHandler(resturantController.getCategoryResturants)
 );
 
+router.post("/login", validation(resturantSchema.resturantLoginSchema), asyncHandler(resturantController.resturantLogin));
+router.post("/logout", isAuthenticated, asyncHandler(resturantController.logout));
+
 export default router;

@@ -85,3 +85,19 @@ export const updateResturantSchema = Joi.object({
   openingTime: Joi.string().required(),
   closingTime: Joi.string().required(),
 });
+
+export const resturantLoginSchema = Joi.object({
+  phone: Joi.string()
+    .pattern(new RegExp("^01[0125][0-9]{8}$"))
+    .required()
+    .messages({
+      "string.pattern.base": "Invalid Phone Number",
+    }),
+  password: Joi.string()
+    .min(5)
+    .pattern(new RegExp("^.{5,30}$"))
+    .required()
+    .messages({
+      "string.min": "Invalid Password",
+    }),
+});

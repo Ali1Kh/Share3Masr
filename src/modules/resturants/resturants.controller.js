@@ -5,6 +5,8 @@ import { Resturant } from "../../../DB/models/resturant.model.js";
 import { Area } from "../../../DB/models/area.model.js";
 import { Category } from "../../../DB/models/category.model.js";
 import { Product } from "../../../DB/models/product.model.js";
+import { Token } from "../../../DB/models/token.model.js";
+import jwt from "jsonwebtoken";
 
 export const createResturant = async (req, res, next) => {
   for (let index = 0; index < req.body.category.length; index++) {
@@ -115,4 +117,55 @@ export const getCategoryResturants = async (req, res, next) => {
     isDeleted: false,
   });
   return res.json({ success: true, resturants });
+};
+
+export const resturantLogin = async (req, res, next) => {
+  const resturant = await Resturant.findOne({ phone: { $in: req.body.phone } });
+  if (!resturant) {
+    return next(new Error("Resturant Not Found"));
+  }
+  if (resturant.isDeleted) {
+    return next(new Error("Resturant Is Desactivated"));
+  }
+
+  const isMatch = await bcrypt.compareSync(
+    req.body.password,
+    resturant.password
+  );
+  if (!isMatch) {
+    return next(new Error("Invalid Password"));
+  }
+  resturant.isActive = true;
+  await resturant.save();
+
+  const token = jwt.sign(
+    {
+      id: resturant._id,
+      phone: req.body.phone,
+      role: "resturant",
+    },
+    process.env.TOKEN_SECRET_KEY
+  );
+  await Token.create({
+    token,
+    resturant: resturant._id,
+    role: "resturant",
+    isValid: true,
+    expiredAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60),
+    agent: req.headers["user-agent"],
+  });
+  return res.json({
+    success: true,
+    token,
+    message: "Resturant Login Successfully",
+  });
+};
+
+export const logout = async (req, res, next) => {
+  if (!req.resturant.isActive) {
+    return next(new Error("Resturant Is Already Logged Out"));
+  }
+  req.resturant.isActive = false;
+  await req.resturant.save();
+  return res.json({ success: true, message: "Resturant Logged Out" });
 };
