@@ -51,6 +51,7 @@ export const deliveryLogin = async (req, res, next) => {
 
   return res.json({
     success: true,
+    token,
     message: "Delivery Logged In Successfully",
   });
 };
@@ -60,7 +61,7 @@ export const logout = async (req, res, next) => {
     return next(new Error("Delivery Is Already Logged Out"));
   }
   req.delivery.status = "not available";
-  await req.resturant.save();
+  await req.delivery.save();
   return res.json({ success: true, message: "Delivery Logged Out" });
 };
 

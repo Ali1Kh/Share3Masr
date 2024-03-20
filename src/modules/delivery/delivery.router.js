@@ -37,6 +37,11 @@ router.post(
   validation(deliverySchema.deliveryLoginSchema),
   asyncHandler(deliveryController.deliveryLogin)
 );
+router.post(
+  "/logout",
+  isAuthenticated,
+  asyncHandler(deliveryController.logout),
+);
 
 router.get(
   "/",

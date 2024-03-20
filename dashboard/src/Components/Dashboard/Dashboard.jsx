@@ -10,6 +10,7 @@ import Areas from "../Areas/Areas";
 import Resturants from "../Resturants/Resturants";
 import Products from "../Products/Products";
 import $ from "jquery";
+import Delivery from "../Delivery/Delivery";
 
 export default function Dashboard() {
   const [tab, setTab] = useState(0);
@@ -19,9 +20,16 @@ export default function Dashboard() {
       $("#offcanvasScrolling").addClass("show");
     }
   }, []);
-  
+
   if (sessionStorage.getItem("token") === null) {
     return <Navigate to="/" />;
+  }
+
+  function sideBarClosed() {
+    $("#sideBarCol").removeClass("col-md-3");
+  }
+  function sideBarOpened() {
+    $("#sideBarCol").addClass("col-md-3");
   }
 
   const handleChange = (event, newValue) => {
@@ -31,8 +39,8 @@ export default function Dashboard() {
   return (
     <>
       <div className="overflow-x-hidden">
-        <div className="row ">
-          <div className="col-md-3">
+        <div className="row">
+          <div id="sideBarCol" className="col-md-3">
             <div className="overflow-hidden ">
               <button
                 class="btn btn-secondary m-2"
@@ -40,12 +48,13 @@ export default function Dashboard() {
                 data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasScrolling"
                 aria-controls="offcanvasScrolling"
+                onClick={sideBarOpened}
               >
                 <i className="fa fa-bars"></i>
               </button>
 
               <div
-                class="offcanvas w-auto offcanvas-start"
+                class="offcanvas w-auto offcanvas-start "
                 data-bs-scroll="true"
                 data-bs-backdrop="false"
                 tabindex="-1"
@@ -59,6 +68,7 @@ export default function Dashboard() {
                     style={{ left: "100%", zIndex: 9999999999 }}
                     data-bs-dismiss="offcanvas"
                     aria-label="Close"
+                    onClick={sideBarClosed}
                   >
                     <i class="fa fa-xmark"></i>
                   </button>
@@ -100,13 +110,23 @@ export default function Dashboard() {
                         label="Manage Areas"
                         {...a11yProps(3)}
                       />
+                        <Tab
+                        sx={{ fontSize: "14px" }}
+                        label="Delivery Workers"
+                        {...a11yProps(4)}
+                      />
+                       <Tab
+                        sx={{ fontSize: "14px" }}
+                        label="All Orders"
+                        {...a11yProps(5)}
+                      />
                     </Tabs>
                   </Box>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-md-9">
+          <div className="col">
             <div className="inner">
               <TabPanel value={tab} index={0}>
                 <>
@@ -123,8 +143,12 @@ export default function Dashboard() {
                 <Areas />
               </TabPanel>
               <TabPanel value={tab} index={4}>
-                4
+                <Delivery />
               </TabPanel>
+              <TabPanel value={tab} index={5}>
+                Orders
+              </TabPanel>
+            
             </div>
           </div>
         </div>
