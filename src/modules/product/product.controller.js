@@ -65,7 +65,7 @@ export const getProducts = async (req, res, next) => {
       path: "resturantSubCategory",
       select: "subCategories",
     },
-  ]);
+  ]).sort({ createdAt: -1 });
 
   products.map((product) => {
     let subCategory = product.resturantSubCategory[0]?.subCategories?.filter(

@@ -775,11 +775,23 @@ export default function Products() {
                   )}`,
               },
               {
+                field: "DateCreated",
+                headerName: "Date Created",
+                width: 150,
+                resizable: true,
+
+                valueGetter: (params) =>
+                  `${
+                    new Date(params.row?.createdAt).toLocaleDateString() || ""
+                  }`,
+              },
+              {
                 field: "image",
                 headerName: "Image",
                 width: 100,
                 sortable: false,
                 resizable: true,
+
                 renderCell: (params) => (
                   <>
                     {params.row.image ? (
