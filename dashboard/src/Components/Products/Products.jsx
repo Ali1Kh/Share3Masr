@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import $ from "jquery";
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
 
 export default function Products() {
   let [products, setProducts] = useState([]);
@@ -190,9 +192,8 @@ export default function Products() {
         nameEN == "" ||
         nameAR == "" ||
         descriptionEN == "" ||
-        descriptionAR == "" || 
+        descriptionAR == "" ||
         resturantCategory == ""
-
       ) {
         toast.error("Please fill all the fields");
         return;
@@ -652,127 +653,200 @@ export default function Products() {
         </div>
       </div>
       <div className="Products border-top pt-4 text-start w-100">
-        <div className="searchINput w-75 mx-auto">
-          <input
-            type="search"
-            placeholder="Search Products"
-            className="form-control my-3 mt-0 mx-auto"
-            onChange={(e) => searchProducts(e.target.value)}
-          />
-        </div>
-        <table className="table table-dark rounded-1 overflow-hidden shadow">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th>Sub Category</th>
-              <th>Resturant</th>
-              <th>Prices</th>
-              <th>Extra Items</th>
-              <th>Image</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products?.map((Product) => (
-              <tr className="mb-3">
-                <td>
-                  {Product.nameEN}/{Product.nameAR}
-                </td>
+        <Box sx={{ height: 400, width: "100%" }}>
+          <DataGrid
+            rows={products}
+            columns={[
+              {
+                field: "Name",
+                headerName: "Name",
+                width: 150,
+                resizable: true,
+                valueGetter: (params) =>
+                  `${params.row?.nameEN || ""} ${params.row?.nameAR || ""}`,
+              },
+              {
+                field: "Description",
+                headerName: "Description",
+                width: 150,
+                resizable: true,
+                valueGetter: (params) =>
+                  `${params.row?.descriptionEN || ""}-
+                   ${params.row?.descriptionAR || ""}`,
+              },
+              {
+                field: "Category",
+                headerName: "Category",
+                width: 150,
+                resizable: true,
+                valueGetter: (params) =>
+                  `${params.row?.category?.categoryNameEN || ""}-
+                    ${params.row?.category?.categoryNameAR || ""}`,
+              },
+              {
+                field: "SubCategory",
+                headerName: "Sub Category",
+                width: 150,
+                resizable: true,
+                valueGetter: (params) =>
+                  `   ${
+                    params.row?.resturantSubCategory[0]?.nameEN
+                      ? params.row?.resturantSubCategory[0]?.nameEN
+                      : ""
+                  }
+                    /
+                    ${
+                      params.row?.resturantSubCategory[0]?.nameAR
+                        ? params.row?.resturantSubCategory[0]?.nameAR
+                        : ""
+                    }`,
+              },
+              {
+                field: "Resturant",
+                headerName: "Resturant",
+                width: 150,
+                resizable: true,
+                valueGetter: (params) =>
+                  `${params.row?.resturant?.nameEN}/
+                    ${params.row?.resturant?.nameAR}`,
+              },
+              {
+                field: "Prices",
+                headerName: "Prices",
+                width: 150,
 
-                <td>
-                  {Product.descriptionEN}/{Product.descriptionAR}
-                </td>
-                <td>
-                  {Product.category?.categoryNameEN}/
-                  {Product.category?.categoryNameAR}
-                </td>
-                <td>
-                  {Product.resturantSubCategory[0]?.nameEN
-                    ? Product.resturantSubCategory[0]?.nameEN
-                    : ""}{" "}
-                  /{" "}
-                  {Product.resturantSubCategory[0]?.nameAR
-                    ? Product.resturantSubCategory[0]?.nameAR
-                    : ""}
-                </td>
-
-                <td>
-                  {Product.resturant?.nameEN}/{Product.resturant?.nameAR}
-                </td>
-                <td>
-                  <table className="table table-dark">
-                    {/* <thead>
-                      <tr>
-                        <th className="small"> Name</th>
-                        <th className="small">Price</th>
-                      </tr>
-                    </thead> */}
-                    <tbody>
-                      {Product.prices.map((priceItem) => (
-                        <tr>
-                          <td>
-                            {priceItem.sizeNameEN} / {priceItem.sizeNameAR}
-                          </td>
-                          <td>{priceItem.sizePrice}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </td>
-                <td>
-                  <table className="table table-dark">
-                    {/* <thead>
-                      <tr>
-                        <th className="small"> Name</th>
-                        <th className="small">Price</th>
-                      </tr>
-                    </thead> */}
-                    <tbody>
-                      {Product.extra.map((extra) => (
-                        <tr>
-                          <td>{extra.itemNameEN} / {extra.itemNameAR}</td>
-                          <td>{extra.price}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </td>
-                <td>
-                  {Product.image ? (
-                    <img
-                      width={90}
-                      height={90}
-                      src={Product.image?.secure_url}
-                      alt={Product.name}
-                      className="img-fluid"
-                    />
-                  ) : (
-                    "No Image"
-                  )}
-                </td>
-                <td className="border-start">
-                  <div className="d-flex align-items-center gap-3 mt-2">
+                resizable: true,
+                renderCell: (params) => (
+                  <>
+                    <table>
+                      <tbody>
+                        {params.row?.prices.map((priceItem) => (
+                          <tr>
+                            <td>
+                              {priceItem.sizeNameEN} / {priceItem.sizeNameAR}
+                            </td>
+                            <td>{priceItem.sizePrice}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
+                ),
+                valueGetter: (params) =>
+                  `
+                        ${params.row?.prices.map(
+                          (priceItem) =>
+                            `
+                            ${priceItem.sizeNameEN} 
+                            ${priceItem.sizeNameAR}
+                            ${priceItem.sizePrice}
+                            `
+                        )}
+                  `,
+              },
+              {
+                field: "ExtraItems",
+                headerName: "Extra Items	",
+                width: 150,
+                resizable: true,
+                renderCell: (params) => (
+                  <>
+                    <table>
+                      <tbody>
+                        {params.row?.extra.map((extra) => (
+                          <tr>
+                            <td>
+                              {extra.itemNameEN} / {extra.itemNameAR}
+                            </td>
+                            <span className="mx-1">{" = "}</span>
+                            <td>{extra.price}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </>
+                ),
+                valueGetter: (params) =>
+                  `${params.row?.extra.map(
+                    (extra) =>
+                      `    ${extra.itemNameEN} 
+                         ${extra.itemNameAR}
+                         ${extra.price}`
+                  )}`,
+              },
+              {
+                field: "image",
+                headerName: "Image",
+                width: 100,
+                sortable: false,
+                resizable: true,
+                renderCell: (params) => (
+                  <>
+                    {params.row.image ? (
+                      <img
+                        src={params.row.image?.secure_url}
+                        alt="Placeholder"
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    ) : (
+                      "No Image"
+                    )}
+                  </>
+                ),
+              },
+              {
+                field: "actions",
+                headerName: "Actions",
+                width: 120,
+                sortable: false,
+                renderCell: (params) => (
+                  <>
                     <button
-                      onClick={() => updateClicked(Product)}
-                      className="btn btn-warning"
+                      onClick={() => updateClicked(params.row)}
+                      className="btn btn-warning me-2"
                     >
                       <i className="fa fa-pen"></i>
                     </button>
                     <button
-                      onClick={() => deleteProduct(Product._id)}
+                      onClick={() => deleteProduct(params.row._id)}
                       className="btn btn-danger"
                     >
                       <i className="fa fa-trash-can"></i>
                     </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <ul></ul>
+                  </>
+                ),
+              },
+            ]}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+            sx={{
+              "& .MuiDataGrid-cell": {
+                color: "white",
+                // cursor: "pointer",
+                maxHeight: "fit-content !important",
+              },
+              "& .MuiDataGrid-columnHeaders": {
+                color: "white",
+                backgroundColor: "#343a40",
+              },
+              "& .MuiDataGrid-row": {
+                maxHeight: "fit-content !important",
+              },
+              "& .MuiDataGrid-virtualScroller": {
+                overflowY: "auto !important",
+              },
+            }}
+            pageSizeOptions={[10]}
+            disableRowSelectionOnClick
+            disableColumnResize={true}
+            autoHeight={true}
+          />
+        </Box>
       </div>
     </div>
   );

@@ -110,12 +110,12 @@ export default function Dashboard() {
                         label="Manage Areas"
                         {...a11yProps(3)}
                       />
-                        <Tab
+                      <Tab
                         sx={{ fontSize: "14px" }}
                         label="Delivery Workers"
                         {...a11yProps(4)}
                       />
-                       <Tab
+                      <Tab
                         sx={{ fontSize: "14px" }}
                         label="All Orders"
                         {...a11yProps(5)}
@@ -148,7 +148,6 @@ export default function Dashboard() {
               <TabPanel value={tab} index={5}>
                 Orders
               </TabPanel>
-            
             </div>
           </div>
         </div>
