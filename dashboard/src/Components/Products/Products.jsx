@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import $ from "jquery";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 
 export default function Products() {
   let [products, setProducts] = useState([]);
@@ -16,6 +17,12 @@ export default function Products() {
     getCategories();
     getResturants();
   }, []);
+
+  useEffect(() => {
+    $(".css-13dsn0k-MuiDataGrid-root .MuiDataGrid-virtualScroller")
+      .next()
+      .css("display", "none");
+  });
 
   async function getCategories() {
     let { data } = await axios.get("https://foodyproj.onrender.com/categories");
@@ -654,7 +661,7 @@ export default function Products() {
       </div>
       <div className="Products border-top pt-4 text-start w-100">
         <Box sx={{ height: 400, width: "100%" }}>
-          <DataGrid
+          <DataGridPro
             rows={products}
             columns={[
               {
@@ -829,6 +836,7 @@ export default function Products() {
                 ),
               },
             ]}
+            columnResizable={true}
             initialState={{
               pagination: {
                 paginationModel: {
@@ -855,7 +863,6 @@ export default function Products() {
             }}
             pageSizeOptions={[10]}
             disableRowSelectionOnClick
-            disableColumnResize={true}
             autoHeight={true}
           />
         </Box>
