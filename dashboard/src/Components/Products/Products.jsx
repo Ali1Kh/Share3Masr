@@ -16,6 +16,7 @@ export default function Products() {
     getProducts();
     getCategories();
     getResturants();
+    console.log($("#menuTable").width());
   }, []);
 
   useEffect(() => {
@@ -659,8 +660,8 @@ export default function Products() {
           </button>
         </div>
       </div>
-      <div className="Products border-top pt-4 text-start w-100">
-        <Box sx={{ height: 400, width: "100%" }}>
+      <div id="menuTable" className="Products border-top pt-4 text-start w-100">
+        <Box sx={{ height: 400 , width: "100%" }}  >
           <DataGridPro
             rows={products}
             columns={[

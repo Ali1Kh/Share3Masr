@@ -126,7 +126,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="col">
+          <div className="col-md-9 mx-auto">
             <div className="inner">
               <TabPanel value={tab} index={0}>
                 <>
