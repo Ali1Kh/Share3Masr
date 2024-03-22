@@ -20,7 +20,7 @@ export default function Products() {
   }, []);
 
   useEffect(() => {
-    $(".css-13dsn0k-MuiDataGrid-root .MuiDataGrid-virtualScroller")
+    $(".css-13dsn0k-MuiDataGrid-root .MuiDataGrid-virtualScroller , .css-1pzb349")
       .next()
       .css("display", "none");
   });
