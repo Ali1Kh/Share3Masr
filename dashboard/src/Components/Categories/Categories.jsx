@@ -191,11 +191,14 @@ export default function Categories() {
           {categories.map((category) => (
             <div className="col-md-2 border-end">
               <div className="inner cursorPointer d-flex flex-column text-center h-100">
-                <img
-                  className="w-100 mb-3"
-                  src={category.image.secure_url}
-                  alt=""
-                />
+                <div className="categoryImage h-100 d-flex align-items-center">
+                  <img
+                    className="w-100 mb-3"
+                    src={category.image.secure_url}
+                    alt=""
+                  />
+                </div>
+
                 <p className="mt-auto">
                   {category.categoryNameEN}/{category.categoryNameAR}
                 </p>
