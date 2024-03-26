@@ -20,7 +20,9 @@ export default function Products() {
   }, []);
 
   useEffect(() => {
-    $(".css-13dsn0k-MuiDataGrid-root .MuiDataGrid-virtualScroller , .css-1pzb349")
+    $(
+      ".css-13dsn0k-MuiDataGrid-root .MuiDataGrid-virtualScroller , .css-1pzb349"
+    )
       .next()
       .css("display", "none");
   });
@@ -279,7 +281,7 @@ export default function Products() {
 
       let { data } = await axios.patch(
         `https://foodyproj.onrender.com/Products/${id}`,
-        initData,
+        formData,
         {
           headers: {
             token: sessionStorage.getItem("token"),
@@ -353,6 +355,37 @@ export default function Products() {
     $("#closeUpdateProductBtn").removeClass("d-none");
     $("#addProductBtn").addClass("d-none");
     $("#updateProductBtn").attr("data-id", Product._id);
+  }
+  async function copyRow(Product) {
+    await getSubCategoires(Product.resturant._id);
+    $("#ProductNameEN").val(Product.nameEN);
+    $("#ProductNameAR").val(Product.nameAR);
+    $("#descriptionEN").val(Product.descriptionEN);
+    $("#descriptionAR").val(Product.descriptionAR);
+    $("#category").val(Product.category._id);
+    $("#resturant").val(Product.resturant._id);
+    $("#category").prop("disabled", true);
+    $("#resturant").prop("disabled", true);
+    $("#resturantCategory").val(Product.resturantCategory);
+    $("#ProductImage").val("");
+    let productPrices = Product.prices.map((item) => {
+      return {
+        sizeNameEN: item.sizeNameEN,
+        sizeNameAR: item.sizeNameAR,
+        sizePrice: item.sizePrice,
+      };
+    });
+    setPriceInputSets(productPrices);
+    if (Product.extra.length > 0) {
+      let extraInputSets = Product.extra.map((item) => {
+        return {
+          itemNameEN: item.itemNameEN,
+          itemNameAR: item.itemNameAR,
+          price: item.price,
+        };
+      });
+      setExtraInputSets(extraInputSets);
+    }
   }
 
   function closeUpdateProduct() {
@@ -661,27 +694,10 @@ export default function Products() {
         </div>
       </div>
       <div id="menuTable" className="Products border-top pt-4 text-start w-100">
-        <Box sx={{ height: 400 , width: "100%" }}  >
+        <Box sx={{ height: 400, width: "100%" }}>
           <DataGridPro
             rows={products}
             columns={[
-              {
-                field: "Name",
-                headerName: "Name",
-                width: 150,
-                resizable: true,
-                valueGetter: (params) =>
-                  `${params.row?.nameEN || ""} ${params.row?.nameAR || ""}`,
-              },
-              {
-                field: "Description",
-                headerName: "Description",
-                width: 150,
-                resizable: true,
-                valueGetter: (params) =>
-                  `${params.row?.descriptionEN || ""}-
-                   ${params.row?.descriptionAR || ""}`,
-              },
               {
                 field: "Category",
                 headerName: "Category",
@@ -691,6 +707,16 @@ export default function Products() {
                   `${params.row?.category?.categoryNameEN || ""}-
                     ${params.row?.category?.categoryNameAR || ""}`,
               },
+              {
+                field: "Resturant",
+                headerName: "Resturant",
+                width: 150,
+                resizable: true,
+                valueGetter: (params) =>
+                  `${params.row?.resturant?.nameEN}/
+                    ${params.row?.resturant?.nameAR}`,
+              },
+
               {
                 field: "SubCategory",
                 headerName: "Sub Category",
@@ -710,14 +736,23 @@ export default function Products() {
                     }`,
               },
               {
-                field: "Resturant",
-                headerName: "Resturant",
+                field: "Name",
+                headerName: "Name",
                 width: 150,
                 resizable: true,
                 valueGetter: (params) =>
-                  `${params.row?.resturant?.nameEN}/
-                    ${params.row?.resturant?.nameAR}`,
+                  `${params.row?.nameEN || ""} ${params.row?.nameAR || ""}`,
               },
+              {
+                field: "Description",
+                headerName: "Description",
+                width: 150,
+                resizable: true,
+                valueGetter: (params) =>
+                  `${params.row?.descriptionEN || ""}-
+                   ${params.row?.descriptionAR || ""}`,
+              },
+
               {
                 field: "Prices",
                 headerName: "Prices",
@@ -752,6 +787,7 @@ export default function Products() {
                         )}
                   `,
               },
+
               {
                 field: "ExtraItems",
                 headerName: "Extra Items	",
@@ -783,17 +819,6 @@ export default function Products() {
                   )}`,
               },
               {
-                field: "DateCreated",
-                headerName: "Date Created",
-                width: 150,
-                resizable: true,
-
-                valueGetter: (params) =>
-                  `${
-                    new Date(params.row?.createdAt).toLocaleDateString() || ""
-                  }`,
-              },
-              {
                 field: "image",
                 headerName: "Image",
                 width: 100,
@@ -814,6 +839,7 @@ export default function Products() {
                   </>
                 ),
               },
+
               {
                 field: "actions",
                 headerName: "Actions",
@@ -821,6 +847,12 @@ export default function Products() {
                 sortable: false,
                 renderCell: (params) => (
                   <>
+                    <button
+                      onClick={() => copyRow(params.row)}
+                      className="btn btn-secondary me-2"
+                    >
+                      <i className="fa-regular fa-copy"></i>
+                    </button>
                     <button
                       onClick={() => updateClicked(params.row)}
                       className="btn btn-warning me-2"
@@ -836,12 +868,24 @@ export default function Products() {
                   </>
                 ),
               },
+              {
+                field: "DateCreated",
+                headerName: "Date Created",
+                width: 150,
+                resizable: true,
+
+                valueGetter: (params) =>
+                  `${
+                    new Date(params.row?.createdAt).toLocaleDateString() || ""
+                  }`,
+              },
             ]}
             columnResizable={true}
             initialState={{
               pagination: {
                 paginationModel: {
                   pageSize: 10,
+                  page: 0,
                 },
               },
             }}
@@ -865,6 +909,8 @@ export default function Products() {
             pageSizeOptions={[10]}
             disableRowSelectionOnClick
             autoHeight={true}
+            disableColumnPinning
+            pagination={true}
           />
         </Box>
       </div>

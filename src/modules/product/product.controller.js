@@ -55,17 +55,20 @@ export const getProducts = async (req, res, next) => {
   if (searchConditions.length == 0) {
     delete query.$or;
   }
-  let products = await Product.find(query).populate([
-    {
-      path: "resturant",
-      select: "nameEN nameAR phone addressEN addressAR openingTime closingTime",
-    },
-    "category",
-    {
-      path: "resturantSubCategory",
-      select: "subCategories",
-    },
-  ]).sort({ createdAt: -1 });
+  let products = await Product.find(query)
+    .populate([
+      {
+        path: "resturant",
+        select:
+          "nameEN nameAR phone addressEN addressAR openingTime closingTime",
+      },
+      "category",
+      {
+        path: "resturantSubCategory",
+        select: "subCategories",
+      },
+    ])
+    .sort({ createdAt: -1 });
 
   products.map((product) => {
     let subCategory = product.resturantSubCategory[0]?.subCategories?.filter(
@@ -117,6 +120,12 @@ export const updateProduct = async (req, res, next) => {
         public_id,
       };
     }
+  }
+  if (product.image && !req.file) {
+    if (product.image.public_id) {
+      await cloudinary.uploader.destroy(product.image.public_id);
+    }
+    req.body.image = null;
   }
   await product.updateOne(req.body);
   return res.json({ success: true, message: "Product Updated Successfully" });
