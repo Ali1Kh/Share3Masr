@@ -189,11 +189,13 @@ export default function Categories() {
         <h6 className="mb-4">All Categories :</h6>
         <div className="row gy-4">
           {categories.map((category) => (
-            <div className="col-md-2 border-end">
+            <div className="col-xl-2 col-sm-4 border-end">
               <div className="inner cursorPointer d-flex flex-column text-center h-100">
                 <div className="categoryImage h-100 d-flex align-items-center">
                   <img
-                    className="w-100 mb-3"
+                    className=" mx-auto mb-3"
+                    width={"130px"}
+                    height={"130px"}
                     src={category.image.secure_url}
                     alt=""
                   />
