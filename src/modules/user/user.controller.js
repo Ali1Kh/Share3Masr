@@ -3,6 +3,7 @@ import { Area } from "../../../DB/models/area.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Token } from "../../../DB/models/token.model.js";
+import { Cart } from "../../../DB/models/cart.model.js";
 
 export const signUp = async (req, res, next) => {
   const emailExits = await User.findOne({ email: req.body.email });
@@ -23,22 +24,23 @@ export const signUp = async (req, res, next) => {
     parseInt(process.env.SALT_ROUND)
   );
 
-  await User.create({ ...req.body, password: hashedPass });
+  let user = await User.create({ ...req.body, password: hashedPass });
+  await Cart.create({ user: user._id });
   return res.json({ success: true, message: "User Registered Successfully" });
 };
 
 export const login = async (req, res, next) => {
-  const isUser = await User.findOne({ email: req.body.email });
+  const isUser = await User.findOne({ phone: req.body.phone });
   if (!isUser) {
     return next(new Error("User Not Found"));
   }
-  const isMatch = await bcrypt.compareSync(req.body.password, isUser.password);
-  if (!isMatch) {
-    return next(new Error("Password Is Invaild"));
-  }
+  // const isMatch = await bcrypt.compareSync(req.body.password, isUser.password);
+  // if (!isMatch) {
+  //   return next(new Error("Password Is Invaild"));
+  // }
 
   const token = jwt.sign(
-    { id: isUser._id, email: isUser.email },
+    { id: isUser._id, phone: isUser.phone, role: "customer" },
     process.env.TOKEN_SECRET_KEY
   );
 
@@ -46,6 +48,7 @@ export const login = async (req, res, next) => {
     token,
     user: isUser._id,
     isValid: true,
+    role: "customer",
     expiredAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60),
     agent: req.headers["user-agent"],
   });
