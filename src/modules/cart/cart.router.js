@@ -15,4 +15,12 @@ router.post(
   asyncHandler(cartController.addToCart)
 );
 
+router.get("/", isAuthenticated, asyncHandler(cartController.getCart));
+
+router.delete(
+  "/removeItem/:productId",
+  isAuthenticated,
+  validation(cartSchema.deleteFromCartSchema),
+  asyncHandler(cartController.deleteFromCart)
+);
 export default router;

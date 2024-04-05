@@ -8,6 +8,7 @@ const cartSchema = new Schema(
         sizeId: { type: Types.ObjectId, ref: "Product.prices" },
         extraId: [{ type: Types.ObjectId, ref: "Product.extra" }],
         quantity: { type: Number, default: 1 },
+        productPrice: { type: Number },
       },
     ],
     totalPrice: { type: Number },
