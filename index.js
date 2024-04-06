@@ -8,6 +8,7 @@ import resturantRouter from "./src/modules/resturants/resturants.router.js";
 import productRouter from "./src/modules/product/product.router.js";
 import cartRouter from "./src/modules/cart/cart.router.js";
 import deliveryRouter from "./src/modules/delivery/delivery.router.js";
+import orderRouter from "./src/modules/orders/order.router.js";
 import cors from "cors";
 dotenv.config();
 const port = process.env.PORT;
@@ -23,6 +24,7 @@ app.use("/resturants", resturantRouter);
 app.use("/products", productRouter);
 app.use("/delivery", deliveryRouter);
 app.use("/cart",cartRouter);
+app.use("/orders", orderRouter);
 
 app.all("/uptime", (req, res) => {
   console.log("Up Time Requested");

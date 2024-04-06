@@ -75,7 +75,10 @@ export const addToCart = async (req, res, next) => {
 };
 
 export const getCart = async (req, res, next) => {
-  const cart = await Cart.findOne({ user: req.user._id });
+  const cart = await Cart.findOne({ user: req.user._id }).populate({
+    path: "products.productId",
+    select: "descriptionEN nameAR descriptionAR nameEN",
+  });
   return res.json({ success: true, cart });
 };
 
