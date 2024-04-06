@@ -57,3 +57,8 @@ export const updateProductSchema = joi.object({
     })
   ),
 });
+
+export const getSubCategoryProductsSchema = joi.object({
+  resturantId: joi.custom(ObjectIdValidate).required(),
+  subCategoryId: joi.custom(ObjectIdValidate).required(),
+});

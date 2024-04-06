@@ -42,4 +42,10 @@ router.get(
   asyncHandler(productController.getResturantProducts)
 );
 
+router.get(
+  "/getSubCategoryProducts/",
+  validation(productSchema.getSubCategoryProductsSchema),
+  asyncHandler(productController.getSubCategoryProducts)
+);
+
 export default router;
