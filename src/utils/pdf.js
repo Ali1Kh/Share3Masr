@@ -2,20 +2,20 @@ import fs from "fs";
 import PDFDocument from "pdfkit";
 
 function createInvoice(invoice, path) {
-  let doc = new PDFDocument({ size: "A5", margin: 50 });
+  return new Promise((resolve, reject) => {
+    let doc = new PDFDocument({ size: "C5", margin: 50 });
 
-  doc.registerFont("Simplified Arabic", "simpo.ttf");
-  doc.registerFont("Simplified Arabic Bold", "simpbdo.ttf");
-  doc.font("Simplified Arabic");
+    doc.registerFont("Simplified Arabic", "simpo.ttf");
+    doc.registerFont("Simplified Arabic Bold", "simpbdo.ttf");
+    doc.font("Simplified Arabic");
+    generateHeader(doc);
+    generateCustomerInformation(doc, invoice);
+    generateInvoiceTable(doc, invoice);
+    generateFooter(doc);
 
-  doc.encoding = "UTF-8";
-
-  generateHeader(doc);
-  generateCustomerInformation(doc, invoice);
-  generateInvoiceTable(doc, invoice);
-  generateFooter(doc);
-  doc.end();
-  doc.pipe(fs.createWriteStream(path));
+    doc.end();
+    doc.pipe(fs.createWriteStream(path));
+  });
 }
 
 function generateHeader(doc) {
@@ -45,19 +45,19 @@ function generateCustomerInformation(doc, invoice) {
   doc
     .fontSize(10)
     .font("Simplified Arabic Bold")
-    .text(reverseText("الرقم المسلسل:"), 300, customerInformationTop, {
+    .text(reverseText("التاريخ:"), 300, customerInformationTop, {
       align: "right",
     })
     .font("Simplified Arabic")
-    .text(invoice.invoice_nr, 150, customerInformationTop, {
+    .text(formatDate(new Date()), 150, customerInformationTop, {
       align: "center",
     })
     .font("Simplified Arabic Bold")
-    .text(reverseText("التاريخ:"), 300, customerInformationTop + 15, {
+    .text(reverseText("الساعة:"), 300, customerInformationTop + 15, {
       align: "right",
     })
     .font("Simplified Arabic")
-    .text(formatDate(new Date()), 150, customerInformationTop + 15, {
+    .text(formatTime(new Date()), 150, customerInformationTop + 15, {
       align: "center",
     })
     .font("Simplified Arabic Bold")
@@ -95,12 +95,11 @@ function generateInvoiceTable(doc, invoice) {
     doc,
     invoiceTableTop,
     reverseText("المجموع"),
-    reverseText("العدد"),
+    reverseText("الكمية"),
     reverseText("السعر"),
-    reverseText("سعر الأضافات"),
     reverseText("الأضافات"),
     reverseText("المطعم"),
-    reverseText("الوصف"),
+    // reverseText("الوصف"),
     reverseText("الأسم")
   );
   generateHr(doc, invoiceTableTop + 20);
@@ -115,11 +114,14 @@ function generateInvoiceTable(doc, invoice) {
       formatCurrency(item.productPrice * item.quantity),
       convertArNum(item.quantity),
       formatCurrency(item.productPrice),
-      "3",
-      "4",
+      reverseText(
+        item.productId.extra.map((extraItem) => extraItem.itemNameAR).join(", ")
+      ),
       reverseText(item.productId.resturant.nameAR),
-      reverseText(item.productId.descriptionAR),
-      reverseText(item.productId.nameAR)
+      // reverseText(item.productId.descriptionAR),
+      reverseText(
+        item.productId.nameAR + " " + item.productId.prices[0].sizeNameAR
+      )
     );
 
     generateHr(doc, position + 20);
@@ -134,9 +136,7 @@ function generateInvoiceTable(doc, invoice) {
     "",
     "",
     "",
-    "",
-    "",
-    "السعر"
+    reverseText("السعر الأجمالي")
   );
 
   const deleveryFeesPosition = orderPricePosition + 20;
@@ -144,8 +144,6 @@ function generateInvoiceTable(doc, invoice) {
     doc,
     deleveryFeesPosition,
     formatCurrency(invoice.deleveryFees),
-    "",
-    "",
     "",
     "",
     "",
@@ -164,8 +162,6 @@ function generateInvoiceTable(doc, invoice) {
     "",
     "",
     "",
-    "",
-    "",
     "الأجمالي"
   );
   doc.font("Simplified Arabic");
@@ -177,7 +173,7 @@ function generateFooter(doc) {
     .text(
       "Share3 Masr Delivery App ." + reverseText("شكرا لك على استخدام"),
       50,
-      520,
+      580,
       {
         align: "center",
         width: 500,
@@ -191,10 +187,8 @@ function generateTableRow(
   total,
   price,
   quantity,
-  extraPrice,
   extra,
   resturant,
-  description,
   name
 ) {
   doc
@@ -202,15 +196,15 @@ function generateTableRow(
     .text(total, 20, y)
     .text(quantity, 70, y)
     .text(price, 120, y)
-    .text(extraPrice, 170, y)
-    .text(extra, 220, y)
-    .text(resturant, 270, y)
-    .text(description, 320, y)
-    .text(name, 370, y);
+    .text(extra, 170, y)
+    .text(resturant, 250, y)
+    .text(name, 320, y, {
+      align: "right",
+    });
 }
 
 function generateHr(doc, y) {
-  doc.strokeColor("#aaaaaa").lineWidth(1).moveTo(20, y).lineTo(550, y).stroke();
+  doc.strokeColor("#aaaaaa").lineWidth(1).moveTo(20, y).lineTo(440, y).stroke();
 }
 
 function formatCurrency(num) {
@@ -224,7 +218,17 @@ function convertArNum(num) {
 }
 
 function formatDate(date) {
-  date = new Date(date).toLocaleDateString("ar-en");
+  date = new Date(date).toLocaleDateString("ar-eg");
+  return date
+    .split("/")
+    .map((d) => d.split("").reverse().join(""))
+    .join("/");
+}
+function formatTime(date) {
+  date = new Date(date).toLocaleTimeString("ar-eg", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   return date
     .split("/")
     .map((d) => d.split("").reverse().join(""))

@@ -15,21 +15,22 @@ export const addToCart = async (req, res, next) => {
   if (!isProductSize) {
     return next(new Error("Size Not Found"));
   }
-
+  const isExtraIds = [];
   if (req.body.extraIds.length > 0) {
-    const isExtraIds = [];
     req.body.extraIds.map((extraItem) => {
-      const extra = isProduct.extra.some(
-        (item) => extraItem.toString() == item._id
+      isProduct.extra.map((item) =>
+        extraItem.toString() == item._id ? isExtraIds.push(item) : null
       );
-      if (extra) {
-        isExtraIds.push(extra);
-      }
     });
     if (isExtraIds.length <= 0) {
       return next(new Error("Extra Not Found"));
     }
   }
+
+  let totalExtraPrice =
+    isExtraIds.length > 0
+      ? isExtraIds.reduce((pv, cv) => Number(pv.price) + Number(cv.price))
+      : 0;
 
   let userCart = await Cart.findOne({ user: req.user._id });
   if (!userCart) userCart = await Cart.create({ user: req.user._id });
@@ -42,7 +43,8 @@ export const addToCart = async (req, res, next) => {
       product.extraId.toString() === req.body.extraIds.toString()
     ) {
       userCart.products[idx].quantity += quantity;
-      userCart.totalPrice += isProductSize.sizePrice * quantity;
+      userCart.totalPrice +=
+        (isProductSize.sizePrice + totalExtraPrice) * quantity;
       productIsInCart = true;
     }
   });
@@ -65,9 +67,13 @@ export const addToCart = async (req, res, next) => {
           extraId: req.body.extraIds,
           quantity,
           productPrice: isProductSize.sizePrice,
+          totalExtraPrice,
         },
       },
-      $inc: { totalPrice: isProductSize.sizePrice * quantity },
+      $inc: {
+        totalPrice:
+          (Number(isProductSize.sizePrice) + totalExtraPrice) * quantity,
+      },
     }
   );
 
@@ -77,7 +83,16 @@ export const addToCart = async (req, res, next) => {
 export const getCart = async (req, res, next) => {
   const cart = await Cart.findOne({ user: req.user._id }).populate({
     path: "products.productId",
-    select: "descriptionEN nameAR descriptionAR nameEN",
+    select: "descriptionEN prices extra descriptionAR nameAR nameEN",
+  });
+  cart.products = cart.products.map((product) => {
+    product.productId.prices = product.productId.prices.filter(
+      (price) => price._id.toString() == product.sizeId
+    );
+    product.productId.extra = product.productId.extra.filter((extra) =>
+      product.extraId.includes(extra._id.toString())
+    );
+    return product;
   });
   return res.json({ success: true, cart });
 };
