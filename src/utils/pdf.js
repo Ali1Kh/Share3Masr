@@ -13,8 +13,18 @@ function createInvoice(invoice, path) {
     generateInvoiceTable(doc, invoice);
     generateFooter(doc);
 
+    const writeStream = fs.createWriteStream(path);
+    doc.pipe(writeStream);
+
     doc.end();
-    doc.pipe(fs.createWriteStream(path));
+
+    writeStream.on("finish", () => {
+      resolve();
+    });
+
+    writeStream.on("error", (error) => {
+      reject(error);
+    });
   });
 }
 
