@@ -3,7 +3,10 @@ import cloudinary from "../../utils/cloudinary.js";
 
 export const createCategory = async (req, res, next) => {
   const isCategory = await Category.findOne({
-    categoryName: req.body.categoryName,
+    $or: [
+      { categoryNameEN: req.body.categoryNameEN },
+      { categoryNameAR: req.body.categoryNameAR },
+    ],
   });
   if (isCategory) {
     return next(new Error("Category Already Exists"));
@@ -14,11 +17,12 @@ export const createCategory = async (req, res, next) => {
   let { secure_url, public_id } = await cloudinary.uploader.upload(
     req.file.path,
     {
-      folder: `Share3Masr/Categories/${req.body.categoryName}`,
+      folder: `Share3Masr/Categories/${req.body.categoryNameEN}`,
     }
   );
   await Category.create({
-    categoryName: req.body.categoryName,
+    categoryNameEN: req.body.categoryNameEN,
+    categoryNameAR: req.body.categoryNameAR,
     image: {
       secure_url,
       public_id,
@@ -47,7 +51,7 @@ export const updateCategory = async (req, res, next) => {
   if (!category) {
     return next(new Error("Category Not Found"));
   }
-  if (!req.file && !req.body.categoryName) {
+  if (!req.file && !req.body.categoryNameEN && !req.body.categoryNameAR) {
     return next(new Error("At Least One Field Is Required"));
   }
   if (req.file) {
@@ -62,8 +66,11 @@ export const updateCategory = async (req, res, next) => {
       public_id,
     };
   }
-  if (req.body.categoryName) {
-    category.categoryName = req.body.categoryName;
+  if (req.body.categoryNameEN) {
+    category.categoryNameEN = req.body.categoryNameEN;
+  }
+  if (req.body.categoryNameAR) {
+    category.categoryNameAR = req.body.categoryNameAR;
   }
   await category.save();
   return res.json({ success: true, message: "Category Updated Successfully" });

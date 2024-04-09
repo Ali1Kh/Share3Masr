@@ -31,10 +31,11 @@ export const signUpSchema = Joi.object({
 }).required();
 
 export const loginSchema = Joi.object({
-  email: Joi.string().email().required().messages({
-    "string.email": "Invalid Email",
-  }),
-  password: Joi.string().required(),
+  // email: Joi.string().email().required().messages({
+  //   "string.email": "Invalid Email",
+  // }),
+  // password: Joi.string().required(),
+  phone: Joi.string().required(),
 }).required();
 
 export const adminLoginSchema = Joi.object({

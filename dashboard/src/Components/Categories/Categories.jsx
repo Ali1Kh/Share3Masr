@@ -1,4 +1,4 @@
-import React ,{ useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import $ from "jquery";
@@ -15,7 +15,9 @@ export default function Categories() {
     }
     let formdata = new FormData();
     formdata.append("categoryImage", $("#categoryImage")[0].files[0]);
-    formdata.append("categoryName", $("#categoryName").val());
+    formdata.append("categoryNameEN", $("#categoryNameEN").val());
+    formdata.append("categoryNameAR", $("#categoryNameAR").val());
+
     $("#addCategoryBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
@@ -38,18 +40,27 @@ export default function Categories() {
     $("#addCategoryBtn").html("Add Category");
   }
 
-  async function updateCategory(id) {
-    if ($("#categoryName").val() == "" && !$("#categoryImage")[0].files[0]) {
-      toast.error("Please fill all the fields");
+  async function updateCategory() {
+    let id = $("#updateCategoryBtn").attr("data-id");
+    if (
+      $("#categoryNameEN").val() == "" &&
+      $("#categoryNameAR").val() == "" &&
+      !$("#categoryImage")[0].files[0]
+    ) {
+      toast.error("Please fill any field to update");
       return;
     }
     let formdata = new FormData();
     if ($("#categoryImage")[0].files[0]) {
       formdata.append("categoryImage", $("#categoryImage")[0].files[0]);
     }
-    if ($("#categoryName").val() != "") {
-      formdata.append("categoryName", $("#categoryName").val());
+    if ($("#categoryNameEN").val() != "") {
+      formdata.append("categoryNameEN", $("#categoryNameEN").val());
     }
+    if ($("#categoryNameAR").val() != "") {
+      formdata.append("categoryNameAR", $("#categoryNameAR").val());
+    }
+
     $("#updateCategoryBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
@@ -98,20 +109,19 @@ export default function Categories() {
   }
 
   function updateClicked(category) {
-    $("#categoryName").val(category.categoryName);
+    $("#categoryNameEN").val(category.categoryNameEN);
+    $("#categoryNameAR").val(category.categoryNameAR);
     $("#categoryImage").val("");
-
     $("#headOfForm").text(`Update ${category.categoryName} Category`);
     $("#updateCategoryBtn").removeClass("d-none");
     $("#closeUpdateCategoryBtn").removeClass("d-none");
     $("#addCategoryBtn").addClass("d-none");
-    $("#updateCategoryBtn").on("click", () => {
-      return updateCategory(category._id);
-    });
+    $("#updateCategoryBtn").attr("data-id", category._id);
   }
 
   function closeUpdateCategory() {
-    $("#categoryName").val("");
+    $("#categoryNameEN").val("");
+    $("#categoryNameAR").val("");
     $("#categoryImage").val("");
     $("#headOfForm").text(`Add New Category`);
     $("#updateCategoryBtn").addClass("d-none");
@@ -123,14 +133,26 @@ export default function Categories() {
     <div className="container d-flex flex-column /align-items-center justify-content-center">
       <div className="form w-fit text-center mb-4 mx-auto  ">
         <h6 id="headOfForm">Add New Category</h6>
-        <div className="mb-3 w-100 mt-3">
-          <input
-            className="form-control"
-            type="text"
-            placeholder="Category Name"
-            id="categoryName"
-          />
+        <div className="d-flex gap-3">
+          <div className="mb-3 w-100 mt-3">
+            <input
+              className="form-control"
+              type="text"
+              placeholder="Category Name"
+              id="categoryNameEN"
+            />
+          </div>
+          <div className="mb-3 w-100 mt-3">
+            <input
+              className="form-control"
+              type="text"
+              dir="rtl"
+              placeholder="أسم الفئة"
+              id="categoryNameAR"
+            />
+          </div>
         </div>
+
         <div className="mb-3 w-100">
           <input
             className="form-control"
@@ -147,7 +169,11 @@ export default function Categories() {
           >
             Add Category
           </button>
-          <button className="btn btn-warning d-none" id="updateCategoryBtn">
+          <button
+            onClick={updateCategory}
+            className="btn btn-warning d-none"
+            id="updateCategoryBtn"
+          >
             Update Category
           </button>
           <button
@@ -163,14 +189,21 @@ export default function Categories() {
         <h6 className="mb-4">All Categories :</h6>
         <div className="row gy-4">
           {categories.map((category) => (
-            <div className="col-md-2 border-end">
+            <div className="col-xl-2 col-sm-4 border-end">
               <div className="inner cursorPointer d-flex flex-column text-center h-100">
-                <img
-                  className="w-100 mb-3"
-                  src={category.image.secure_url}
-                  alt=""
-                />
-                <p className="mt-auto">{category.categoryName}</p>
+                <div className="categoryImage h-100 d-flex align-items-center">
+                  <img
+                    className=" mx-auto mb-3"
+                    width={"130px"}
+                    height={"130px"}
+                    src={category.image.secure_url}
+                    alt=""
+                  />
+                </div>
+
+                <p className="mt-auto">
+                  {category.categoryNameEN}/{category.categoryNameAR}
+                </p>
                 <div className="d-flex gap-3 mt-2">
                   <button
                     onClick={() => updateClicked(category)}

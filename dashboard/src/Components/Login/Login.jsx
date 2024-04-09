@@ -23,7 +23,6 @@ export default function Login() {
           password,
         }
       );
-      console.log(data);
       if (data.success) {
         navigate("dashboard");
         sessionStorage.setItem("token", data.token);

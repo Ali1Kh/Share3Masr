@@ -12,6 +12,7 @@ router.post(
   "/",
   isAuthenticated,
   isAuthorized("admin"),
+  uploadFiles().single("productImage"),
   validation(productSchema.createProductSchema),
   asyncHandler(productController.createProduct)
 );
@@ -29,6 +30,27 @@ router.delete(
   isAuthorized("admin"),
   validation(productSchema.idRequiredSchema),
   asyncHandler(productController.deleteProduct)
+);
+
+router.patch(
+  "/:id",
+  isAuthenticated,
+  isAuthorized("admin"),
+  uploadFiles().single("productImage"),
+  validation(productSchema.updateProductSchema),
+  asyncHandler(productController.updateProduct)
+);
+
+router.get(
+  "/getResturantProducts/:id",
+  validation(productSchema.idRequiredSchema),
+  asyncHandler(productController.getResturantProducts)
+);
+
+router.get(
+  "/getSubCategoryProducts/",
+  validation(productSchema.getSubCategoryProductsSchema),
+  asyncHandler(productController.getSubCategoryProducts)
 );
 
 export default router;

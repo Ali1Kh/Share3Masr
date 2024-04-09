@@ -2,7 +2,8 @@ import Joi from "joi";
 import { ObjectIdValidate } from "../../middlewares/validation.middleware.js";
 
 export const createCategorySchema = Joi.object({
-  categoryName: Joi.string().required(),
+  categoryNameEN: Joi.string().required(),
+  categoryNameAR: Joi.string().required(),
 }).required();
 
 export const deleteCategorySchema = Joi.object({
@@ -11,5 +12,6 @@ export const deleteCategorySchema = Joi.object({
 
 export const updateCategorySchema = Joi.object({
   id: Joi.custom(ObjectIdValidate).required(),
-  categoryName: Joi.string(),
+  categoryNameEN: Joi.string(),
+  categoryNameAR: Joi.string(),
 }).required();

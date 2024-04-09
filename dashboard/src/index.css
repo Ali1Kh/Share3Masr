@@ -11,3 +11,27 @@ body {
 .cursorPointer {
   cursor: pointer !important;
 }
+
+:disabled {
+cursor: not-allowed !important;
+}
+
+
+
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #15181d;
+}
+
+*::-webkit-scrollbar {
+  width: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #343a41;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #15181d;
+  border-radius: 10px;
+}
