@@ -27,6 +27,6 @@ export const createProductSchema = joi.object({
     .required(),
 });
 
-export const deleteProductSchema = joi.object({
+export const idRequiredSchema = joi.object({
   id: joi.custom(ObjectIdValidate).required(),
-})
+});

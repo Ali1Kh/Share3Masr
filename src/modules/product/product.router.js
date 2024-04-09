@@ -17,12 +17,17 @@ router.post(
 );
 
 router.get("/", asyncHandler(productController.getProducts));
+router.get(
+  "/:id",
+  validation(productSchema.idRequiredSchema),
+  asyncHandler(productController.getProductDetails)
+);
 
 router.delete(
   "/:id",
   isAuthenticated,
   isAuthorized("admin"),
-  validation(productSchema.deleteProductSchema),
+  validation(productSchema.idRequiredSchema),
   asyncHandler(productController.deleteProduct)
 );
 
