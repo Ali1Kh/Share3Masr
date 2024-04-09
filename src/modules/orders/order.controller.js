@@ -77,15 +77,17 @@ export const createOrder = async (req, res, next) => {
       secure_url,
       public_id,
     };
+
+
+    await order.save();
+    userCart.products = [];
+    userCart.totalPrice = 0;
+    await userCart.save();
+    return res.json({
+      success: true,
+      message: "Order Created Successfully",
+      invoice: order.receipt,
+    });
   });
 
-  await order.save();
-  userCart.products = [];
-  userCart.totalPrice = 0;
-  await userCart.save();
-  return res.json({
-    success: true,
-    message: "Order Created Successfully",
-    invoice: order.receipt,
-  });
 };
