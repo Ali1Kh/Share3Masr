@@ -18,6 +18,7 @@ router.post(
 );
 
 router.get("/", asyncHandler(productController.getProducts));
+
 router.get(
   "/:id",
   validation(productSchema.idRequiredSchema),
