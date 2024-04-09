@@ -83,9 +83,7 @@ export const getProducts = async (req, res, next) => {
 };
 export const getProductDetails = async (req, res, next) => {
  
-
-
-  let products = await Product.findOne({
+  let product = await Product.findOne({
     _id: req.params.id,
     isDeleted: false,
   })
@@ -102,14 +100,12 @@ export const getProductDetails = async (req, res, next) => {
       },
     ]);
 
-  products.map((product) => {
     let subCategory = product.resturantSubCategory[0]?.subCategories?.filter(
       (subCategoryItem) =>
         subCategoryItem._id.toString() == product.resturantCategory.toString()
     )[0];
 
     product.resturantSubCategory = subCategory;
-  });
 
   return res.json({ success: true, product });
 };
