@@ -81,6 +81,38 @@ export const getProducts = async (req, res, next) => {
 
   return res.json({ success: true, count: products.length, products });
 };
+export const getProductDetails = async (req, res, next) => {
+ 
+
+
+  let products = await Product.findOne({
+    _id: req.params.id,
+    isDeleted: false,
+  })
+    .populate([
+      {
+        path: "resturant",
+        select:
+          "nameEN nameAR phone addressEN addressAR openingTime closingTime",
+      },
+      "category",
+      {
+        path: "resturantSubCategory",
+        select: "subCategories",
+      },
+    ]);
+
+  products.map((product) => {
+    let subCategory = product.resturantSubCategory[0]?.subCategories?.filter(
+      (subCategoryItem) =>
+        subCategoryItem._id.toString() == product.resturantCategory.toString()
+    )[0];
+
+    product.resturantSubCategory = subCategory;
+  });
+
+  return res.json({ success: true, product });
+};
 
 export const deleteProduct = async (req, res, next) => {
   const product = await Product.findById(req.params.id);

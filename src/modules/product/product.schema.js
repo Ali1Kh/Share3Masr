@@ -28,9 +28,6 @@ export const createProductSchema = joi.object({
   ),
 });
 
-export const idRequiredSchema = joi.object({
-  id: joi.custom(ObjectIdValidate).required(),
-});
 
 export const updateProductSchema = joi.object({
   id: joi.custom(ObjectIdValidate).required(),
