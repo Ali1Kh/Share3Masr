@@ -181,8 +181,8 @@ export const getResturantProducts = async (req, res, next) => {
 
 export const getSubCategoryProducts = async (req, res, next) => {
   let products = await Product.find({
-    resturant: req.body.resturantId,
-    resturantCategory: req.body.subCategoryId,
+    resturant: req.params.resturantId,
+    resturantCategory: req.params.subCategoryId,
   });
   return res.json({ success: true, count: products.length, products });
 };

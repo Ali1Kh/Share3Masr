@@ -49,7 +49,7 @@ router.get(
 );
 
 router.get(
-  "/getSubCategoryProducts/",
+  "/getSubCategoryProducts/:resturantId/:subCategoryId",
   validation(productSchema.getSubCategoryProductsSchema),
   asyncHandler(productController.getSubCategoryProducts)
 );
