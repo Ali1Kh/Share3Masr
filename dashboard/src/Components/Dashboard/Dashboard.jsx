@@ -39,119 +39,96 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="overflow-x-hidden">
-        <div className="row">
-          <div id="sideBarCol" className="col-md-3">
-            <div className="overflow-hidden ">
-              <button
-                class="btn btn-secondary m-2"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasScrolling"
-                aria-controls="offcanvasScrolling"
-                onClick={sideBarOpened}
+      <div>
+        <nav className="navbar navbar-expand-lg bg-light mb-4">
+          <div className="container-fluid">
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNavDropdown"
+              aria-controls="navbarNavDropdown"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div
+              className="collapse navbar-collapse justify-content-center"
+              id="navbarNavDropdown"
+            >
+              <Box
+                sx={{
+                  bgcolor: "transparent",
+                  display: "flex",
+                  width: "fit-content",
+                  padding: "0px",
+                  top: "0",
+                  bottom: "0",
+                }}
               >
-                <i className="fa fa-bars"></i>
-              </button>
+                <Tabs
+                  orientation="horizontal"
+                  value={tab}
+                  onChange={handleChange}
+                  aria-label="Vertical tabs example "
+                >
+                  <Tab
+                    sx={{ fontSize: "14px" }}
+                    label="Manage Categories"
+                    {...a11yProps(0)}
+                  />
+                  <Tab
+                    sx={{ fontSize: "14px" }}
+                    label="Manage Resturants"
+                    {...a11yProps(1)}
+                  />
+                  <Tab
+                    sx={{ fontSize: "14px" }}
+                    label="Manage Menu"
+                    {...a11yProps(2)}
+                  />
+                  <Tab
+                    sx={{ fontSize: "14px" }}
+                    label="Manage Areas"
+                    {...a11yProps(3)}
+                  />
+                  <Tab
+                    sx={{ fontSize: "14px" }}
+                    label="Delivery Workers"
+                    {...a11yProps(4)}
+                  />
+                  <Tab
+                    sx={{ fontSize: "14px" }}
+                    label="Orders Overview"
+                    {...a11yProps(5)}
+                  />
+                </Tabs>
+              </Box>
+            </div>
+          </div>
+        </nav>
 
-              <div
-                class="offcanvas w-auto offcanvas-start "
-                data-bs-scroll="true"
-                data-bs-backdrop="false"
-                tabindex="-1"
-                id="offcanvasScrolling"
-                aria-labelledby="offcanvasScrollingLabel"
-              >
-                <div class="offcanvas-header">
-                  <button
-                    type="button"
-                    class="btn btn-secondary position-absolute top-0"
-                    style={{ left: "100%", zIndex: 9999999999 }}
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Close"
-                    onClick={sideBarClosed}
-                  >
-                    <i class="fa fa-xmark"></i>
-                  </button>
-                </div>
-                <div class="offcanvas-body w-fit">
-                  <Box
-                    sx={{
-                      bgcolor: "background.paper",
-                      display: "flex",
-                      width: "fit-content",
-                      padding: "20px",
-                      top: "0",
-                      bottom: "0",
-                    }}
-                  >
-                    <Tabs
-                      orientation="vertical"
-                      value={tab}
-                      onChange={handleChange}
-                      aria-label="Vertical tabs example "
-                    >
-                      <Tab
-                        sx={{ fontSize: "14px" }}
-                        label="Manage Categories"
-                        {...a11yProps(0)}
-                      />
-                      <Tab
-                        sx={{ fontSize: "14px" }}
-                        label="Manage Resturants"
-                        {...a11yProps(1)}
-                      />
-                      <Tab
-                        sx={{ fontSize: "14px" }}
-                        label="Manage Menu"
-                        {...a11yProps(2)}
-                      />
-                      <Tab
-                        sx={{ fontSize: "14px" }}
-                        label="Manage Areas"
-                        {...a11yProps(3)}
-                      />
-                      <Tab
-                        sx={{ fontSize: "14px" }}
-                        label="Delivery Workers"
-                        {...a11yProps(4)}
-                      />
-                      <Tab
-                        sx={{ fontSize: "14px" }}
-                        label="Orders Overview"
-                        {...a11yProps(5)}
-                      />
-                    </Tabs>
-                  </Box>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-9 mx-auto">
-            <div className="inner">
-              <TabPanel value={tab} index={0}>
-                <>
-                  <Categories />
-                </>
-              </TabPanel>
-              <TabPanel value={tab} index={1}>
-                <Resturants />
-              </TabPanel>
-              <TabPanel value={tab} index={2}>
-                <Products />
-              </TabPanel>
-              <TabPanel value={tab} index={3}>
-                <Areas />
-              </TabPanel>
-              <TabPanel value={tab} index={4}>
-                <Delivery />
-              </TabPanel>
-              <TabPanel value={tab} index={5}>
-                <Orders/>
-              </TabPanel>
-            </div>
-          </div>
-        </div>
+        <TabPanel value={tab} index={0}>
+          <>
+            <Categories />
+          </>
+        </TabPanel>
+        <TabPanel value={tab} index={1}>
+          <Resturants />
+        </TabPanel>
+        <TabPanel value={tab} index={2}>
+          <Products />
+        </TabPanel>
+        <TabPanel value={tab} index={3}>
+          <Areas />
+        </TabPanel>
+        <TabPanel value={tab} index={4}>
+          <Delivery />
+        </TabPanel>
+        <TabPanel value={tab} index={5}>
+          <Orders />
+        </TabPanel>
       </div>
     </>
   );

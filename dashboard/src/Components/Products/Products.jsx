@@ -455,7 +455,7 @@ export default function Products() {
   };
 
   return (
-    <div className="container d-flex flex-column /align-items-center justify-content-center">
+    <div className="container d-flex flex-column align-items-center justify-content-center">
       <div className="form w-fit text-center mb-4 mx-auto  ">
         <h5 id="headOfForm">Add New Product</h5>
 
