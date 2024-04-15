@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 export const isAuthorized = (role) => {
   return asyncHandler(async (req, res, next) => {
-    if (role != req.user.role)
+    if (role != req.role)
       return next(new Error("You Don't Have Permissions"));
     next();
   });

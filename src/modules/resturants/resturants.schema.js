@@ -47,6 +47,11 @@ export const idRequiredSchema = Joi.object({
   id: Joi.custom(ObjectIdValidate).required(),
 }).required();
 
+export const changeProductAvailabilitySchema = Joi.object({
+  id: Joi.custom(ObjectIdValidate).required(),
+  isAvailable: Joi.boolean().options({ convert: false }).required(),
+});
+
 export const updateResturantSchema = Joi.object({
   id: Joi.custom(ObjectIdValidate).required(),
   nameEN: Joi.string().required(),

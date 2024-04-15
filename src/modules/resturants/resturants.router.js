@@ -48,7 +48,24 @@ router.get(
   asyncHandler(resturantController.getCategoryResturants)
 );
 
-router.post("/login", validation(resturantSchema.resturantLoginSchema), asyncHandler(resturantController.resturantLogin));
-router.post("/logout", isAuthenticated, asyncHandler(resturantController.logout));
+router.patch(
+  "/changeProductAvailability/:id",
+  isAuthenticated,
+  isAuthorized("resturant"),
+  validation(resturantSchema.changeProductAvailabilitySchema),
+  asyncHandler(resturantController.changeProductAvailability)
+);
+
+router.post(
+  "/login",
+  validation(resturantSchema.resturantLoginSchema),
+  asyncHandler(resturantController.resturantLogin)
+);
+router.post(
+  "/logout",
+  isAuthenticated,
+  isAuthorized("resturant"),
+  asyncHandler(resturantController.logout)
+);
 
 export default router;

@@ -8,6 +8,14 @@ export const addToCart = async (req, res, next) => {
   const isProduct = await Product.findById(productId);
   if (!isProduct) return next(new Error("Product Not Found"));
 
+  if (isProduct.isDeleted) {
+    return next(new Error("Product Is Deleted"));
+  }
+
+  if (!isProduct.isAvailable) {
+    return next(new Error("Product Is Not Available"));
+  }
+
   const isProductSize = isProduct.prices.map((item) =>
     item._id.toString() === req.body.sizeId ? item : null
   )[0];

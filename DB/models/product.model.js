@@ -30,6 +30,7 @@ const productSchema = Schema(
       secure_url: { type: String, required: false },
       public_id: { type: String, required: false },
     },
+    isAvailable: { type: Boolean, default: true },
     isDeleted: { type: Boolean, default: false },
   },
   {
@@ -40,12 +41,10 @@ const productSchema = Schema(
   }
 );
 
-
 productSchema.virtual("resturantSubCategory", {
   ref: "Resturant",
   localField: "resturantCategory",
   foreignField: "subCategories._id",
 });
-
 
 export const Product = model("Product", productSchema);

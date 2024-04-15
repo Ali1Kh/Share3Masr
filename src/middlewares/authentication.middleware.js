@@ -23,6 +23,7 @@ export const isAuthenticated = asyncHandler(async (req, res, next) => {
     if (!delivery) return next(new Error("Token was Expired or Deleted"));
     req.delivery = delivery;
   }
+  req.role = payload.role;
 
   return next();
 });

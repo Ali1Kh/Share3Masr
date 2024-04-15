@@ -82,30 +82,27 @@ export const getProducts = async (req, res, next) => {
   return res.json({ success: true, count: products.length, products });
 };
 export const getProductDetails = async (req, res, next) => {
- 
   let product = await Product.findOne({
     _id: req.params.id,
     isDeleted: false,
-  })
-    .populate([
-      {
-        path: "resturant",
-        select:
-          "nameEN nameAR phone addressEN addressAR openingTime closingTime",
-      },
-      "category",
-      {
-        path: "resturantSubCategory",
-        select: "subCategories",
-      },
-    ]);
+  }).populate([
+    {
+      path: "resturant",
+      select: "nameEN nameAR phone addressEN addressAR openingTime closingTime",
+    },
+    "category",
+    {
+      path: "resturantSubCategory",
+      select: "subCategories",
+    },
+  ]);
 
-    let subCategory = product.resturantSubCategory[0]?.subCategories?.filter(
-      (subCategoryItem) =>
-        subCategoryItem._id.toString() == product.resturantCategory.toString()
-    )[0];
+  let subCategory = product.resturantSubCategory[0]?.subCategories?.filter(
+    (subCategoryItem) =>
+      subCategoryItem._id.toString() == product.resturantCategory.toString()
+  )[0];
 
-    product.resturantSubCategory = subCategory;
+  product.resturantSubCategory = subCategory;
 
   return res.json({ success: true, product });
 };

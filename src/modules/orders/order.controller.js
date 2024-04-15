@@ -78,7 +78,6 @@ export const createOrder = async (req, res, next) => {
       public_id,
     };
 
-
     await order.save();
     userCart.products = [];
     userCart.totalPrice = 0;
@@ -89,5 +88,72 @@ export const createOrder = async (req, res, next) => {
       invoice: order.receipt,
     });
   });
+};
 
+export const acceptOrder = async (req, res, next) => {
+  let order = await Order.findOne({
+    _id: req.params.orderId,
+  });
+  if (!order) {
+    return next(new Error("Order Not Found"));
+  }
+  if (order.status == "accepted") {
+    return next(new Error("Order Is Already Accepted"));
+  }
+  order.status = "accepted";
+  await order.save();
+  return res.json({ success: true, message: "Order Accepted" });
+};
+
+export const rejectOrder = async (req, res, next) => {
+  let order = await Order.findOne({
+    _id: req.params.orderId,
+  });
+  if (!order) {
+    return next(new Error("Order Not Found"));
+  }
+  if (order.status == "rejected") {
+    return next(new Error("Order Is Already Rejected"));
+  }
+  order.status = "rejected";
+  await order.save();
+  return res.json({ success: true, message: "Order Rejected" });
+};
+
+export const orderReady = async (req, res, next) => {
+  let order = await Order.findOne({
+    _id: req.params.orderId,
+  });
+  if (!order) {
+    return next(new Error("Order Not Found"));
+  }
+  if (order.status == "ready") {
+    return next(new Error("Order Is Already Ready To Deliver"));
+  }
+  order.status = "ready";
+  await order.save();
+  return res.json({ success: true, message: "Order Is Ready To Deliver" });
+};
+
+export const getResturantPendingOrders = async (req, res, next) => {
+  let orders = await Order.find({
+    resturants: { $in: req.resturant._id },
+    status: "pending",
+  });
+  return res.json({ success: true, count: orders.length, orders });
+};
+
+export const getResturantAcceptedOrders = async (req, res, next) => {
+  let orders = await Order.find({
+    resturants: { $in: req.resturant._id },
+    status: "accepted",
+  });
+  return res.json({ success: true, count: orders.length, orders });
+};
+
+export const getResturantOrdersHistory = async (req, res, next) => {
+  let orders = await Order.find({
+    resturants: { $in: req.resturant._id },
+  });
+  return res.json({ success: true, count: orders.length, orders });
 };

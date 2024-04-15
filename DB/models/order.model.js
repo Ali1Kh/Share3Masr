@@ -16,16 +16,14 @@ const orderSchema = new Schema(
     totalOrderPrice: { type: Number, required: true },
     deleveryFees: { type: Number, default: 15 },
     customerName: { type: String, required: true },
-    phone: { type: String, required: true, },
+    phone: { type: String, required: true },
     address: { type: String, required: true },
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected"],
+      enum: ["pending", "accepted", "rejected", "ready", "delivered"],
       default: "pending",
     },
-    resturants: [
-      { type: Types.ObjectId, ref: "Resturant", required: true, },
-    ],
+    resturants: [{ type: Types.ObjectId, ref: "Resturant", required: true }],
     receipt: {
       secure_url: { type: String },
       public_id: { type: String },

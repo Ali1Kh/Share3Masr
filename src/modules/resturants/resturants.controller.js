@@ -169,3 +169,34 @@ export const logout = async (req, res, next) => {
   await req.resturant.save();
   return res.json({ success: true, message: "Resturant Logged Out" });
 };
+
+export const changeProductAvailability = async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return next(new Error("Product Not Found"));
+  }
+  if (product.resturant.toString() != req.resturant._id.toString()) {
+    return next(new Error("Product Is Not Belong To Your Resturant"));
+  }
+  if (product.isDeleted) {
+    return next(new Error("Product Is Deleted"));
+  }
+
+  if (req.body.isAvailable && product.isAvailable) {
+    return next(new Error("Product Is Already Available"));
+  } else if (!req.body.isAvailable && !product.isAvailable) {
+    return next(new Error("Product Is Already Unavailable"));
+  }
+
+  if (req.body.isAvailable) {
+    product.isAvailable = true;
+  } else {
+    product.isAvailable = false;
+  }
+
+  await product.save();
+  return res.json({
+    success: true,
+    message: "Product Status Updated Successfully",
+  });
+};
