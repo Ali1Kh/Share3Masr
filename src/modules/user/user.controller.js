@@ -67,14 +67,14 @@ export const adminLogin = async (req, res, next) => {
   }
 
   const token = jwt.sign(
-    { id: isAdmin._id, email: isAdmin.email, role: "customer" },
+    { id: isAdmin._id, email: isAdmin.email, role: "admin" },
     process.env.TOKEN_SECRET_KEY
   );
 
   await Token.create({
     token,
     admin: isAdmin._id,
-    role: "customer",
+    role: "admin",
     isValid: true,
     expiredAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60),
     agent: req.headers["user-agent"],

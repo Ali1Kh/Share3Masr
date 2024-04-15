@@ -58,6 +58,12 @@ router.get(
   isAuthorized("resturant"),
   asyncHandler(orderController.getResturantOrdersHistory)
 );
+router.get(
+  "/allOrdersHistory",
+  isAuthenticated,
+  isAuthorized("admin"),
+  asyncHandler(orderController.getAllOrdersHistory)
+);
 
 
 export default router;

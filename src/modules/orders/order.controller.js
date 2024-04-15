@@ -157,3 +157,8 @@ export const getResturantOrdersHistory = async (req, res, next) => {
   });
   return res.json({ success: true, count: orders.length, orders });
 };
+
+export const getAllOrdersHistory = async (req, res, next) => {
+  let orders = await Order.find();
+  return res.json({ success: true, count: orders.length, orders });
+};
