@@ -16,7 +16,6 @@ export default function Products() {
     getProducts();
     getCategories();
     getResturants();
-    console.log($("#menuTable").width());
   }, []);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ export default function Products() {
       ".css-13dsn0k-MuiDataGrid-root .MuiDataGrid-virtualScroller , .css-1pzb349"
     )
       .next()
-      .css("display", "none");
+      .remove();
   });
 
   async function getCategories() {

@@ -11,6 +11,7 @@ import Resturants from "../Resturants/Resturants";
 import Products from "../Products/Products";
 import $ from "jquery";
 import Delivery from "../Delivery/Delivery";
+import Orders from "../Orders/Orders";
 
 export default function Dashboard() {
   const [tab, setTab] = useState(0);
@@ -117,7 +118,7 @@ export default function Dashboard() {
                       />
                       <Tab
                         sx={{ fontSize: "14px" }}
-                        label="All Orders"
+                        label="Orders Overview"
                         {...a11yProps(5)}
                       />
                     </Tabs>
@@ -146,7 +147,7 @@ export default function Dashboard() {
                 <Delivery />
               </TabPanel>
               <TabPanel value={tab} index={5}>
-                Orders
+                <Orders/>
               </TabPanel>
             </div>
           </div>

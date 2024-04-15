@@ -159,6 +159,36 @@ export const getResturantOrdersHistory = async (req, res, next) => {
 };
 
 export const getAllOrdersHistory = async (req, res, next) => {
-  let orders = await Order.find();
+  let orders = await Order.find().populate([
+    {
+      path: "products.productId",
+      select:
+        "resturant prices extra nameAR nameEN descriptionAR descriptionEN",
+      populate: {
+        path: "resturant",
+        select: "nameAR nameEN",
+      },
+    },
+  ]);
+
+  let resturants = [];
+
+  orders = orders.map((order) => {
+    order.products = order.products.map((product) => {
+      if (!resturants.includes(product.productId.resturant))
+        resturants.push(product.productId.resturant);
+
+      product.productId.prices = product.productId.prices.filter(
+        (price) => price._id.toString() == product.sizeId
+      );
+      product.productId.extra = product.productId.extra.filter((extra) =>
+        product.extraId.includes(extra._id.toString())
+      );
+      return product;
+    });
+    order.resturants = resturants;
+    return order;
+  });
+
   return res.json({ success: true, count: orders.length, orders });
 };
