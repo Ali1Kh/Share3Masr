@@ -20,9 +20,10 @@ const orderSchema = new Schema(
     address: { type: String, required: true },
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected", "ready", "delivered"],
+      enum: ["pending", "accepted", "rejected", "ready", "onWay", "delivered"],
       default: "pending",
     },
+    deliveryWorker: { type: Types.ObjectId, ref: "Delivery" },
     resturants: [{ type: Types.ObjectId, ref: "Resturant", required: true }],
     receipt: {
       secure_url: { type: String },

@@ -2,6 +2,7 @@ import { Delivery } from "../../../DB/models/delivery.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Token } from "../../../DB/models/token.model.js";
+import { Order } from "../../../DB/models/order.model.js";
 
 export const createDelivery = async (req, res, next) => {
   let isDelivery = await Delivery.findOne({ phone: req.body.phone });
@@ -89,4 +90,49 @@ export const deleteDelivery = async (req, res, next) => {
   if (!isDelivery) return next(new Error("Delivery Not Found"));
   await isDelivery.deleteOne();
   return res.json({ success: true, message: "Delivery Deleted Successfully" });
+};
+
+export const getReadyOrders = async (req, res, next) => {
+  let orders = await Order.find({ status: "ready" }).sort({ createdAt: -1 });
+  return res.json({
+    success: true,
+    orders,
+  });
+};
+
+export const receiveTheOrder = async (req, res, next) => {
+  let isOrder = await Order.findById(req.params.id);
+  if (!isOrder) return next(new Error("Order Not Found"));
+  if (isOrder.status != "ready") {
+    return next(new Error("Order Is Not Ready To Deliver"));
+  }
+  req.delivery.status = "onWay";
+  isOrder.status = "onWay";
+  isOrder.deliveryWorker = req.delivery._id;
+  await isOrder.save();
+  await req.delivery.save();
+  return res.json({ success: true, message: "Order Received Successfully" });
+};
+
+export const orderDelivered = async (req, res, next) => {
+  let isOrder = await Order.findById(req.params.id);
+  if (!isOrder) return next(new Error("Order Not Found"));
+  if (isOrder.status != "onWay") {
+    return next(new Error("Order Is Not Recieved By You"));
+  }
+  isOrder.status = "delivered";
+  req.delivery.status = "waiting";
+  await req.delivery.save();
+  await isOrder.save();
+  return res.json({ success: true, message: "Order Delivered Successfully" });
+};
+
+export const getDelivereyOrders = async (req, res, next) => {
+  let orders = await Order.find({
+    deliveryWorker: req.delivery._id,
+  }).sort({ status: -1 });
+  return res.json({
+    success: true,
+    orders,
+  });
 };

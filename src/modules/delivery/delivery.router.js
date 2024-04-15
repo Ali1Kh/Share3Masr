@@ -28,7 +28,7 @@ router.delete(
   "/deleteDelivery/:id",
   isAuthenticated,
   isAuthorized("admin"),
-  validation(deliverySchema.deleteDeliverySchema),
+  validation(deliverySchema.idReqSchema),
   asyncHandler(deliveryController.deleteDelivery)
 );
 
@@ -40,7 +40,8 @@ router.post(
 router.post(
   "/logout",
   isAuthenticated,
-  asyncHandler(deliveryController.logout),
+  isAuthorized("delivery"),
+  asyncHandler(deliveryController.logout)
 );
 
 router.get(
@@ -49,5 +50,35 @@ router.get(
   isAuthorized("admin"),
   asyncHandler(deliveryController.getAllDeliveries)
 );
+
+router.get(
+  "/readyOrders",
+  isAuthenticated,
+  isAuthorized("delivery"),
+  asyncHandler(deliveryController.getReadyOrders)
+);
+
+router.get(
+  "/deliveryOrders",
+  isAuthenticated,
+  isAuthorized("delivery"),
+  asyncHandler(deliveryController.getDelivereyOrders)
+);
+
+router.post(
+  "/receiveTheOrder/:id",
+  isAuthenticated,
+  isAuthorized("delivery"),
+  validation(deliverySchema.idReqSchema),
+  asyncHandler(deliveryController.receiveTheOrder)
+);
+router.post(
+  "/orderDelivered/:id",
+  isAuthenticated,
+  isAuthorized("delivery"),
+  validation(deliverySchema.idReqSchema),
+  asyncHandler(deliveryController.orderDelivered)
+);
+
 
 export default router;

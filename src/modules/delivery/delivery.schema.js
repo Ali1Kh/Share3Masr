@@ -28,7 +28,7 @@ export const updateDeliverySchema = Joi.object({
   }),
 });
 
-export const deleteDeliverySchema = Joi.object({
+export const idReqSchema = Joi.object({
   id: Joi.custom(ObjectIdValidate).required(),
 });
 

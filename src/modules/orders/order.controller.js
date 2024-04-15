@@ -127,6 +127,9 @@ export const orderReady = async (req, res, next) => {
   if (!order) {
     return next(new Error("Order Not Found"));
   }
+  if (order.status == "pending") {
+    return next(new Error("Order Is Not Accepted"));
+  }
   if (order.status == "ready") {
     return next(new Error("Order Is Already Ready To Deliver"));
   }
@@ -160,10 +163,11 @@ export const getResturantOrdersHistory = async (req, res, next) => {
 
 export const getAllOrdersHistory = async (req, res, next) => {
   let orders = await Order.find().populate([
+    {path:"deliveryWorker",select:"name phone"},
     {
       path: "products.productId",
       select:
-        "resturant prices extra nameAR nameEN descriptionAR descriptionEN",
+        "resturant prices extra nameAR nameEN descriptionAR descriptionEN ",
       populate: {
         path: "resturant",
         select: "nameAR nameEN",

@@ -6,7 +6,7 @@ const deliverySchema = new Schema({
   password: { type: String, required: true },
   status: {
     type: String,
-    enum: ["waiting", "on the way", "not available"],
+    enum: ["waiting", "onWay", "not available"],
     default: "not available",
   },
 });

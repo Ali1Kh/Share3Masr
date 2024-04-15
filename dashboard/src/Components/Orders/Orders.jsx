@@ -46,6 +46,13 @@ export default function Orders() {
                 headerName: "Customer",
                 width: 130,
                 resizable: true,
+                renderCell: (params) => (
+                  <>
+                    <span title={params.row?.customerName}>
+                      {params.row?.phone}
+                    </span>
+                  </>
+                ),
               },
               {
                 field: "Resturant",
@@ -112,11 +119,19 @@ export default function Orders() {
               //   },
 
               {
-                field: "-",
+                field: "delivery",
                 headerName: "Delivery",
                 width: 120,
                 align: "center",
                 resizable: true,
+                valueGetter: (params) => `${params.row?.deliveryWorker?.name}-${params.row?.deliveryWorker?.phone}`,
+                renderCell: (params) => (
+                    <>
+                      <span title={params.row?.deliveryWorker?.name}>
+                        {params.row?.deliveryWorker?.phone}
+                      </span>
+                    </>
+                  ),
               },
               {
                 field: "totalOrderPrice",
