@@ -65,6 +65,14 @@ router.get(
   asyncHandler(deliveryController.getDelivereyOrders)
 );
 
+router.get(
+  "/deliveryOrderDetails/:id",
+  isAuthenticated,
+  isAuthorized("delivery"),
+  validation(deliverySchema.idReqSchema),
+  asyncHandler(deliveryController.getDelivereyOrderDetails)
+);
+
 router.post(
   "/receiveTheOrder/:id",
   isAuthenticated,

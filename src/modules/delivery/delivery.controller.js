@@ -136,3 +136,13 @@ export const getDelivereyOrders = async (req, res, next) => {
     orders,
   });
 };
+export const getDelivereyOrderDetails = async (req, res, next) => {
+  let orders = await Order.find({
+    deliveryWorker: req.delivery._id,
+    _id: req.params.id,
+  });
+  return res.json({
+    success: true,
+    orders,
+  });
+};
