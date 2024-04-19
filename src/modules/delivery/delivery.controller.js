@@ -137,12 +137,12 @@ export const getDelivereyOrders = async (req, res, next) => {
   });
 };
 export const getDelivereyOrderDetails = async (req, res, next) => {
-  let orders = await Order.find({
+  let order = await Order.findOne({
     deliveryWorker: req.delivery._id,
     _id: req.params.id,
   });
   return res.json({
     success: true,
-    orders,
+    orders: order,
   });
 };
