@@ -18,6 +18,7 @@ const orderSchema = new Schema(
     customerName: { type: String, required: true },
     phone: { type: String, required: true },
     address: { type: String, required: true },
+    area: { type: Types.ObjectId, ref: "Area", required: true },
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected", "ready", "onWay", "delivered"],
