@@ -224,6 +224,7 @@ export default function Resturants() {
       formdata.append("phone[]", phone);
     });
     resturantSubCategoryInputSets.forEach((subCategory, index) => {
+      formdata.append(`subCategories[${index}][_id]`, subCategory._id);
       formdata.append(`subCategories[${index}][nameEN]`, subCategory.nameEN);
       formdata.append(`subCategories[${index}][nameAR]`, subCategory.nameAR);
     });
@@ -282,13 +283,12 @@ export default function Resturants() {
 
     let subCategories = Resturant.subCategories.map((item) => {
       return {
+        _id: item._id,
         nameEN: item.nameEN,
         nameAR: item.nameAR,
       };
     });
     setResturantSubCategoryInputSets(subCategories);
-    console.log(subCategories);
-    console.log(resturantSubCategoryInputSets);
     //
     $("#headOfForm").text(`Update ${Resturant.nameEN} Resturant`);
     $("#updateResturantBtn").removeClass("d-none");
