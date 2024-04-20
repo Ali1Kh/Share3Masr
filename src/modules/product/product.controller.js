@@ -117,6 +117,14 @@ export const deleteProduct = async (req, res, next) => {
 };
 
 export const updateProduct = async (req, res, next) => {
+  let isResturant = await Resturant.findById(req.body.resturant);
+  if (!isResturant) return next(new Error("Resturant Not Found"));
+  if (isResturant.isDeleted) {
+    return next(new Error("Resturant Is Deleted"));
+  }
+  let isCategory = await Category.findById(req.body.category);
+  if (!isCategory) return next(new Error("Category Not Found"));
+  
   const product = await Product.findById(req.params.id);
   if (!product) {
     return next(new Error("Product Not Found"));
