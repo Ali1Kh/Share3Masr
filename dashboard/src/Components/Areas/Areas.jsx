@@ -9,7 +9,7 @@ export default function Areas() {
     getAreas();
   }, []);
   async function addArea() {
-    if ($("#AreaNameEN").val() == "" || $("#AreaNameAR").val() == "") {
+    if ($("#AreaNameEN").val() == "" || $("#AreaNameAR").val() == "" || $("#deliveryFees").val() == "") {
       toast.error("Please fill all the fields");
       return;
     }
@@ -23,6 +23,7 @@ export default function Areas() {
       {
         areaNameEN: $("#AreaNameEN").val(),
         areaNameAR: $("#AreaNameAR").val(),
+        deliveryFees: $("#deliveryFees").val(),
       },
       {
         headers: {
@@ -41,7 +42,7 @@ export default function Areas() {
 
   async function updateArea() {
     let id = $("#updateAreaBtn").attr("data-id");
-    if ($("#AreaNameEN").val() == "" || $("#AreaNameAR").val() == "") {
+    if ($("#AreaNameEN").val() == "" || $("#AreaNameAR").val() == "" || $("#deliveryFees").val() == "") {
       toast.error("Please fill all the fields");
       return;
     }
@@ -54,6 +55,7 @@ export default function Areas() {
       {
         areaNameEN: $("#AreaNameEN").val(),
         areaNameAR: $("#AreaNameAR").val(),
+        deliveryFees: $("#deliveryFees").val(),
       },
       {
         headers: {
@@ -98,7 +100,7 @@ export default function Areas() {
   function updateClicked(Area) {
     $("#AreaNameEN").val(Area.areaNameEN);
     $("#AreaNameAR").val(Area.areaNameAR);
-    $("#AreaImage").val("");
+    $("#deliveryFees").val(Area.deliveryFees);
     $("#headOfForm").text(`Update ${Area.areaNameEN} Area`);
     $("#updateAreaBtn").removeClass("d-none");
     $("#closeUpdateAreaBtn").removeClass("d-none");
@@ -108,7 +110,8 @@ export default function Areas() {
 
   function closeUpdateArea() {
     $("#AreaNameEN").val("");
-    $("#AreaImage").val("");
+    $("#AreaNameAR").val("");
+    $("#deliveryFees").val("");
     $("#headOfForm").text(`Add New Area`);
     $("#updateAreaBtn").addClass("d-none");
     $("#closeUpdateAreaBtn").addClass("d-none");
@@ -119,28 +122,43 @@ export default function Areas() {
     <div className="container d-flex flex-column /align-items-center justify-content-center">
       <div className="form w-fit text-center mb-4 mx-auto  ">
         <h6 id="headOfForm">Add New Area</h6>
-        <div className="mb-3 w-100 mt-3">
-          <input
-            className="form-control"
-            type="text"
-            placeholder="Area Name"
-            id="AreaNameEN"
-          />
+        <div className="d-flex gap-3">
+          <div className="mb-3 w-100 mt-3">
+            <input
+              className="form-control"
+              type="text"
+              placeholder="Area Name"
+              id="AreaNameEN"
+            />
+          </div>
+          <div className="mb-3 w-100 mt-3">
+            <input
+              className="form-control"
+              type="text"
+              dir="rtl"
+              placeholder="أسم المنطقة"
+              id="AreaNameAR"
+            />
+          </div>
         </div>
-        <div className="mb-3 w-100 mt-3">
+
+        <div className="mb-3 w-100 mt-1">
           <input
             className="form-control"
-            type="text"
-            dir="rtl"
-            placeholder="أسم المنطقة"
-            id="AreaNameAR"
+            type="number"
+            placeholder="Delivery Fees"
+            id="deliveryFees"
           />
         </div>
         <div className="mb-3 w-100">
           <button onClick={addArea} className="btn btn-primary" id="addAreaBtn">
             Add Area
           </button>
-          <button onClick={updateArea} className="btn btn-warning d-none" id="updateAreaBtn">
+          <button
+            onClick={updateArea}
+            className="btn btn-warning d-none"
+            id="updateAreaBtn"
+          >
             Update Area
           </button>
           <button
@@ -157,13 +175,17 @@ export default function Areas() {
           <thead>
             <tr>
               <th>Area Name</th>
+              <th>Delivery Fees</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {areas.map((Area) => (
               <tr className="mb-3">
-                <td>{Area.areaNameEN}/{Area.areaNameAR}</td>
+                <td>
+                  {Area.areaNameEN}/{Area.areaNameAR}
+                </td>
+                <td>{Area.deliveryFees}</td>
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
                     <button

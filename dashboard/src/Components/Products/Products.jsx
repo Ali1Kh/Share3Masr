@@ -195,6 +195,8 @@ export default function Products() {
       let descriptionEN = $("#descriptionEN").val();
       let descriptionAR = $("#descriptionAR").val();
       let resturantCategory = $("#resturantCategory").val();
+      let resturant = $("#resturant").val();
+      let category = $("#category").val();
       let image = $("#productImage")[0].files[0];
 
       if (
@@ -202,7 +204,9 @@ export default function Products() {
         nameAR == "" ||
         descriptionEN == "" ||
         descriptionAR == "" ||
-        resturantCategory == ""
+        resturantCategory == "" ||
+        resturant == "" ||
+        category == ""
       ) {
         toast.error("Please fill all the fields");
         return;
@@ -214,6 +218,8 @@ export default function Products() {
         descriptionEN,
         descriptionAR,
         resturantCategory,
+        resturant,
+        category,
         prices: priceInputSets,
         extra: extraInputSets,
       };
@@ -325,9 +331,6 @@ export default function Products() {
     $("#descriptionAR").val(Product.descriptionAR);
     $("#category").val(Product.category._id);
     $("#resturant").val(Product.resturant._id);
-    $("#category").prop("disabled", true);
-    $("#resturant").prop("disabled", true);
-    console.log($("#resturantCategory"));
     $("#resturantCategory").val(Product.resturantCategory);
     $("#ProductImage").val("");
     let productPrices = Product.prices.map((item) => {
@@ -363,8 +366,6 @@ export default function Products() {
     $("#descriptionAR").val(Product.descriptionAR);
     $("#category").val(Product.category._id);
     $("#resturant").val(Product.resturant._id);
-    $("#category").prop("disabled", true);
-    $("#resturant").prop("disabled", true);
     $("#resturantCategory").val(Product.resturantCategory);
     $("#ProductImage").val("");
     let productPrices = Product.prices.map((item) => {
@@ -393,8 +394,8 @@ export default function Products() {
     $("#category").val("");
     $("#resturant").val("");
     $("#resturantCategory").val("");
-    $("#category").prop("disabled", false);
-    $("#resturant").prop("disabled", false);
+    $("#category").val("")
+    $("#resturant").val("")
     $("#productImage").val("");
 
     setPriceInputSets([{ sizeNameEN: "", sizeNameAR: "", sizePrice: "" }]);
