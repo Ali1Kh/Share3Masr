@@ -46,6 +46,7 @@ export const updateArea = async (req, res, next) => {
 
   isArea.areaNameEN = req.body.areaNameEN;
   isArea.areaNameAR = req.body.areaNameAR;
+  isArea.deliveryFees = req.body.deliveryFees;
   await isArea.save();
   return res.json({ success: true, message: "Area Updated Successfully" });
 };
