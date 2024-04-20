@@ -2,11 +2,17 @@ import { Order } from "../../../DB/models/order.model.js";
 import { Cart } from "../../../DB/models/cart.model.js";
 import createInvoice from "../../utils/pdf.js";
 import cloudinary from "../../utils/cloudinary.js";
+import { User } from "../../../DB/models/user.model.js";
+import { Area } from "../../../DB/models/area.model.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const createOrder = async (req, res, next) => {
+  let isArea = await Area.findById(req.body.area);
+  if (!isArea) {
+    return next(new Error("Area Not Found"));
+  }
   let userCart = await Cart.findOne({ user: req.user._id }).populate([
     {
       path: "products.productId",
@@ -43,6 +49,7 @@ export const createOrder = async (req, res, next) => {
     products: userCart.products,
     totalOrderPrice: userCart.totalPrice,
     deleveryFees: 15,
+    area : req.body.area,
     customerName: req.user.name,
     phone: req.body.phone,
     address: req.body.address,
