@@ -9,10 +9,10 @@ export const createOrderSchema = Joi.object({
     .messages({
       "string.pattern.base": "Invalid Phone Number",
     }),
+  area: Joi.custom(ObjectIdValidate).required(),
   address: Joi.string().required(),
 });
 
 export const orderIdReqSchema = Joi.object({
   orderId: Joi.custom(ObjectIdValidate).required(),
 });
-
