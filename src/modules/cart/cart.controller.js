@@ -51,8 +51,7 @@ export const addToCart = async (req, res, next) => {
       product.extraId.toString() === req.body.extraIds.toString()
     ) {
       userCart.products[idx].quantity += quantity;
-      userCart.totalPrice +=
-        (isProductSize.sizePrice + totalExtraPrice) * quantity;
+      userCart.totalPrice += (Number(isProductSize.sizePrice) * quantity) + (Number(totalExtraPrice) * quantity);
       productIsInCart = true;
     }
   });
@@ -127,7 +126,9 @@ export const deleteFromCart = async (req, res, next) => {
         },
       },
       $inc: {
-        totalPrice: -productInCart[0].productPrice,
+        totalPrice:
+          -(productInCart[0].productPrice * productInCart[0].quantity) -
+          productInCart[0].totalExtraPrice * productInCart[0].quantity,
       },
     }
   );
