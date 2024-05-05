@@ -49,7 +49,7 @@ export const createOrder = async (req, res, next) => {
     products: userCart.products,
     totalOrderPrice: userCart.totalPrice,
     deleveryFees: 15,
-    area : req.body.area,
+    area: req.body.area,
     customerName: req.user.name,
     phone: req.body.phone,
     address: req.body.address,
@@ -149,7 +149,7 @@ export const getResturantPendingOrders = async (req, res, next) => {
   let orders = await Order.find({
     resturants: { $in: req.resturant._id },
     status: "pending",
-  });
+  }).populate(["products.productId"]);
   return res.json({ success: true, count: orders.length, orders });
 };
 
@@ -157,20 +157,20 @@ export const getResturantAcceptedOrders = async (req, res, next) => {
   let orders = await Order.find({
     resturants: { $in: req.resturant._id },
     status: "accepted",
-  });
+  }).populate(["products.productId"]);
   return res.json({ success: true, count: orders.length, orders });
 };
 
 export const getResturantOrdersHistory = async (req, res, next) => {
   let orders = await Order.find({
     resturants: { $in: req.resturant._id },
-  });
+  }).populate(["products.productId"]);
   return res.json({ success: true, count: orders.length, orders });
 };
 
 export const getAllOrdersHistory = async (req, res, next) => {
   let orders = await Order.find().populate([
-    {path:"deliveryWorker",select:"name phone"},
+    { path: "deliveryWorker", select: "name phone" },
     {
       path: "products.productId",
       select:
