@@ -150,6 +150,21 @@ export const getResturantPendingOrders = async (req, res, next) => {
     resturants: { $in: req.resturant._id },
     status: "pending",
   }).populate(["products.productId"]);
+
+  orders.map((order) => {
+    order.products.map((orderProduct) => {
+      order.products = order.products.map((product) => {
+        product.productId.prices = product.productId.prices.filter(
+          (price) => price._id.toString() == product.sizeId
+        );
+        product.productId.extra = product.productId.extra.filter((extra) =>
+          product.extraId.includes(extra._id.toString())
+        );
+        return product;
+      });
+    });
+  });
+
   return res.json({ success: true, count: orders.length, orders });
 };
 
@@ -158,6 +173,19 @@ export const getResturantAcceptedOrders = async (req, res, next) => {
     resturants: { $in: req.resturant._id },
     status: "accepted",
   }).populate(["products.productId"]);
+  orders.map((order) => {
+    order.products.map((orderProduct) => {
+      order.products = order.products.map((product) => {
+        product.productId.prices = product.productId.prices.filter(
+          (price) => price._id.toString() == product.sizeId
+        );
+        product.productId.extra = product.productId.extra.filter((extra) =>
+          product.extraId.includes(extra._id.toString())
+        );
+        return product;
+      });
+    });
+  });
   return res.json({ success: true, count: orders.length, orders });
 };
 
@@ -165,6 +193,21 @@ export const getResturantOrdersHistory = async (req, res, next) => {
   let orders = await Order.find({
     resturants: { $in: req.resturant._id },
   }).populate(["products.productId"]);
+
+  orders.map((order) => {
+    order.products.map((orderProduct) => {
+      order.products = order.products.map((product) => {
+        product.productId.prices = product.productId.prices.filter(
+          (price) => price._id.toString() == product.sizeId
+        );
+        product.productId.extra = product.productId.extra.filter((extra) =>
+          product.extraId.includes(extra._id.toString())
+        );
+        return product;
+      });
+    });
+  });
+
   return res.json({ success: true, count: orders.length, orders });
 };
 
