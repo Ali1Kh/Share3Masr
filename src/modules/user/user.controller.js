@@ -26,7 +26,28 @@ export const signUp = async (req, res, next) => {
 
   let user = await User.create({ ...req.body, password: hashedPass });
   await Cart.create({ user: user._id });
-  return res.json({ success: true, message: "User Registered Successfully" });
+
+  const token = jwt.sign(
+    { id: user._id, phone: user.phone, role: "customer" },
+    process.env.TOKEN_SECRET_KEY
+  );
+
+  await Token.create({
+    token,
+    user: user._id,
+    isValid: true,
+    role: "customer",
+    expiredAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60),
+    agent: req.headers["user-agent"],
+  });
+
+  let { _id, name, area, phone, email, role } = await user.populate("area");
+  return res.json({
+    success: true,
+    message: "User Registered Successfully",
+    token,
+    newUser:{ _id, name, area, phone, email, role },
+  });
 };
 
 export const login = async (req, res, next) => {
@@ -54,6 +75,21 @@ export const login = async (req, res, next) => {
   });
 
   return res.json({ success: true, message: "Logged In Successfully", token });
+};
+
+export const getTokenInfo = async (req, res, next) => {
+  let { _id, name, area, phone, email, role } = req.user;
+  return res.json({
+    success: true,
+    user: {
+      _id,
+      name,
+      area,
+      phone,
+      email,
+      role,
+    },
+  });
 };
 
 export const adminLogin = async (req, res, next) => {

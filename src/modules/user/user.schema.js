@@ -17,12 +17,12 @@ export const signUpSchema = Joi.object({
     "string.email": "Please Enter A Valid Email",
   }),
   password: Joi.string()
-    .min(8)
+    .min(4)
     .required()
-    .pattern(new RegExp("^[a-zA-Z].{7,30}$"))
+    .pattern(new RegExp("^.{4,30}$"))
     .messages({
       "string.pattern.base": "Password Must Start With Letter",
-      "string.min": "Password Must Be At least 8 characters.",
+      "string.min": "Password Must Be At least 4 characters.",
     }),
   confirmPass: Joi.string().valid(Joi.ref("password")).required().messages({
     "any.only": "Confirm Password is Invaild",
