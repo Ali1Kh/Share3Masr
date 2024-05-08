@@ -224,7 +224,9 @@ export default function Resturants() {
       formdata.append("phone[]", phone);
     });
     resturantSubCategoryInputSets.forEach((subCategory, index) => {
-      formdata.append(`subCategories[${index}][_id]`, subCategory._id);
+      if (subCategory._id) {
+        formdata.append(`subCategories[${index}][_id]`, subCategory._id);
+      }
       formdata.append(`subCategories[${index}][nameEN]`, subCategory.nameEN);
       formdata.append(`subCategories[${index}][nameAR]`, subCategory.nameAR);
     });

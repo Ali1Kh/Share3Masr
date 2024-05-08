@@ -16,9 +16,11 @@ export const addToCart = async (req, res, next) => {
     return next(new Error("Product Is Not Available"));
   }
 
-  const isProductSize = isProduct.prices.map((item) =>
-    item._id.toString() === req.body.sizeId ? item : null
-  )[0];
+  const isProductSize = isProduct.prices
+    .map((item) =>
+      item._id.toString() === req.body.sizeId.toString() ? item : null
+    )
+    .filter((item) => item)[0];
 
   if (!isProductSize) {
     return next(new Error("Size Not Found"));
@@ -36,8 +38,10 @@ export const addToCart = async (req, res, next) => {
   }
 
   let totalExtraPrice =
-    isExtraIds.length > 0
+    isExtraIds.length > 1
       ? isExtraIds.reduce((pv, cv) => Number(pv.price) + Number(cv.price))
+      : isExtraIds.length == 1
+      ? isExtraIds[0].price
       : 0;
 
   let userCart = await Cart.findOne({ user: req.user._id });
@@ -51,7 +55,9 @@ export const addToCart = async (req, res, next) => {
       product.extraId.toString() === req.body.extraIds.toString()
     ) {
       userCart.products[idx].quantity += quantity;
-      userCart.totalPrice += (Number(isProductSize.sizePrice) * quantity) + (Number(totalExtraPrice) * quantity);
+      userCart.totalPrice +=
+        Number(isProductSize.sizePrice) * quantity +
+        Number(totalExtraPrice) * quantity;
       productIsInCart = true;
     }
   });
@@ -79,7 +85,8 @@ export const addToCart = async (req, res, next) => {
       },
       $inc: {
         totalPrice:
-          (Number(isProductSize.sizePrice) + totalExtraPrice) * quantity,
+          (Number(isProductSize.sizePrice) + Number(totalExtraPrice)) *
+          Number(quantity),
       },
     }
   );

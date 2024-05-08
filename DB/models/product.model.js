@@ -14,6 +14,7 @@ const productSchema = Schema(
     descriptionAR: { type: String, required: true },
     category: { type: Schema.Types.ObjectId, ref: "Category" },
     resturant: { type: Schema.Types.ObjectId, ref: "Resturant" },
+    discount: { type: Number, default: 0, min: 0, max: 100, required: false },
     extra: [
       {
         itemNameEN: { type: String, required: true },

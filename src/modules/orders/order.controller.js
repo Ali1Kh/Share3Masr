@@ -36,9 +36,9 @@ export const createOrder = async (req, res, next) => {
   });
 
   userCart.products = userCart.products.map((product) => {
-    product.productId.prices = product.productId.prices.filter(
-      (price) => price._id.toString() == product.sizeId
-    );
+    product.productId.prices = product.productId.prices.filter((price) => {
+      return price._id.toString() == product.sizeId.toString();
+    });
     product.productId.extra = product.productId.extra.filter((extra) =>
       product.extraId.includes(extra._id.toString())
     );
@@ -48,7 +48,7 @@ export const createOrder = async (req, res, next) => {
   let data = {
     products: userCart.products,
     totalOrderPrice: userCart.totalPrice,
-    deleveryFees: 15,
+    deleveryFees: isArea.deliveryFees,
     area: req.body.area,
     customerName: req.user.name,
     phone: req.body.phone,
@@ -56,6 +56,8 @@ export const createOrder = async (req, res, next) => {
     resturants,
     user: req.user._id,
   };
+
+  let order = await Order.create(data);
 
   // Create Invoice
   const invoice = {
@@ -68,33 +70,31 @@ export const createOrder = async (req, res, next) => {
     orderPrice: data.totalOrderPrice,
     deleveryFees: data.deleveryFees,
     total: data.totalOrderPrice + data.deleveryFees,
-    invoice_nr: 1234,
+    invoice_nr: order.serialNumber,
   };
+  createInvoice(invoice, `invoices.pdf`);
+  // createInvoice(invoice, `invoices${order._id}.pdf`).then(async () => {
+  // let { secure_url, public_id } = await cloudinary.uploader.upload(
+  //   `invoices${order._id}.pdf`,
+  //   {
+  //     folder: `Share3Masr/Invoices/${req.user._id}/${order._id}`,
+  //   }
+  // );
+  // order.receipt = {
+  //   secure_url,
+  //   public_id,
+  // };
 
-  let order = await Order.create(data);
-
-  createInvoice(invoice, `invoices${order._id}.pdf`).then(async () => {
-    let { secure_url, public_id } = await cloudinary.uploader.upload(
-      `invoices${order._id}.pdf`,
-      {
-        folder: `Share3Masr/Invoices/${req.user._id}/${order._id}`,
-      }
-    );
-    order.receipt = {
-      secure_url,
-      public_id,
-    };
-
-    await order.save();
-    userCart.products = [];
-    userCart.totalPrice = 0;
-    await userCart.save();
-    return res.json({
-      success: true,
-      message: "Order Created Successfully",
-      invoice: order.receipt,
-    });
+  // await order.save();
+  // userCart.products = [];
+  // userCart.totalPrice = 0;
+  // await userCart.save();
+  return res.json({
+    success: true,
+    message: "Order Created Successfully",
+    invoice: order.receipt,
   });
+  // });
 };
 
 export const acceptOrder = async (req, res, next) => {

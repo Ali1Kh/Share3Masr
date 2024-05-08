@@ -40,7 +40,7 @@ export default function Products() {
   }
   async function getProducts() {
     try {
-      let { data } = await axios.get("https://foodyproj.onrender.com/products");
+      let { data } = await axios.get("http://localhost:4000/products");
       if (data.success) {
         setProducts(data.products);
       }
@@ -394,8 +394,8 @@ export default function Products() {
     $("#category").val("");
     $("#resturant").val("");
     $("#resturantCategory").val("");
-    $("#category").val("")
-    $("#resturant").val("")
+    $("#category").val("");
+    $("#resturant").val("");
     $("#productImage").val("");
 
     setPriceInputSets([{ sizeNameEN: "", sizeNameAR: "", sizePrice: "" }]);
@@ -462,13 +462,24 @@ export default function Products() {
 
         <div className="row mt-4">
           <div className="col-md-6 d-flex align-items-center">
-            <div className="mb-3 w-100">
-              <input
-                className="form-control "
-                type="text"
-                placeholder="Product Name"
-                id="ProductNameEN"
-              />
+            <div className="d-flex w-100 gap-1">
+              <div className="mb-3 w-100">
+                <input
+                  className="form-control "
+                  type="text"
+                  placeholder="Product Name"
+                  id="ProductNameEN"
+                />
+              </div>
+              <div className="mb-3 w-100">
+                <input
+                  className="form-control "
+                  type="text"
+                  dir="rtl"
+                  placeholder="اسم الصنف"
+                  id="ProductNameAR"
+                />
+              </div>
             </div>
           </div>
 
@@ -476,10 +487,21 @@ export default function Products() {
             <div className="mb-3 w-100">
               <input
                 className="form-control "
-                type="text"
-                dir="rtl"
-                placeholder="اسم الصنف"
-                id="ProductNameAR"
+                type="number"
+                placeholder="Discount"
+                id="discount"
+                min="0"
+                max="100"
+                maxLength={"3"}
+                onInput={(e) => {
+                  if (e.target.value == 1000) {
+                    e.target.value = e.target.value.slice(0, 3);
+                  } else if (e.target.value > 100) {
+                    e.target.value = e.target.value.slice(0, 2);
+                  } else if (e.target.value < 0) {
+                    e.target.value = 0;
+                  }
+                }}
               />
             </div>
           </div>
@@ -817,6 +839,15 @@ export default function Products() {
                          ${extra.itemNameAR}
                          ${extra.price}`
                   )}`,
+              },
+              {
+                field: "discount",
+                headerName: "Discount",
+                width: 150,
+                resizable: true,
+                align: "center",
+                headerAlign: "center",
+                valueGetter: (params) => `${params.row?.discount}%`,
               },
               {
                 field: "image",

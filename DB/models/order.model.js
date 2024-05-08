@@ -1,7 +1,11 @@
-import { Schema, Types, model } from "mongoose";
+import mongoose, { Schema, Types, model } from "mongoose";
+import AutoIncrement from "mongoose-sequence";
+
+const AutoIncrementFactory = AutoIncrement(mongoose);
 
 const orderSchema = new Schema(
   {
+    // serialNumber: { type: Number, unique: true, required: true },
     products: [
       {
         productId: { type: Types.ObjectId, ref: "Product", required: true },
@@ -42,5 +46,7 @@ const orderSchema = new Schema(
 orderSchema.virtual("totalPrice").get(function () {
   return Number.parseFloat(this.totalOrderPrice + this.deleveryFees).toFixed(2);
 });
+
+orderSchema.plugin(AutoIncrementFactory, { inc_field: "serialNumber" });
 
 export const Order = model("Order", orderSchema);

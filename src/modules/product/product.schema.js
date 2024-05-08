@@ -9,6 +9,7 @@ export const createProductSchema = joi.object({
   category: joi.custom(ObjectIdValidate).required(),
   resturant: joi.custom(ObjectIdValidate).required(),
   resturantCategory: joi.custom(ObjectIdValidate).required(),
+  discount: joi.number().min(0).max(100),
   prices: joi
     .array()
     .items(
@@ -28,7 +29,6 @@ export const createProductSchema = joi.object({
   ),
 });
 
-
 export const updateProductSchema = joi.object({
   id: joi.custom(ObjectIdValidate).required(),
   nameEN: joi.string().required(),
@@ -37,6 +37,7 @@ export const updateProductSchema = joi.object({
   descriptionAR: joi.string().required(),
   category: joi.custom(ObjectIdValidate).required(),
   resturant: joi.custom(ObjectIdValidate).required(),
+  discount: joi.number().min(0).max(100),
   resturantCategory: joi.custom(ObjectIdValidate).required(),
   prices: joi
     .array()

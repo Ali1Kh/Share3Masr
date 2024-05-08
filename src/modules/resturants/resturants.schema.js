@@ -83,7 +83,7 @@ export const updateResturantSchema = Joi.object({
     .required(),
   subCategories: Joi.array().items(
     Joi.object({
-      _id : Joi.custom(ObjectIdValidate).required(),
+      _id : Joi.custom(ObjectIdValidate),
       nameEN: Joi.string().required(),
       nameAR: Joi.string().required(),
     }).required()

@@ -46,11 +46,11 @@ function generateCustomerInformation(doc, invoice) {
     .fillColor("#444444")
     .fontSize(20)
     .font("Simplified Arabic Bold")
-    .text("الفاتورة", 50, 135, { align: "right" });
+    .text("الفاتورة", 50, 130, { align: "right" });
 
-  generateHr(doc, 170);
+  generateHr(doc, 165);
 
-  const customerInformationTop = 185;
+  const customerInformationTop = 180;
 
   doc
     .fontSize(10)
@@ -76,6 +76,14 @@ function generateCustomerInformation(doc, invoice) {
     })
     .font("Simplified Arabic")
     .text(formatCurrency(invoice.total), 150, customerInformationTop + 30, {
+      align: "center",
+    })
+    .font("Simplified Arabic Bold")
+    .text(reverseText("رقم الطلب:"), 300, customerInformationTop + -15, {
+      align: "right",
+    })
+    .font("Simplified Arabic")
+    .text(invoice.invoice_nr, 150, customerInformationTop + -15, {
       align: "center",
     })
 
