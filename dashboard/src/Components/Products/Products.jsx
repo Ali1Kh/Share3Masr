@@ -80,6 +80,7 @@ export default function Products() {
       let resturant = $("#resturant").val();
       let resturantCategory = $("#resturantCategory").val();
       let image = $("#productImage")[0].files[0];
+      let discount = $("#discount").val();
 
       if (
         nameEN == "" ||
@@ -101,10 +102,15 @@ export default function Products() {
         descriptionAR,
         category,
         resturant,
+        discount,
         resturantCategory,
         prices: priceInputSets,
         extra: extraInputSets,
       };
+
+      if (discount == "") {
+        delete initData.discount;
+      }
 
       let priceError = false;
       priceInputSets.forEach((element) => {
@@ -198,6 +204,7 @@ export default function Products() {
       let resturant = $("#resturant").val();
       let category = $("#category").val();
       let image = $("#productImage")[0].files[0];
+      let discount = $("#discount").val();
 
       if (
         nameEN == "" ||
@@ -220,9 +227,12 @@ export default function Products() {
         resturantCategory,
         resturant,
         category,
+        discount,
         prices: priceInputSets,
         extra: extraInputSets,
       };
+
+      if (discount == "") delete initData.discount;
 
       let priceError = false;
       priceInputSets.forEach((element) => {
@@ -330,6 +340,7 @@ export default function Products() {
     $("#descriptionEN").val(Product.descriptionEN);
     $("#descriptionAR").val(Product.descriptionAR);
     $("#category").val(Product.category._id);
+    $("#discount").val(Product.discount);
     $("#resturant").val(Product.resturant._id);
     $("#resturantCategory").val(Product.resturantCategory);
     $("#ProductImage").val("");
@@ -365,6 +376,7 @@ export default function Products() {
     $("#descriptionEN").val(Product.descriptionEN);
     $("#descriptionAR").val(Product.descriptionAR);
     $("#category").val(Product.category._id);
+    $("#discount").val(Product.discount);
     $("#resturant").val(Product.resturant._id);
     $("#resturantCategory").val(Product.resturantCategory);
     $("#ProductImage").val("");
@@ -393,6 +405,7 @@ export default function Products() {
     $("#description").val("");
     $("#category").val("");
     $("#resturant").val("");
+    $("#discount").val("");
     $("#resturantCategory").val("");
     $("#category").val("");
     $("#resturant").val("");
