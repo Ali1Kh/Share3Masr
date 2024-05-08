@@ -72,29 +72,28 @@ export const createOrder = async (req, res, next) => {
     total: data.totalOrderPrice + data.deleveryFees,
     invoice_nr: order.serialNumber,
   };
-  createInvoice(invoice, `invoices.pdf`);
-  // createInvoice(invoice, `invoices${order._id}.pdf`).then(async () => {
-  // let { secure_url, public_id } = await cloudinary.uploader.upload(
-  //   `invoices${order._id}.pdf`,
-  //   {
-  //     folder: `Share3Masr/Invoices/${req.user._id}/${order._id}`,
-  //   }
-  // );
-  // order.receipt = {
-  //   secure_url,
-  //   public_id,
-  // };
+  createInvoice(invoice, `invoices${order._id}.pdf`).then(async () => {
+  let { secure_url, public_id } = await cloudinary.uploader.upload(
+    `invoices${order._id}.pdf`,
+    {
+      folder: `Share3Masr/Invoices/${req.user._id}/${order._id}`,
+    }
+  );
+  order.receipt = {
+    secure_url,
+    public_id,
+  };
 
-  // await order.save();
-  // userCart.products = [];
-  // userCart.totalPrice = 0;
-  // await userCart.save();
+  await order.save();
+  userCart.products = [];
+  userCart.totalPrice = 0;
+  await userCart.save();
   return res.json({
     success: true,
     message: "Order Created Successfully",
     invoice: order.receipt,
   });
-  // });
+  });
 };
 
 export const acceptOrder = async (req, res, next) => {
