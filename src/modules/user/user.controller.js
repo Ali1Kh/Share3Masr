@@ -46,7 +46,7 @@ export const signUp = async (req, res, next) => {
     success: true,
     message: "User Registered Successfully",
     token,
-    newUser:{ _id, name, area, phone, email, role },
+    newUser: { _id, name, area, phone, email, role },
   });
 };
 
@@ -73,8 +73,13 @@ export const login = async (req, res, next) => {
     expiredAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60),
     agent: req.headers["user-agent"],
   });
-
-  return res.json({ success: true, message: "Logged In Successfully", token });
+  let { _id, name, area, phone, email, role } = isUser;
+  return res.json({
+    success: true,
+    message: "Logged In Successfully",
+    token,
+    user: { _id, name, area, phone, email, role },
+  });
 };
 
 export const getTokenInfo = async (req, res, next) => {
