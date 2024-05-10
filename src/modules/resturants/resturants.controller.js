@@ -160,7 +160,7 @@ export const resturantLogin = async (req, res, next) => {
   return res.json({
     success: true,
     token,
-    resturant: { _id, nameEN, nameAR, owner, addressEN, addressAR },
+    user: { _id, nameEN, nameAR, owner, addressEN, addressAR },
     message: "Resturant Login Successfully",
   });
 };

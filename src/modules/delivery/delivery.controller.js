@@ -55,7 +55,7 @@ export const deliveryLogin = async (req, res, next) => {
   return res.json({
     success: true,
     token,
-    delivery: { _id, name, phone, status },
+    user: { _id, name, phone, status },
     message: "Delivery Logged In Successfully",
   });
 };
