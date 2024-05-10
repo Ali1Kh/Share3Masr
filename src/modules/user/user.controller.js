@@ -46,7 +46,7 @@ export const signUp = async (req, res, next) => {
     success: true,
     message: "User Registered Successfully",
     token,
-    newUser: { _id, name, area, phone, email, role },
+    user: { _id, name, area, phone, email, role },
   });
 };
 
