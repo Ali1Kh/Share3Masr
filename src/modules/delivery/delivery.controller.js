@@ -50,9 +50,12 @@ export const deliveryLogin = async (req, res, next) => {
   isDelivery.status = "waiting";
   await isDelivery.save();
 
+  let { _id, name, phone, status } = isDelivery;
+
   return res.json({
     success: true,
     token,
+    delivery: { _id, name, phone, status },
     message: "Delivery Logged In Successfully",
   });
 };

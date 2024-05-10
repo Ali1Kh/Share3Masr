@@ -154,9 +154,13 @@ export const resturantLogin = async (req, res, next) => {
     expiredAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60),
     agent: req.headers["user-agent"],
   });
+
+  let { _id, nameEN, nameAR, owner, addressEN, addressAR } = resturant;
+
   return res.json({
     success: true,
     token,
+    resturant: { _id, nameEN, nameAR, owner, addressEN, addressAR },
     message: "Resturant Login Successfully",
   });
 };
