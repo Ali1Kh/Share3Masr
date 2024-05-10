@@ -96,7 +96,15 @@ export const deleteDelivery = async (req, res, next) => {
 };
 
 export const getReadyOrders = async (req, res, next) => {
-  let orders = await Order.find({ status: "ready" }).sort({ createdAt: -1 });
+  let orders = await Order.find({ status: "ready" })
+    .populate([
+      {
+        path: "resturants",
+        select: "-password",
+      },
+      "products.productId"
+    ])
+    .sort({ createdAt: -1 });
   return res.json({
     success: true,
     orders,
