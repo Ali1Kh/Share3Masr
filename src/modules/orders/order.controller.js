@@ -73,26 +73,26 @@ export const createOrder = async (req, res, next) => {
     invoice_nr: order.serialNumber,
   };
   createInvoice(invoice, `invoices${order._id}.pdf`).then(async () => {
-  let { secure_url, public_id } = await cloudinary.uploader.upload(
-    `invoices${order._id}.pdf`,
-    {
-      folder: `Share3Masr/Invoices/${req.user._id}/${order._id}`,
-    }
-  );
-  order.receipt = {
-    secure_url,
-    public_id,
-  };
+    let { secure_url, public_id } = await cloudinary.uploader.upload(
+      `invoices${order._id}.pdf`,
+      {
+        folder: `Share3Masr/Invoices/${req.user._id}/${order._id}`,
+      }
+    );
+    order.receipt = {
+      secure_url,
+      public_id,
+    };
 
-  await order.save();
-  userCart.products = [];
-  userCart.totalPrice = 0;
-  await userCart.save();
-  return res.json({
-    success: true,
-    message: "Order Created Successfully",
-    invoice: order.receipt,
-  });
+    await order.save();
+    userCart.products = [];
+    userCart.totalPrice = 0;
+    await userCart.save();
+    return res.json({
+      success: true,
+      message: "Order Created Successfully",
+      invoice: order.receipt,
+    });
   });
 };
 
@@ -240,6 +240,35 @@ export const getAllOrdersHistory = async (req, res, next) => {
       return product;
     });
     order.resturants = resturants;
+    return order;
+  });
+
+  return res.json({ success: true, count: orders.length, orders });
+};
+
+export const getUserOrders = async (req, res, next) => {
+  let orders = await Order.find({ user: req.user._id }).populate([
+    {
+      path: "products.productId",
+      select:
+        "resturant prices extra nameAR nameEN descriptionAR descriptionEN ",
+      populate: {
+        path: "resturant",
+        select: "nameAR nameEN",
+      },
+    },
+  ]);
+
+  orders = orders.map((order) => {
+    order.products = order.products.map((product) => {
+      product.productId.prices = product.productId.prices.filter(
+        (price) => price._id.toString() == product.sizeId
+      );
+      product.productId.extra = product.productId.extra.filter((extra) =>
+        product.extraId.includes(extra._id.toString())
+      );
+      return product;
+    });
     return order;
   });
 

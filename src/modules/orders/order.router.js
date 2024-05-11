@@ -58,6 +58,14 @@ router.get(
   isAuthorized("resturant"),
   asyncHandler(orderController.getResturantOrdersHistory)
 );
+
+router.get(
+  "/getUserOrders",
+  isAuthenticated,
+  isAuthorized("customer"),
+  asyncHandler(orderController.getUserOrders)
+);
+
 router.get(
   "/allOrdersHistory",
   isAuthenticated,
