@@ -8,6 +8,8 @@ const userSchema = Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ["customer", "admin"], default: "customer" },
   //   image: { secure_url: { type: String, required: true } , public_id: { type: String, required: true } },
+},{
+  timestamps: true,
 });
 
 export const User = model("User", userSchema);
