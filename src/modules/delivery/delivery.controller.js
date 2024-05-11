@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Token } from "../../../DB/models/token.model.js";
 import { Order } from "../../../DB/models/order.model.js";
+import { populate } from "dotenv";
 
 export const createDelivery = async (req, res, next) => {
   let isDelivery = await Delivery.findOne({ phone: req.body.phone });
@@ -102,7 +103,8 @@ export const getReadyOrders = async (req, res, next) => {
         path: "resturants",
         select: "-password",
       },
-      "products.productId"
+
+      { path: "products.productId", populate: "resturant" },
     ])
     .sort({ createdAt: -1 });
   return res.json({
