@@ -37,11 +37,15 @@ export const addToCart = async (req, res, next) => {
     }
   }
 
+  let extraPrices = isExtraIds.map((extra) => extra.price);
+
   let totalExtraPrice =
-    isExtraIds.length > 1
-      ? isExtraIds.reduce((pv, cv) => Number(pv.price) + Number(cv.price))
-      : isExtraIds.length == 1
-      ? isExtraIds[0].price
+  extraPrices.length > 1
+      ? extraPrices.reduce((pv, cv) => {
+          return Number(pv) + Number(cv);
+        }, 0)
+      : extraPrices.length == 1
+      ? extraPrices[0]
       : 0;
 
   let userCart = await Cart.findOne({ user: req.user._id });
