@@ -40,7 +40,7 @@ export default function Products() {
   }
   async function getProducts() {
     try {
-      let { data } = await axios.get("http://localhost:4000/products");
+      let { data } = await axios.get("https://foodyproj.onrender.com/products");
       if (data.success) {
         setProducts(data.products);
       }
@@ -51,7 +51,7 @@ export default function Products() {
     console.log(search);
     try {
       let { data } = await axios.get(
-        "http://localhost:4000/products?search=" + search
+        "https://foodyproj.onrender.com/products?search=" + search
       );
       if (data.success) {
         setProducts(data.products);
