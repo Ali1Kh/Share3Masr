@@ -143,7 +143,17 @@ export const orderDelivered = async (req, res, next) => {
 export const getDelivereyOrders = async (req, res, next) => {
   let orders = await Order.find({
     deliveryWorker: req.delivery._id,
-  }).sort({ status: -1 });
+  })
+    .sort({ status: -1 })
+    .populate([
+      {
+        path: "resturants",
+        select: "-password",
+      },
+
+      { path: "products.productId", populate: "resturant" },
+    ])
+    .sort({ createdAt: -1 });
   return res.json({
     success: true,
     orders,
@@ -153,7 +163,19 @@ export const getDelivereyOrderDetails = async (req, res, next) => {
   let order = await Order.findOne({
     deliveryWorker: req.delivery._id,
     _id: req.params.id,
-  });
+  })
+    .populate([
+      {
+        path: "resturants",
+        select: "-password",
+      },
+
+      { path: "products.productId", populate: "resturant" },
+    ])
+    .sort({ createdAt: -1 });
+  if (!order) {
+    return next(new Error("Order Not Found"));
+  }
   return res.json({
     success: true,
     orders: order,

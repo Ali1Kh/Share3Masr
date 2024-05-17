@@ -257,7 +257,6 @@ export const getUserOrders = async (req, res, next) => {
         select: "nameAR nameEN",
       },
     },
-    
   ]);
 
   orders = orders.map((order) => {
