@@ -10,6 +10,7 @@ const resturantSchema = Schema({
   addressAR: { type: String, required: false },
   openingTime: { type: String, required: true },
   closingTime: { type: String, required: true },
+  socketId: { type: String },
   area: { type: Types.ObjectId, ref: "Area" },
   category: [{ type: Types.ObjectId, ref: "Category", required: true }],
   subCategories: [

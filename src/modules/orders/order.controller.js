@@ -7,6 +7,8 @@ import { Area } from "../../../DB/models/area.model.js";
 import path from "path";
 import { fileURLToPath } from "url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import { io } from "../../../index.js";
+import { Delivery } from "../../../DB/models/delivery.model.js";
 
 export const createOrder = async (req, res, next) => {
   let isArea = await Area.findById(req.body.area);
@@ -88,6 +90,13 @@ export const createOrder = async (req, res, next) => {
     userCart.products = [];
     userCart.totalPrice = 0;
     await userCart.save();
+
+    order.resturants.map((resturant) => {
+      if (resturant.socketId) {
+        io.to(resturant.socketId).emit("newResturantOrder", order);
+      }
+    });
+
     return res.json({
       success: true,
       message: "Order Created Successfully",
@@ -141,6 +150,18 @@ export const orderReady = async (req, res, next) => {
   }
   order.status = "ready";
   await order.save();
+
+
+  let waitingDelivery = await Delivery.find({
+    status: "waiting",
+  });
+
+  waitingDelivery.map((delivery) => {
+    if (delivery.socketId) {
+      io.to(delivery.socketId).emit("newReadyOrder", order);
+    }
+  });
+
   return res.json({ success: true, message: "Order Is Ready To Deliver" });
 };
 

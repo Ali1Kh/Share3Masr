@@ -10,9 +10,51 @@ import cartRouter from "./src/modules/cart/cart.router.js";
 import deliveryRouter from "./src/modules/delivery/delivery.router.js";
 import orderRouter from "./src/modules/orders/order.router.js";
 import cors from "cors";
+import { verifyToken } from "./src/utils/verifyToken.js";
+import { Server } from "socket.io";
+import { createServer } from "node:http";
+import { Resturant } from "./DB/models/resturant.model.js";
+import { Delivery } from "./DB/models/delivery.model.js";
+
 dotenv.config();
 const port = process.env.PORT;
 const app = express();
+
+const server = createServer(app);
+export const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+try {
+  io.on("connection", async (socket) => {
+    socket.on("updateSocketId", async (data) => {
+      if (!data.token) {
+        return new Error("Token Is Required");
+      }
+      verifyToken(data.token).then(async (payload) => {
+        if (!payload) return;
+        if (payload.role == "delivery") {
+          await Delivery.update(
+            { socketId: socket.id },
+            { where: { manager_id: payload.id } }
+          );
+        } else if (payload.role == "resturant") {
+          await Resturant.update(
+            { socketId: socket.id },
+            { where: { manager_id: payload.id } }
+          );
+        }
+      });
+    });
+
+  
+  });
+} catch (error) {
+  console.log(error);
+}
+
 app.use(cors());
 app.use(express.json());
 await connectMongo();
@@ -23,7 +65,7 @@ app.use("/categories", categoriesRouter);
 app.use("/resturants", resturantRouter);
 app.use("/products", productRouter);
 app.use("/delivery", deliveryRouter);
-app.use("/cart",cartRouter);
+app.use("/cart", cartRouter);
 app.use("/orders", orderRouter);
 
 app.all("/uptime", (req, res) => {
