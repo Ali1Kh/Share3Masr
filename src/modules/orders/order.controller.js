@@ -22,7 +22,7 @@ export const createOrder = async (req, res, next) => {
         "resturant prices extra nameAR nameEN descriptionAR descriptionEN",
       populate: {
         path: "resturant",
-        select: "nameAR nameEN",
+        select: "nameAR nameEN socketId",
       },
     },
   ]);

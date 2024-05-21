@@ -39,7 +39,6 @@ try {
           await Delivery.findByIdAndUpdate(payload.id, { socketId: socket.id });
         } else if (payload.role == "resturant") {
           await Resturant.findByIdAndUpdate(payload.id, { socketId: socket.id });
-          console.log("updated");
         }
       });
     });
