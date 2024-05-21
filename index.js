@@ -83,4 +83,4 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(port, () => console.log(`App listening on port ${port}!`));
+server.listen(port, () => console.log(`App listening on port ${port}!`));
