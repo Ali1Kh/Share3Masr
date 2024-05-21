@@ -36,20 +36,13 @@ try {
       verifyToken(data.token).then(async (payload) => {
         if (!payload) return;
         if (payload.role == "delivery") {
-          await Delivery.update(
-            { socketId: socket.id },
-            { where: { manager_id: payload.id } }
-          );
+          await Delivery.findByIdAndUpdate(payload.id, { socketId: socket.id });
         } else if (payload.role == "resturant") {
-          await Resturant.update(
-            { socketId: socket.id },
-            { where: { manager_id: payload.id } }
-          );
+          await Resturant.findByIdAndUpdate(payload.id, { socketId: socket.id });
+          console.log("updated");
         }
       });
     });
-
-  
   });
 } catch (error) {
   console.log(error);

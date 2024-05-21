@@ -5,10 +5,11 @@ export const verifyToken = async (token) => {
   try {
     if (!token) return new Error("Token Is Required");
     const tokenDB = await Token.findOne({
-      where: { token, isValid: true },
+      token,
+      isValid: true,
     });
     if (!tokenDB) return;
-    return jwt.verify(token, process.env.SECRET_KEY);
+    return jwt.verify(token, process.env.TOKEN_SECRET_KEY);
   } catch (error) {
     console.log(error);
   }
