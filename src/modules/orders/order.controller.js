@@ -157,7 +157,6 @@ export const orderReady = async (req, res, next) => {
 
   waitingDelivery.map((delivery) => {
     if (delivery.socketId) {
-      console.log("sent to : " + delivery.socketId);
       io.to(delivery.socketId).emit("newReadyOrder", order);
     }
   });
