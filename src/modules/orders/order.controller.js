@@ -151,13 +151,13 @@ export const orderReady = async (req, res, next) => {
   order.status = "ready";
   await order.save();
 
-
   let waitingDelivery = await Delivery.find({
     status: "waiting",
   });
 
   waitingDelivery.map((delivery) => {
     if (delivery.socketId) {
+      console.log("sent to : " + delivery.socketId);
       io.to(delivery.socketId).emit("newReadyOrder", order);
     }
   });
@@ -169,7 +169,9 @@ export const getResturantPendingOrders = async (req, res, next) => {
   let orders = await Order.find({
     resturants: { $in: req.resturant._id },
     status: "pending",
-  }).populate(["products.productId"]);
+  })
+    .populate(["products.productId"])
+    .sort("-createdAt");
 
   orders.map((order) => {
     order.products.map((orderProduct) => {
@@ -232,18 +234,20 @@ export const getResturantOrdersHistory = async (req, res, next) => {
 };
 
 export const getAllOrdersHistory = async (req, res, next) => {
-  let orders = await Order.find().populate([
-    { path: "deliveryWorker", select: "name phone" },
-    {
-      path: "products.productId",
-      select:
-        "resturant prices extra nameAR nameEN descriptionAR descriptionEN ",
-      populate: {
-        path: "resturant",
-        select: "nameAR nameEN",
+  let orders = await Order.find()
+    .populate([
+      { path: "deliveryWorker", select: "name phone" },
+      {
+        path: "products.productId",
+        select:
+          "resturant prices extra nameAR nameEN descriptionAR descriptionEN ",
+        populate: {
+          path: "resturant",
+          select: "nameAR nameEN",
+        },
       },
-    },
-  ]);
+    ])
+    .sort("-createdAt");
 
   let resturants = [];
 
@@ -268,17 +272,19 @@ export const getAllOrdersHistory = async (req, res, next) => {
 };
 
 export const getUserOrders = async (req, res, next) => {
-  let orders = await Order.find({ user: req.user._id }).populate([
-    {
-      path: "products.productId",
-      select:
-        "resturant prices extra nameAR nameEN descriptionAR descriptionEN ",
-      populate: {
-        path: "resturant",
-        select: "nameAR nameEN",
+  let orders = await Order.find({ user: req.user._id })
+    .populate([
+      {
+        path: "products.productId",
+        select:
+          "resturant prices extra nameAR nameEN descriptionAR descriptionEN ",
+        populate: {
+          path: "resturant",
+          select: "nameAR nameEN",
+        },
       },
-    },
-  ]);
+    ])
+    .sort("-createdAt");
 
   orders = orders.map((order) => {
     order.products = order.products.map((product) => {
