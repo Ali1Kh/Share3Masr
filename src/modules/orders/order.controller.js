@@ -138,7 +138,16 @@ export const rejectOrder = async (req, res, next) => {
 export const orderReady = async (req, res, next) => {
   let order = await Order.findOne({
     _id: req.params.orderId,
-  });
+  })
+    .sort({ status: -1 })
+    .populate([
+      {
+        path: "resturants",
+        select: "-password",
+      },
+
+      { path: "products.productId", populate: "resturant" },
+    ]);
   if (!order) {
     return next(new Error("Order Not Found"));
   }
