@@ -217,7 +217,7 @@ export default function Orders() {
               {
                 field: "isVerified",
                 headerName: "Verify",
-                width: 100,
+                width: 110,
                 align: "center",
                 resizable: true,
                 renderCell: (params) => (
