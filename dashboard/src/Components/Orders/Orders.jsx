@@ -232,7 +232,7 @@ export default function Orders() {
                     ) : (
                       <button
                         onClick={() => verifyOrder(params.row._id)}
-                        className="btn btn-danger "
+                        className="btn btn-warning "
                       >
                         Unchecked 
                       </button>
