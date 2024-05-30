@@ -225,16 +225,16 @@ export default function Orders() {
                     {params.row?.isVerified ? (
                       <button
                         onClick={() => unVerifyOrder(params.row._id)}
-                        className="btn btn-danger "
+                        className="btn btn-success "
                       >
-                        UnVerify
+                        Checked 
                       </button>
                     ) : (
                       <button
                         onClick={() => verifyOrder(params.row._id)}
-                        className="btn btn-success "
+                        className="btn btn-danger "
                       >
-                        Verify
+                        Unchecked 
                       </button>
                     )}
                   </>
