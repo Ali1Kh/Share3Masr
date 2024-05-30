@@ -611,8 +611,8 @@ export default function Resturants() {
           </button>
         </div>
       </div>
-      <div className="Resturants border-top pt-4 text-start w-100">
-        <table className="table table-dark rounded-1 overflow-hidden shadow">
+      <div className="Resturants border-top pt-4 text-start w-100 overflow-x-auto">
+        <table className="table table-dark rounded-1 overflow-hidden shadow ">
           <thead>
             <tr>
               <th>Resturant Name</th>
