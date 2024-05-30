@@ -70,7 +70,9 @@ export default function Dashboard() {
                 }}
               >
                 <Tabs
-                  orientation="horizontal"
+                  orientation={
+                    window.innerWidth >= 768 ? "horizontal" : "vertical"
+                  }
                   value={tab}
                   onChange={handleChange}
                   aria-label="Vertical tabs example "

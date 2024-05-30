@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import $ from "jquery";
+import toast from "react-hot-toast";
 
 export default function Orders() {
   let [orders, setOrders] = useState([]);
@@ -31,6 +32,45 @@ export default function Orders() {
     if (data.success) {
       setOrders(data.orders);
     }
+  }
+
+  async function verifyOrder(id) {
+    try {
+      let { data } = await axios.patch(
+        "https://foodyproj.onrender.com/orders/verifyOrder/" + id,
+        {},
+        {
+          headers: {
+            token: sessionStorage.getItem("token"),
+          },
+        }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        getOrders();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {}
+  }
+  async function unVerifyOrder(id) {
+    try {
+      let { data } = await axios.patch(
+        "https://foodyproj.onrender.com/orders/unVerifyOrder/" + id,
+        {},
+        {
+          headers: {
+            token: sessionStorage.getItem("token"),
+          },
+        }
+      );
+      if (data.success) {
+        toast.success(data.message);
+        getOrders();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {}
   }
 
   return (
@@ -121,17 +161,18 @@ export default function Orders() {
               {
                 field: "delivery",
                 headerName: "Delivery",
-                width: 120,
+                width: 100,
                 align: "center",
                 resizable: true,
-                valueGetter: (params) => `${params.row?.deliveryWorker?.name}-${params.row?.deliveryWorker?.phone}`,
+                valueGetter: (params) =>
+                  `${params.row?.deliveryWorker?.name}-${params.row?.deliveryWorker?.phone}`,
                 renderCell: (params) => (
-                    <>
-                      <span title={params.row?.deliveryWorker?.name}>
-                        {params.row?.deliveryWorker?.phone}
-                      </span>
-                    </>
-                  ),
+                  <>
+                    <span title={params.row?.deliveryWorker?.name}>
+                      {params.row?.deliveryWorker?.phone}
+                    </span>
+                  </>
+                ),
               },
               {
                 field: "totalOrderPrice",
@@ -172,6 +213,32 @@ export default function Orders() {
                       }
                     ) || ""
                   }`,
+              },
+              {
+                field: "isVerified",
+                headerName: "Verify",
+                width: 100,
+                align: "center",
+                resizable: true,
+                renderCell: (params) => (
+                  <>
+                    {params.row?.isVerified ? (
+                      <button
+                        onClick={() => unVerifyOrder(params.row._id)}
+                        className="btn btn-danger "
+                      >
+                        UnVerify
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => verifyOrder(params.row._id)}
+                        className="btn btn-success "
+                      >
+                        Verify
+                      </button>
+                    )}
+                  </>
+                ),
               },
             ]}
             columnResizable={true}

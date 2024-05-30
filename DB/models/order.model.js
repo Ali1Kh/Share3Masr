@@ -34,6 +34,7 @@ const orderSchema = new Schema(
       secure_url: { type: String },
       public_id: { type: String },
     },
+    isVerified: { type: Boolean, default: false },
     user: { type: Types.ObjectId, ref: "User", required: true },
   },
   {

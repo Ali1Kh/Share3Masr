@@ -73,5 +73,18 @@ router.get(
   asyncHandler(orderController.getAllOrdersHistory)
 );
 
+router.patch(
+  "/verifyOrder/:orderId",
+  isAuthenticated,
+  isAuthorized("admin"),
+  asyncHandler(orderController.verifyOrder)
+);
+
+router.patch(
+  "/unVerifyOrder/:orderId",
+  isAuthenticated,
+  isAuthorized("admin"),
+  asyncHandler(orderController.unVerifyOrder)
+);
 
 export default router;

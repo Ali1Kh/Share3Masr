@@ -309,3 +309,35 @@ export const getUserOrders = async (req, res, next) => {
 
   return res.json({ success: true, count: orders.length, orders });
 };
+
+export const verifyOrder = async (req, res, next) => {
+  let isOrder = await Order.findOne({ _id: req.params.orderId });
+  if (!isOrder) {
+    return res.json({ success: false, message: "Order Not Found" });
+  }
+  if (isOrder.isVerified) {
+    return res.json({ success: false, message: "Order Already Verified" });
+  }
+
+  if (isOrder.status != "delivered") {
+    return res.json({ success: false, message: "Order Is Not Delivered" });
+  }
+
+  isOrder.isVerified = true;
+  await isOrder.save();
+
+  return res.json({ success: true, message: "Order Verified Successfully" });
+};
+
+export const unVerifyOrder = async (req, res, next) => {
+  let isOrder = await Order.findOne({ _id: req.params.orderId });
+  if (!isOrder) {
+    return res.json({ success: false, message: "Order Not Found" });
+  }
+  if (!isOrder.isVerified) {
+    return res.json({ success: false, message: "Order Not Verified" });
+  }
+  isOrder.isVerified = false;
+  await isOrder.save();
+  return res.json({ success: true, message: "Order UnVerified Successfully" });
+};

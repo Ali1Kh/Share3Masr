@@ -19,6 +19,14 @@ const router = createHashRouter([
     element: <Dashboard />,
     children: [
       {
+        path: "",
+        element: (
+          <>
+            <Categories />
+          </>
+        ),
+      },
+      {
         path: "categories",
         element: <Categories />,
       },
