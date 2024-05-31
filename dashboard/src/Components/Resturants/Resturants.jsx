@@ -615,11 +615,11 @@ export default function Resturants() {
         <table className="table table-dark rounded-1 overflow-hidden shadow ">
           <thead>
             <tr>
-              <th>Resturant Name</th>
+              <th>Name</th>
               <th>Owner</th>
               <th>Phones</th>
-              {/* <th>Address</th> */}
-              <th>Working Time </th>
+              <th>Status</th>
+              <th>Time</th>
               <th>Category</th>
               <th>Sub Categories</th>
               <th>Image</th>
@@ -634,7 +634,7 @@ export default function Resturants() {
                 </td>
                 <td>{Resturant.owner}</td>
                 <td>{Resturant.phone.join(" , ")}</td>
-                {/* <td>{Resturant.address}</td> */}
+                <td>{Resturant.isActive ? "Active" : "Inactive"}</td>
                 <td>
                   {Resturant.openingTime} : {Resturant.closingTime}
                 </td>
