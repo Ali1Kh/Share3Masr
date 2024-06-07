@@ -29,8 +29,6 @@ export default function Areas() {
     formData.append("deliveryFees", $("#deliveryFees").val());
     formData.append("areaMap", $("#areaMap")[0].files[0]);
 
-
-
     $("#addAreaBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
@@ -63,17 +61,23 @@ export default function Areas() {
       toast.error("Please fill all the fields");
       return;
     }
+
+    let formData = new FormData();
+    formData.append("areaNameEN", $("#AreaNameEN").val());
+    formData.append("areaNameAR", $("#AreaNameAR").val());
+    formData.append("deliveryFees", $("#deliveryFees").val());
+
+    if ($("#areaMap")[0].files[0]) {
+      formData.append("areaMap", $("#areaMap")[0].files[0]);
+    }
+
     $("#updateAreaBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
        <span class="sr-only">Loading...</span>
      </div>`);
     let { data } = await axios.patch(
       `https://foodyproj.onrender.com/area/${id}`,
-      {
-        areaNameEN: $("#AreaNameEN").val(),
-        areaNameAR: $("#AreaNameAR").val(),
-        deliveryFees: $("#deliveryFees").val(),
-      },
+      formData,
       {
         headers: {
           token: sessionStorage.getItem("token"),
@@ -200,25 +204,34 @@ export default function Areas() {
         </div>
       </div>
       <div className="areas border-top pt-4 text-start w-100">
-        <table className="table table-dark rounded-1 overflow-hidden shadow">
-          <thead>
-            <tr>
-              <th>Area Name</th>
-              <th>Delivery Fees</th>
-              <th>Area In Map</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {areas.map((Area) => (
-              <tr className="mb-3">
-                <td>
+        <div className="row">
+          {areas.map((Area) => (
+            <div className="col-md-6">
+              <div className="AreaItem border rounded-3 p-2 text-center mb-3">
+                <div
+                  style={{
+                    width: "400px",
+                  }}
+                  className="areaMap mx-auto mb-3"
+                >
+                  {
+                    <img
+                      className="w-100"
+                      src={Area.areaMap?.secure_url}
+                      alt=""
+                    />
+                  }
+                </div>
+                <h6>
                   {Area.areaNameEN}/{Area.areaNameAR}
-                </td>
-                <td>{Area.deliveryFees}</td>
-                <td>{<img src={Area.areaMap?.secure_url} alt="" />}</td>
-                <td className="border-start">
-                  <div className="d-flex align-items-center gap-3 mt-2">
+                </h6>
+                <p className="mb-0">
+                  <span className="fw-bold">Delivery Fees :</span>{" "}
+                  {Area.deliveryFees}
+                </p>
+
+                <div className="">
+                  <div className="d-flex justify-content-center align-items-center gap-3">
                     <button
                       onClick={() => updateClicked(Area)}
                       className="btn btn-warning"
@@ -232,12 +245,11 @@ export default function Areas() {
                       <i className="fa fa-trash-can"></i>
                     </button>
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <ul></ul>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
