@@ -9,10 +9,27 @@ export default function Areas() {
     getAreas();
   }, []);
   async function addArea() {
-    if ($("#AreaNameEN").val() == "" || $("#AreaNameAR").val() == "" || $("#deliveryFees").val() == "") {
+    if (
+      $("#AreaNameEN").val() == "" ||
+      $("#AreaNameAR").val() == "" ||
+      $("#deliveryFees").val() == ""
+    ) {
       toast.error("Please fill all the fields");
       return;
     }
+
+    if (!$("#areaMap")[0].files[0]) {
+      toast.error("Please add an image");
+      return;
+    }
+
+    let formData = new FormData();
+    formData.append("areaNameEN", $("#AreaNameEN").val());
+    formData.append("areaNameAR", $("#AreaNameAR").val());
+    formData.append("deliveryFees", $("#deliveryFees").val());
+    formData.append("areaMap", $("#areaMap")[0].files[0]);
+
+
 
     $("#addAreaBtn")
       .html(`<div  style="width:23px;height:23px;" class="spinner-border text-dark"  role="status">
@@ -20,11 +37,7 @@ export default function Areas() {
      </div>`);
     let { data } = await axios.post(
       "https://foodyproj.onrender.com/area",
-      {
-        areaNameEN: $("#AreaNameEN").val(),
-        areaNameAR: $("#AreaNameAR").val(),
-        deliveryFees: $("#deliveryFees").val(),
-      },
+      formData,
       {
         headers: {
           token: sessionStorage.getItem("token"),
@@ -42,7 +55,11 @@ export default function Areas() {
 
   async function updateArea() {
     let id = $("#updateAreaBtn").attr("data-id");
-    if ($("#AreaNameEN").val() == "" || $("#AreaNameAR").val() == "" || $("#deliveryFees").val() == "") {
+    if (
+      $("#AreaNameEN").val() == "" ||
+      $("#AreaNameAR").val() == "" ||
+      $("#deliveryFees").val() == ""
+    ) {
       toast.error("Please fill all the fields");
       return;
     }
@@ -141,15 +158,27 @@ export default function Areas() {
             />
           </div>
         </div>
+        <div className="d-flex gap-3">
+          <div className="mb-3 w-100 mt-1">
+            <input
+              className="form-control"
+              type="number"
+              placeholder="Delivery Fees"
+              id="deliveryFees"
+            />
+          </div>
 
-        <div className="mb-3 w-100 mt-1">
-          <input
-            className="form-control"
-            type="number"
-            placeholder="Delivery Fees"
-            id="deliveryFees"
-          />
+          <div className="mb-3 w-100 mt-1">
+            <input
+              type="file"
+              className="form-control"
+              placeholder="Uplad Image"
+              id="areaMap"
+              title="Upload Area Map"
+            />
+          </div>
         </div>
+
         <div className="mb-3 w-100">
           <button onClick={addArea} className="btn btn-primary" id="addAreaBtn">
             Add Area
@@ -176,6 +205,7 @@ export default function Areas() {
             <tr>
               <th>Area Name</th>
               <th>Delivery Fees</th>
+              <th>Area In Map</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -186,6 +216,7 @@ export default function Areas() {
                   {Area.areaNameEN}/{Area.areaNameAR}
                 </td>
                 <td>{Area.deliveryFees}</td>
+                <td>{<img src={Area.areaMap?.secure_url} alt="" />}</td>
                 <td className="border-start">
                   <div className="d-flex align-items-center gap-3 mt-2">
                     <button
