@@ -1,4 +1,5 @@
 import { Area } from "../../../DB/models/area.model.js";
+import cloudinary from "../../utils/cloudinary.js";
 
 export const createArea = async (req, res, next) => {
   const isArea = await Area.findOne({
@@ -12,7 +13,21 @@ export const createArea = async (req, res, next) => {
   if (isArea) {
     return next(new Error("Area Already Exists"));
   }
-  await Area.create(req.body);
+
+  let { secure_url, public_id } = await cloudinary.uploader.upload(
+    req.file.path,
+    {
+      folder: `Share3Masr/Areas/${req.body.areaNameEN}`,
+    }
+  );
+
+  await Area.create({
+    ...req.body,
+    areaMap: {
+      secure_url,
+      public_id,
+    },
+  });
   return res.json({ success: true, message: "Area Created Successfully" });
 };
 
@@ -41,6 +56,33 @@ export const updateArea = async (req, res, next) => {
     });
     if (areaNameExits) {
       return next(new Error("New Arabic Area Already Exists"));
+    }
+  }
+
+  if (req.file) {
+    if (isArea.areaMap?.public_id) {
+      let { secure_url, public_id } = await cloudinary.uploader.upload(
+        req.file.path,
+        {
+          public_id: isArea.areaMap.public_id,
+        }
+      );
+
+      isArea.areaMap = {
+        secure_url,
+        public_id,
+      };
+    } else {
+      let { secure_url, public_id } = await cloudinary.uploader.upload(
+        req.file.path,
+        {
+          folder: `Share3Masr/Areas/${req.body.areaNameEN}`,
+        }
+      );
+      isArea.areaMap = {
+        secure_url,
+        public_id,
+      };
     }
   }
 
