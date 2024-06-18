@@ -82,6 +82,12 @@ export default function Orders() {
             rows={orders}
             columns={[
               {
+                field: "serialNumber",
+                headerName: "Order",
+                width: 70,
+                resizable: true,
+              },
+              {
                 field: "phone",
                 headerName: "Customer",
                 width: 130,
@@ -123,41 +129,6 @@ export default function Orders() {
                 width: 100,
                 resizable: true,
               },
-
-              //   {
-              //     field: "Prices",
-              //     headerName: "Prices",
-              //     width: 150,
-              //     resizable: true,
-              //     renderCell: (params) => (
-              //       <>
-              //         <table>
-              //           <tbody>
-              //             {params.row?.prices.map((priceItem) => (
-              //               <tr>
-              //                 <td>
-              //                   {priceItem.sizeNameEN} / {priceItem.sizeNameAR}
-              //                 </td>
-              //                 <td>{priceItem.sizePrice}</td>
-              //               </tr>
-              //             ))}
-              //           </tbody>
-              //         </table>
-              //       </>
-              //     ),
-              //     valueGetter: (params) =>
-              //       `
-              //             ${params.row?.prices.map(
-              //               (priceItem) =>
-              //                 `
-              //                 ${priceItem.sizeNameEN}
-              //                 ${priceItem.sizeNameAR}
-              //                 ${priceItem.sizePrice}
-              //                 `
-              //             )}
-              //       `,
-              //   },
-
               {
                 field: "delivery",
                 headerName: "Delivery",
@@ -168,8 +139,8 @@ export default function Orders() {
                   `${params.row?.deliveryWorker?.name}-${params.row?.deliveryWorker?.phone}`,
                 renderCell: (params) => (
                   <>
-                    <span title={params.row?.deliveryWorker?.name}>
-                      {params.row?.deliveryWorker?.phone}
+                    <span title={params.row?.deliveryWorker?.phone}>
+                      {params.row?.deliveryWorker?.name}
                     </span>
                   </>
                 ),
@@ -182,8 +153,8 @@ export default function Orders() {
                 resizable: true,
               },
               {
-                field: "totalPrice",
-                headerName: "Total Price",
+                field: "deleveryFees",
+                headerName: "Delivery Fees",
                 width: 100,
                 align: "center",
                 resizable: true,
@@ -227,14 +198,14 @@ export default function Orders() {
                         onClick={() => unVerifyOrder(params.row._id)}
                         className="btn btn-success "
                       >
-                        Checked 
+                        Checked
                       </button>
                     ) : (
                       <button
                         onClick={() => verifyOrder(params.row._id)}
                         className="btn btn-warning "
                       >
-                        Unchecked 
+                        Unchecked
                       </button>
                     )}
                   </>
