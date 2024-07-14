@@ -83,7 +83,9 @@ export const login = async (req, res, next) => {
 };
 
 export const getTokenInfo = async (req, res, next) => {
-  let { _id, name, area, phone, email, role } = req.user;
+  let { _id, name, area, phone, email, role } = await User.findById(
+    req.user.id
+  ).populate("area");
   return res.json({
     success: true,
     user: {
