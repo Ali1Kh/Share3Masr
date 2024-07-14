@@ -82,6 +82,41 @@ export const login = async (req, res, next) => {
   });
 };
 
+export const updateAcc = async (req, res, next) => {
+  if (req.body.email) {
+    const emailExits = await User.findOne({ email: req.body.email });
+    if (emailExits) {
+      return next(new Error("Email Already Exists"));
+    }
+  }
+  if (req.body.phone) {
+    const phoneExits = await User.findOne({ phone: req.body.phone });
+    if (phoneExits) {
+      return next(new Error("Phone Already Exists"));
+    }
+  }
+  if (req.body.area) {
+    const isArea = await Area.findById(req.body.area);
+    if (!isArea) {
+      return next(new Error("Area Not Found"));
+    }
+  }
+
+  if (req.body.password) {
+    req.body.password = bcrypt.hashSync(
+      req.body.password,
+      parseInt(process.env.SALT_ROUND)
+    );
+  }
+
+  await User.findByIdAndUpdate(req.user._id, req.body);
+
+  return res.json({
+    success: true,
+    message: "Account Updated Successfully",
+  });
+};
+
 export const getTokenInfo = async (req, res, next) => {
   let { _id, name, area, phone, email, role } = await User.findById(
     req.user.id

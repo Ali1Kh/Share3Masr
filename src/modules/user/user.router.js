@@ -32,4 +32,12 @@ router.post(
   asyncHandler(userController.adminLogin)
 );
 
+router.patch(
+  "/updateUser",
+  isAuthenticated,
+  isAuthorized("customer"),
+  validation(userSchema.updateSchema),
+  asyncHandler(userController.updateAcc)
+);
+
 export default router;

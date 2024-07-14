@@ -38,6 +38,40 @@ export const loginSchema = Joi.object({
   phone: Joi.string().required(),
 }).required();
 
+export const updateSchema = Joi.object({
+  name: Joi.string(),
+  phone: Joi.string()
+    .min(11)
+    .max(11)
+    .pattern(new RegExp("^01[0125][0-9]{8}$"))
+    
+    .messages({
+      "string.min": "Phone Number Cannot be less than 11 Characters",
+      "string.max": "Phone Number Cannot be more than 11 Characters",
+      "string.pattern.base": "Please Enter Vaild Phone Number",
+    }),
+  email: Joi.string().email().messages({
+    "string.email": "Please Enter A Valid Email",
+  }),
+  password: Joi.string()
+    .min(4)
+    
+    .pattern(new RegExp("^.{4,30}$"))
+    .messages({
+      "string.pattern.base": "Password Must Start With Letter",
+      "string.min": "Password Must Be At least 4 characters.",
+    }),
+  confirmPass: Joi.string().valid(Joi.ref("password")).messages({
+    "any.only": "Confirm Password is Invaild",
+  }).when("password", {
+    is: Joi.exist(),
+    then: Joi.required(),
+    otherwise: Joi.forbidden(),
+  }),
+  area: Joi.custom(ObjectIdValidate),
+}).required();
+
+
 export const adminLoginSchema = Joi.object({
   phone: Joi.string().required(),
   password: Joi.string().required(),
