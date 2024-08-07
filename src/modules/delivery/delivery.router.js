@@ -59,6 +59,13 @@ router.get(
 );
 
 router.get(
+  "/onWayOrders",
+  isAuthenticated,
+  isAuthorized("delivery"),
+  asyncHandler(deliveryController.getOnWayOrders)
+);
+
+router.get(
   "/deliveryOrders",
   isAuthenticated,
   isAuthorized("delivery"),

@@ -113,6 +113,23 @@ export const getReadyOrders = async (req, res, next) => {
   });
 };
 
+export const getOnWayOrders = async (req, res, next) => {
+  let orders = await Order.find({ status: "onWay" })
+    .populate([
+      {
+        path: "resturants",
+        select: "-password",
+      },
+
+      { path: "products.productId", populate: "resturant" },
+    ])
+    .sort({ createdAt: -1 });
+  return res.json({
+    success: true,
+    orders,
+  });
+};
+
 export const receiveTheOrder = async (req, res, next) => {
   let isOrder = await Order.findById(req.params.id);
   if (!isOrder) return next(new Error("Order Not Found"));
