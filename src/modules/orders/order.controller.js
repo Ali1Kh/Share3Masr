@@ -10,6 +10,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import { io } from "../../../index.js";
 import { Delivery } from "../../../DB/models/delivery.model.js";
 
+//Omar Ahmed Hefnawi -----------------------
+import { sendNotification } from './notificationScript.js'; 
+//------------------------
+
+
 export const createOrder = async (req, res, next) => {
   let isArea = await Area.findById(req.body.area);
   if (!isArea) {
@@ -167,6 +172,13 @@ export const orderReady = async (req, res, next) => {
   waitingDelivery.map((delivery) => {
     if (delivery.socketId) {
       io.to(delivery.socketId).emit("newReadyOrder", order);
+      const registrationToken = 'ee9OVVmfSsm7OWsHPr67rC:APA91bETfoBnJsQh_QrH-2YuLEud5XifJFDQjgRs1ws6rsGqmG3ZwU1XiBg7yN6d8rek7Zhippoya3_Ugd2UgXdQRSiovYyVri_Nxdfl4l-g8z3gV7LIdrY'; // Replace with the actual token
+      const message = {
+        title: 'Hello from app.js!',
+        body: 'This is a notification sent from another file.',
+      };
+      sendNotification(registrationToken, message); 
+
     }
   });
 
