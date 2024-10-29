@@ -176,8 +176,8 @@ try{
 
     if (delivery.socketId) {
       io.to(delivery.socketId).emit("newReadyOrder", order);
-      registrationToken = delivery.socketId; 
-      message = {
+      const registrationToken = delivery.socketId; 
+      const message = {
         title: 'Hello from app.js!',
         body: 'This is a notification sent from another file.',
       };
