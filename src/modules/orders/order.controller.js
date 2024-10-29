@@ -169,11 +169,14 @@ export const orderReady = async (req, res, next) => {
     status: "waiting",
   });
 
+  lol = "";
   waitingDelivery.map((delivery) => {
+
     if (delivery.socketId) {
       io.to(delivery.socketId).emit("newReadyOrder", order);
-      const registrationToken = delivery.socketId; 
-      const message = {
+      registrationToken = delivery.socketId; 
+      lol = registrationToken; 
+      message = {
         title: 'Hello from app.js!',
         body: 'This is a notification sent from another file.',
       };
@@ -182,7 +185,7 @@ export const orderReady = async (req, res, next) => {
     }
   });
 
-  return res.json({ success: true, message: "Order Is Ready To Deliver"+ delivery.socketId});
+  return res.json({ success: true, message: "Order Is Ready To Deliver"+ lol+"lolol"});
 };
 
 export const getResturantPendingOrders = async (req, res, next) => {
