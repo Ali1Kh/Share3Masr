@@ -186,7 +186,7 @@ try{
     }
   }
 
-);
+); 
 
   await Promise.all(notificationResponses);
 
@@ -195,7 +195,7 @@ try{
 } catch (error) {
   return next(error); // Handle unexpected errors
 }
-};
+}; 
 
 export const getResturantPendingOrders = async (req, res, next) => {
   let orders = await Order.find({
