@@ -57,7 +57,7 @@ const serviceAccountPath = new URL('./share3-masr-firebase-adminsdk-ut6h5-948ed7
 
 // Read the service account JSON file
 const serviceAccount = JSON.parse(readFileSync(serviceAccountPath));
-
+   
 // Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -66,7 +66,8 @@ admin.initializeApp({
 // Function to send notification
 export const sendNotification = async (registrationToken, message) => {
   try {
-    const response = await admin.messaging().sendToDevice(registrationToken, {
+    const response = await admin.messaging().send( {
+      token: registrationToken,
       notification: {
         title: message.title,
         body: message.body,
