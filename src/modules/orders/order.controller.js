@@ -141,7 +141,8 @@ export const rejectOrder = async (req, res, next) => {
 };
 
 export const orderReady = async (req, res, next) => {
-  let order = await Order.findOne({
+try{
+    let order = await Order.findOne({
     _id: req.params.orderId,
   })
     .sort({ status: -1 })
@@ -169,6 +170,8 @@ export const orderReady = async (req, res, next) => {
     status: "waiting",
   });
 
+  let notificationResponses = [];
+
   lol = "";
   waitingDelivery.map((delivery) => {
 
@@ -180,12 +183,20 @@ export const orderReady = async (req, res, next) => {
         title: 'Hello from app.js!',
         body: 'This is a notification sent from another file.',
       };
-      sendNotification(registrationToken, message);  
+      notificationResponses.push(sendNotification(registrationToken, message));
 
     }
-  });
+  }
 
-  return res.json({ success: true, message: "Order Is Ready To Deliver"+ lol+"lolol"});
+);
+
+  await Promise.all(notificationResponses);
+
+
+  return res.json({ success: true, message: "Order Is Ready To Deliver 111111111"+ lol+"lolol"});
+} catch (error) {
+  return next(error); // Handle unexpected errors
+}
 };
 
 export const getResturantPendingOrders = async (req, res, next) => {
