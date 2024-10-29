@@ -182,7 +182,7 @@ export const orderReady = async (req, res, next) => {
     }
   });
 
-  return res.json({ success: true, message: "Order Is Ready To Deliver" });
+  return res.json({ success: true, message: "Order Is Ready To Deliver"+ delivery.socketId});
 };
 
 export const getResturantPendingOrders = async (req, res, next) => {
