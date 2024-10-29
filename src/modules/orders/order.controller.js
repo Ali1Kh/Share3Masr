@@ -11,7 +11,7 @@ import { io } from "../../../index.js";
 import { Delivery } from "../../../DB/models/delivery.model.js";
 
 //Omar Ahmed Hefnawi -----------------------
-import { sendNotification } from './notificationScript.js'; 
+import { sendNotification } from '../../../notificationScript.js'; 
 //------------------------
 
 
