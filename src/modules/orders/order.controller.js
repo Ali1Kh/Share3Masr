@@ -13,7 +13,7 @@ import { Delivery } from "../../../DB/models/delivery.model.js";
 //Omar Ahmed Hefnawi -----------------------
 import { sendNotification } from '../../../notificationScript.js'; 
 //------------------------
-
+ 
 
 export const createOrder = async (req, res, next) => {
   let isArea = await Area.findById(req.body.area);
