@@ -191,7 +191,7 @@ try{
   await Promise.all(notificationResponses);
 
 
-  return res.json({ success: true, message: "Order Is Ready To Deliver 111111111"+ lol+"lolol"});
+  return res.json({ success: true, message: "Order Is Ready To Deliver"});
 } catch (error) {
   return next(error); // Handle unexpected errors
 }
