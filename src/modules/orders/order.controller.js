@@ -176,12 +176,12 @@ try{
 
     if (delivery.socketId) {
       io.to(delivery.socketId).emit("newReadyOrder", order);
-      const registrationToken = delivery.socketId; 
+      
       const message = {
         title: 'Hello from app.js!',
         body: 'This is a notification sent from another file.',
       };
-      notificationResponses.push(sendNotification(registrationToken, message));
+      notificationResponses.push(sendNotification(delivery.socketId, message));
 
     }
   }
