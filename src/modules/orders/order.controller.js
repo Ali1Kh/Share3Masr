@@ -141,7 +141,10 @@ export const rejectOrder = async (req, res, next) => {
 };
 
 export const orderReady = async (req, res, next) => {
-try{
+  console.log("loooooooooool");
+  try{
+ 
+  
     let order = await Order.findOne({
     _id: req.params.orderId,
   })
@@ -170,25 +173,24 @@ try{
     status: "waiting",
   });
 
-  let notificationResponses = [];
-
   waitingDelivery.map((delivery) => {
 
     if (delivery.socketId) {
       io.to(delivery.socketId).emit("newReadyOrder", order);
       
-      
-      notificationResponses.push(sendNotification(delivery.socketId, {
-        title: 'Hello from app.js!',
+       
+      console.log("Token lloooool " + delivery.socketId);
+        sendNotification(delivery.socketId, {
+        title: 'Hello from app.js!', 
         body: 'This is a notification sent from another file.',
-      }));
+      });
+       
+      
 
-    }
+    } 
   }
 
 ); 
-
-  await Promise.all(notificationResponses);
 
 
   return res.json({ success: true, message: "Order Is Ready To Deliver (Sent)"});
