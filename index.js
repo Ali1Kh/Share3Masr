@@ -46,7 +46,7 @@ try {
 } catch (error) {
   console.log(error);
 }
-
+ 
 app.use(cors());
 app.use(express.json());
 await connectMongo();
