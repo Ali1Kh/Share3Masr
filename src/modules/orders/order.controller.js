@@ -176,7 +176,7 @@ export const orderReady = async (req, res, next) => {
   waitingDelivery.map((delivery) => {
 
     if (delivery.socketId) {
-      io.to(delivery.socketId).emit("newReadyOrder", order);
+      // io.to(delivery.socketId).emit("newReadyOrder", order);
       
        
       console.log("Token lloooool " + delivery.socketId);
