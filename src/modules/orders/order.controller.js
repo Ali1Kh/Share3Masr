@@ -140,6 +140,7 @@ export const rejectOrder = async (req, res, next) => {
   return res.json({ success: true, message: "Order Rejected" });
 };
 
+
 export const orderReady = async (req, res, next) => {
   console.log("loooooooooool");
   try{
@@ -176,7 +177,7 @@ export const orderReady = async (req, res, next) => {
   waitingDelivery.map((delivery) => {
 
     if (delivery.socketId) {
-      // io.to(delivery.socketId).emit("newReadyOrder", order);
+      io.to(delivery.socketId).emit("newReadyOrder", 'order');
       
        
       console.log("Token lloooool " + delivery.socketId);
