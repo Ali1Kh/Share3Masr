@@ -43,7 +43,6 @@
 // };
 
 // sendNotification(registrationToken, message);
-
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { readFileSync } from 'fs';
@@ -56,7 +55,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Use a relative path for the service account file (assuming it's in the same folder as your script)
-const serviceAccountPath = join(__dirname, './share3-masr-firebase-adminsdk-ut6h5-948ed7040a.json');
+const serviceAccountPath = join(__dirname, './share3-masr-firebase-adminsdk-ut6h5-6d57cbbd62.json');
 
 // Log the service account path to ensure it is correct
 console.log('Service Account Path:', serviceAccountPath);
@@ -75,6 +74,7 @@ try {
 try {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
+    projectId: serviceAccount.projectId
   });
   console.log('Firebase Admin SDK initialized successfully');
 } catch (error) {
@@ -83,18 +83,26 @@ try {
 }
 
 // Function to send a notification
-export const sendNotification = async (registrationToken, message) => {
-  try {
-    const response = await admin.messaging().send({
-      token: registrationToken,
-      notification: {
-        title: message.title,
-        body: message.body,
-      },
-      data: message.data || {},
+export const sendNotification = async (registrationToken,message) => {
+  
+  const DataToSend = {
+    token: registrationToken,
+     // Use the token if you're sending to a specific device
+    notification: {
+      title: message.title,
+      body: message.body,
+    },
+  };
+  
+  admin.messaging().send(DataToSend)
+
+    .then((response) => {
+      console.log('Successfully sent message:', response);
+    })
+    .catch((error) => {
+      console.error('Error sending message:', error);
     });
-    console.log('Successfully sent message:', response);
-  } catch (error) {
-    console.error('Error sending message:', error.message);
-  }
+
 };
+
+
