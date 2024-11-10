@@ -11,9 +11,8 @@ import { io } from "../../../index.js";
 import { Delivery } from "../../../DB/models/delivery.model.js";
 
 //Omar Ahmed Hefnawi -----------------------
-import { sendNotification } from '../../../notificationScript.js'; 
+import { sendNotification } from "../../../notificationScript.js";
 //------------------------
- 
 
 export const createOrder = async (req, res, next) => {
   let isArea = await Area.findById(req.body.area);
@@ -99,6 +98,11 @@ export const createOrder = async (req, res, next) => {
     order.resturants.map((resturant) => {
       if (resturant.socketId) {
         io.to(resturant.socketId).emit("newResturantOrder", order);
+
+        sendNotification(delivery.socketId, {
+          title: "New Order",
+          body: "New Order From " + data.customerName + " Check It Out",
+        });
       }
     });
 
@@ -140,65 +144,55 @@ export const rejectOrder = async (req, res, next) => {
   return res.json({ success: true, message: "Order Rejected" });
 };
 
-
 export const orderReady = async (req, res, next) => {
-  
-  try{
- 
-  
+  try {
     let order = await Order.findOne({
-    _id: req.params.orderId,
-  })
-    .sort({ status: -1 })
-    .populate([
-      {
-        path: "resturants",
-        select: "-password",
-      },
+      _id: req.params.orderId,
+    })
+      .sort({ status: -1 })
+      .populate([
+        {
+          path: "resturants",
+          select: "-password",
+        },
 
-      { path: "products.productId", populate: "resturant" },
-    ]);
-  if (!order) {
-    return next(new Error("Order Not Found"));
-  }
-  if (order.status == "pending") {
-    return next(new Error("Order Is Not Accepted"));
-  }
-  if (order.status == "ready") {
-    return next(new Error("Order Is Already Ready To Deliver"));
-  }
-  order.status = "ready";
-  await order.save();
+        { path: "products.productId", populate: "resturant" },
+      ]);
+    if (!order) {
+      return next(new Error("Order Not Found"));
+    }
+    if (order.status == "pending") {
+      return next(new Error("Order Is Not Accepted"));
+    }
+    if (order.status == "ready") {
+      return next(new Error("Order Is Already Ready To Deliver"));
+    }
+    order.status = "ready";
+    await order.save();
 
-  let waitingDelivery = await Delivery.find({
-    status: "waiting",
-  });
+    let waitingDelivery = await Delivery.find({
+      status: "waiting",
+    });
 
-  waitingDelivery.map((delivery) => {
+    waitingDelivery.map((delivery) => {
+      if (delivery.socketId) {
+        io.to(delivery.socketId).emit("newReadyOrder", order);
 
-    if (delivery.socketId) {
-      io.to(delivery.socketId).emit("newReadyOrder", order);
-      
-       
-      console.log("Token lloooool " + delivery.socketId);
         sendNotification(delivery.socketId, {
-        title: 'Hello from app.js!', 
-        body: 'This is a notification sent from another file.',
-      });
-       
-      
+          title: "New Order is Ready To Deliver",
+          body: order.resturant.nameEN + " Has New Order",
+        });
+      }
+    });
 
-    } 
+    return res.json({
+      success: true,
+      message: "Order Is Ready To Deliver (Sent)",
+    });
+  } catch (error) {
+    return next(error); // Handle unexpected errors
   }
-
-); 
-
-
-  return res.json({ success: true, message: "Order Is Ready To Deliver (Sent)"});
-} catch (error) {
-  return next(error); // Handle unexpected errors
-}
-}; 
+};
 
 export const getResturantPendingOrders = async (req, res, next) => {
   let orders = await Order.find({
