@@ -88,7 +88,7 @@ export const sendNotification = async (registrationToken,message) => {
   const DataToSend = {
     token: registrationToken,
      // Use the token if you're sending to a specific device
-    "priority": "high",
+    priority: "high",
     notification: {
       title: message.title,
       body: message.body,
