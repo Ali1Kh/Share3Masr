@@ -35,10 +35,18 @@ try {
       }
       verifyToken(data.token).then(async (payload) => {
         if (!payload) return;
+        console.log(payload);
+
         if (payload.role == "delivery") {
-          await Delivery.findByIdAndUpdate(payload.id, { socketId: socket.id });
+          await Delivery.findByIdAndUpdate(payload.id, {
+            socketId: socket.id,
+            fbToken: data.fbToken,
+          });
         } else if (payload.role == "resturant") {
-          await Resturant.findByIdAndUpdate(payload.id, { socketId: socket.id });
+          await Resturant.findByIdAndUpdate(payload.id, {
+            socketId: socket.id,
+            fbToken: data.fbToken,
+          });
         }
       });
     });
@@ -46,7 +54,7 @@ try {
 } catch (error) {
   console.log(error);
 }
- 
+
 app.use(cors());
 app.use(express.json());
 await connectMongo();

@@ -99,7 +99,7 @@ export const createOrder = async (req, res, next) => {
       if (resturant.socketId) {
         io.to(resturant.socketId).emit("newResturantOrder", order);
 
-        sendNotification(delivery.socketId, {
+        sendNotification(resturant.fbToken, {
           title: "New Order",
           body: "New Order From " + data.customerName + " Check It Out",
         });
@@ -178,7 +178,7 @@ export const orderReady = async (req, res, next) => {
       if (delivery.socketId) {
         io.to(delivery.socketId).emit("newReadyOrder", order);
 
-        sendNotification(delivery.socketId, {
+        sendNotification(delivery.fbToken, {
           title: "New Order is Ready To Deliver",
           body: order.resturant.nameEN + " Has New Order",
         });

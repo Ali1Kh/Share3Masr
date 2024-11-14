@@ -5,6 +5,7 @@ const deliverySchema = new Schema({
   phone: { type: String, required: true },
   password: { type: String, required: true },
   socketId: { type: String },
+  fbToken: { type: String },
   status: {
     type: String,
     enum: ["waiting", "onWay", "not available"],
