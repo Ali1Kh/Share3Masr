@@ -33,10 +33,10 @@ try {
       if (!data.token) {
         return new Error("Token Is Required");
       }
+      console.log("Fb token", data.fbToken);
+
       verifyToken(data.token).then(async (payload) => {
         if (!payload) return;
-        console.log(payload);
-
         if (payload.role == "delivery") {
           await Delivery.findByIdAndUpdate(payload.id, {
             socketId: socket.id,
