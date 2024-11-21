@@ -43,67 +43,80 @@
 // };
 
 // sendNotification(registrationToken, message);
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { readFileSync } from 'fs';
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import { readFileSync } from "fs";
 
 // Use `require` for Firebase Admin SDK (since it's not fully ES module compatible)
-import admin from 'firebase-admin';
+import admin from "firebase-admin";
 
 // Convert the path to a valid URL
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Use a relative path for the service account file (assuming it's in the same folder as your script)
-const serviceAccountPath = join(__dirname, './share3-masr-firebase-adminsdk-ut6h5-6d57cbbd62.json');
+const serviceAccountPath = join(
+  __dirname,
+  "./share3-masr-firebase-adminsdk-ut6h5-6d57cbbd62.json"
+);
 
 // Log the service account path to ensure it is correct
-console.log('Service Account Path:', serviceAccountPath);
+console.log("Service Account Path:", serviceAccountPath);
 
 // Read the service account JSON file
 let serviceAccount;
 try {
-  serviceAccount = JSON.parse(readFileSync(serviceAccountPath, 'utf8'));
-  console.log('Service Account loaded successfully');
+  serviceAccount = JSON.parse(readFileSync(serviceAccountPath, "utf8"));
+  console.log("Service Account loaded successfully");
 } catch (error) {
-  console.error('Error reading service account file:', error.message);
-  process.exit(1);  // Exit if the service account file is not loaded
+  console.error("Error reading service account file:", error.message);
+  process.exit(1); // Exit if the service account file is not loaded
 }
 
 // Initialize Firebase Admin SDK with the service account credentials
 try {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    projectId: serviceAccount.projectId
+    projectId: serviceAccount.projectId,
   });
-  console.log('Firebase Admin SDK initialized successfully');
+  console.log("Firebase Admin SDK initialized successfully");
 } catch (error) {
-  console.error('Error initializing Firebase Admin SDK:', error.message);
-  process.exit(1);  // Exit if Firebase Admin SDK fails to initialize
+  console.error("Error initializing Firebase Admin SDK:", error.message);
+  process.exit(1); // Exit if Firebase Admin SDK fails to initialize
 }
 
 // Function to send a notification
-export const sendNotification = async (registrationToken,message) => {
-  
+export const sendNotification = async (registrationToken, message) => {
+  console.log(registrationToken);
+
   const DataToSend = {
-    token: registrationToken,
-     // Use the token if you're sending to a specific device
-    priority: "high",
+    token: registrationToken, // Target a specific device using the token
     notification: {
-      title: message.title,
-      body: message.body,
+      title: message.title, // Notification title
+      body: message.body, // Notification body
+    },
+    android: {
+      priority: "high", // Optional: Android-specific priority
     },
   };
-  
-  admin.messaging().send(DataToSend)
+  // const DataToSend = {
+  //   token: registrationToken,
+  //    // Use the token if you're sending to a specific device
+  //   priority: "high",
+  //   notification: {
+  //     title: message.title,
+  //     body: message.body,
+  //   },
+  // };
+
+  admin
+    .messaging()
+    .send(DataToSend)
 
     .then((response) => {
-      console.log('Successfully sent message:', response);
+      console.log("Successfully sent message:", response);
     })
     .catch((error) => {
-      console.error('Error sending message:', error);
+      console.error("Error sending message:", error);
     });
-
 };
-
-
