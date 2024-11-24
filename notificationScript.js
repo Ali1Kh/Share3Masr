@@ -19,7 +19,7 @@ async function initializeFirebase() {
 }
 
 // Function to send FCM notification
-async function sendNotification(fcmToken, title, body) {
+export async function sendNotification(fcmToken, title, body) {
   await initializeFirebase();
   const message = {
     token: fcmToken,  // The recipient device's FCM token
