@@ -87,7 +87,7 @@ try {
 
 // Function to send a notification
 export const sendNotification = async (registrationToken, message) => {
-  console.log(registrationToken);
+  console.log("Registration Token:", registrationToken);
 
   const DataToSend = {
     token: registrationToken, // Target a specific device using the token
