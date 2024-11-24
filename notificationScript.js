@@ -51,15 +51,15 @@ export async function sendNotification(fcmToken, title, body) {
 } 
 
 // Example usage
-async function main() {
-  // await initializeFirebase();
+// async function main() {
+//   // await initializeFirebase();
 
-  const fcmToken = 'es3iZXxqRaCYJCqbFLMDe8:APA91bFOlaCTfjxuII2NeC7_y00uTDEYkcm4F3gtVsetGof5hp5DQZsepCP5NHQBlZDtmteAh1XnZMMB69bQqNMC7mRslq1HKuTAM8Wexcf94-fvMXLSz1w';  // Replace with the target device's FCM token
-  const title = 'Test Notification';
-  const body = 'This is a test notification from Firebase Cloud Messaging!';
+//   const fcmToken = 'es3iZXxqRaCYJCqbFLMDe8:APA91bFOlaCTfjxuII2NeC7_y00uTDEYkcm4F3gtVsetGof5hp5DQZsepCP5NHQBlZDtmteAh1XnZMMB69bQqNMC7mRslq1HKuTAM8Wexcf94-fvMXLSz1w';  // Replace with the target device's FCM token
+//   const title = 'Test Notification';
+//   const body = 'This is a test notification from Firebase Cloud Messaging!';
 
-  // Send notification
-  sendNotification(fcmToken, title, body);
-}
+//   // Send notification
+//   sendNotification(fcmToken, title, body);
+// }
 
-main();
+// main();
