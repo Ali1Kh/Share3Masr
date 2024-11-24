@@ -98,14 +98,17 @@ export const createOrder = async (req, res, next) => {
     order.resturants.map((resturant) => {
       if (resturant.socketId) {
         io.to(resturant.socketId).emit("newResturantOrder", order);
-
-        console.log("Registration Restaurant Token:", resturant.fbToken);
+    if(resturant.fbToken.toString() != 'undefined' && resturant.fbToken != null){
+         console.log("Registration Restaurant Token:", resturant.fbToken);
 
         sendNotification(resturant.fbToken, {
           title: "New Order",
           body: "New Order From " + data.customerName + " Check It Out",
         });
+      }else{
+        console.log("Registration Restaurant Token is null or Undefined");
       }
+    }
     });
 
     return res.json({
