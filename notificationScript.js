@@ -57,7 +57,7 @@ const __dirname = dirname(__filename);
 // Use a relative path for the service account file (assuming it's in the same folder as your script)
 const serviceAccountPath = join(
   __dirname,
-  "./share3-masr-firebase-adminsdk-ut6h5-6d57cbbd62.json"
+  "./share3-masr-firebase-adminsdk-ut6h5-59a5f51ee5.json"
 );
 
 // Log the service account path to ensure it is correct
@@ -86,9 +86,10 @@ try {
 }
 
 // Function to send a notification
-export const sendNotification = async (registrationToken, message) => {
+export const sendNotification = async (registrationToken) => {
   console.log("Registration Token:", registrationToken);
 
+  
   admin
     .messaging()
     .send(
