@@ -98,7 +98,7 @@ export const createOrder = async (req, res, next) => {
     order.resturants.map((resturant) => {
       if (resturant.socketId) {
         io.to(resturant.socketId).emit("newResturantOrder", order);
-    if(resturant.fbToken !== 'undefined' && resturant.fbToken !== null){
+    if(typeof resturant.fbToken !== 'undefined'  && resturant.fbToken !== null){
          console.log("Registration Restaurant Token:", resturant.fbToken);
 
         sendNotification(resturant.fbToken, {
