@@ -64,7 +64,7 @@ const serviceAccountPath = join(
 console.log("Service Account Path:", serviceAccountPath);
 
 // Read the service account JSON file
-let serviceAccount;
+let serviceAccount; 
 try {
   serviceAccount = JSON.parse(readFileSync(serviceAccountPath, "utf8"));
   console.log("Service Account loaded successfully");
@@ -86,7 +86,7 @@ try {
 }
 
 // Function to send a notification
-export const sendNotification = async (registrationToken) => {
+export const sendNotification = async (registrationToken,message) => {
   console.log("Registration Token:", registrationToken);
 
   
