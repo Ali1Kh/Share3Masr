@@ -99,6 +99,8 @@ export const createOrder = async (req, res, next) => {
       if (resturant.socketId) {
         io.to(resturant.socketId).emit("newResturantOrder", order);
 
+        console.log("Registration Restaurant Token:", resturant.fbToken);
+
         sendNotification(resturant.fbToken, {
           title: "New Order",
           body: "New Order From " + data.customerName + " Check It Out",
