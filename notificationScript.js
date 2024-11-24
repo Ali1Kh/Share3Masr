@@ -36,7 +36,7 @@ async function sendNotification(fcmToken, title, body) {
     .catch((error) => {
       console.log('Error sending message:', error);
     });
-}
+} 
 
 // // Example usage
 // async function main() {
