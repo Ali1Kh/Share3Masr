@@ -77,7 +77,7 @@ try {
 try {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    projectId: serviceAccount.projectId,
+    
   });
   console.log("Firebase Admin SDK initialized successfully");
 } catch (error) {
@@ -89,29 +89,21 @@ try {
 export const sendNotification = async (registrationToken, message) => {
   console.log("Registration Token:", registrationToken);
 
-  const DataToSend = {
-    token: registrationToken, // Target a specific device using the token
-    notification: {
-      title: message.title, // Notification title
-      body: message.body, // Notification body
-    },
-    android: {
-      priority: "high", // Optional: Android-specific priority
-    },
-  };
-  // const DataToSend = {
-  //   token: registrationToken,
-  //    // Use the token if you're sending to a specific device
-  //   priority: "high",
-  //   notification: {
-  //     title: message.title,
-  //     body: message.body,
-  //   },
-  // };
-
   admin
     .messaging()
-    .send(DataToSend)
+    .send(
+      {
+        token: registrationToken, // Target a specific device using the token
+        notification: {
+          title: message.title, // Notification title
+          body: message.body, // Notification body
+        },
+        android: { 
+          priority: "high", // Optional: Android-specific priority
+        },
+      }
+
+    )
 
     .then((response) => {
       console.log("Successfully sent message:", response);
