@@ -98,17 +98,21 @@ export const createOrder = async (req, res, next) => {
     order.resturants.map((resturant) => {
       if (resturant.socketId) {
         io.to(resturant.socketId).emit("newResturantOrder", order);
-    if(typeof resturant.fbToken !== 'undefined'  && resturant.fbToken !== null){
-         console.log("Registration Restaurant Token:", resturant.fbToken);
+        if (
+          typeof resturant.fbToken !== "undefined" &&
+          resturant.fbToken !== null
+        ) {
+          console.log("Registration Restaurant Token:", resturant.fbToken);
 
-        sendNotification('es3iZXxqRaCYJCqbFLMDe8:APA91bFOlaCTfjxuII2NeC7_y00uTDEYkcm4F3gtVsetGof5hp5DQZsepCP5NHQBlZDtmteAh1XnZMMB69bQqNMC7mRslq1HKuTAM8Wexcf94-fvMXLSz1w', 
-           "New Order",
-          "New Order From " + data.customerName + " Check It Out",
-        );
-      }else{
-        console.log("Registration Restaurant Token is null or Undefined");
+          sendNotification(
+            "es3iZXxqRaCYJCqbFLMDe8:APA91bFOlaCTfjxuII2NeC7_y00uTDEYkcm4F3gtVsetGof5hp5DQZsepCP5NHQBlZDtmteAh1XnZMMB69bQqNMC7mRslq1HKuTAM8Wexcf94-fvMXLSz1w",
+            "New Order",
+            "New Order From " + data.customerName + " Check It Out"
+          );
+        } else {
+          console.log("Registration Restaurant Token is null or Undefined");
+        }
       }
-    }
     });
 
     return res.json({
@@ -182,13 +186,11 @@ export const orderReady = async (req, res, next) => {
     waitingDelivery.map((delivery) => {
       if (delivery.socketId) {
         io.to(delivery.socketId).emit("newReadyOrder", order);
-        console.log(
-          order.resturants.map((resturant) => resturant.nameEN).join(",")
-        );
-
-        sendNotification(delivery.fbToken, 
+    
+        sendNotification(
+          delivery.fbToken,
           "New Order is Ready To Deliver",
-           order.resturant.nameEN + " Has New Order",
+          order.resturants.map((resturant) => resturant.nameEN).join(",") + " Has New Order"
         );
       }
     });
