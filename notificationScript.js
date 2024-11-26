@@ -1,122 +1,65 @@
-// // notificationScript.js
-// import admin from 'firebase-admin';
-// import { fileURLToPath } from 'url';
-// import { dirname } from 'path';
-// import { readFileSync } from 'fs';
+import admin from 'firebase-admin';
 
-// // Convert the path to a valid URL
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
-// const serviceAccountPath = new URL('./share3-masr-firebase-adminsdk-ut6h5-948ed7040a.json', import.meta.url);
 
-// // Read the service account JSON file
-// const serviceAccount = JSON.parse(readFileSync(serviceAccountPath));
+import dotenv from 'dotenv';
+dotenv.config();
 
-// // Initialize Firebase Admin SDK
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-// });
+// Function to initialize Firebase using service account key stored securely in environment variables
+async function initializeFirebase() {
+  try {
+    // Get the base64-encoded key from the environment variable
+    const base64Key = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+    
+    if (!base64Key) {
+      throw new Error('Firebase service account key not found in environment variable.');
+    }
 
-// // Function to send notification
-// const sendNotification = async (registrationToken, message) => {
-//   try {
-//     const response = await admin.messaging().send({
-//       // token: registrationToken,
-//       topic:'lol',
-//       notification: {
-//         title: message.title,
-//         body: message.body,
-//       },
-//       data: message.data || {},
-//     });
-//     console.log('Successfully sent message:', response);
-//   } catch (error) {
-//     console.error('Error sending message:', error);
-//   }
-// };
+    // Decode the base64 key and parse the JSON
+    const serviceAccount = JSON.parse(Buffer.from(base64Key, 'base64').toString('utf-8'));
 
-// // Example usage
-// const registrationToken = 'YOUR_DEVICE_REGISTRATION_TOKEN'; // Replace with your actual token
-// const message = {
-//   title: 'Hello!',
-//   body: 'This is a notification from your Node.js script.',
-// };
+    // Initialize Firebase with the service account
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
 
-// sendNotification(registrationToken, message);
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import { readFileSync } from "fs";
+    });
 
-// Use `require` for Firebase Admin SDK (since it's not fully ES module compatible)
-import admin from "firebase-admin";
-
-// Convert the path to a valid URL
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Use a relative path for the service account file (assuming it's in the same folder as your script)
-const serviceAccountPath = join(
-  __dirname,
-  "./share3-masr-firebase-adminsdk-ut6h5-6d57cbbd62.json"
-);
-
-// Log the service account path to ensure it is correct
-console.log("Service Account Path:", serviceAccountPath);
-
-// Read the service account JSON file
-let serviceAccount;
-try {
-  serviceAccount = JSON.parse(readFileSync(serviceAccountPath, "utf8"));
-  console.log("Service Account loaded successfully");
-} catch (error) {
-  console.error("Error reading service account file:", error.message);
-  process.exit(1); // Exit if the service account file is not loaded
+    console.log('Firebase initialized');
+  } catch (error) {
+    console.error('Error initializing Firebase:', error);
+  }
 }
 
-// Initialize Firebase Admin SDK with the service account credentials
-try {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    projectId: serviceAccount.projectId,
-  });
-  console.log("Firebase Admin SDK initialized successfully");
-} catch (error) {
-  console.error("Error initializing Firebase Admin SDK:", error.message);
-  process.exit(1); // Exit if Firebase Admin SDK fails to initialize
-}
-
-// Function to send a notification
-export const sendNotification = async (registrationToken, message) => {
-  console.log(registrationToken);
-
-  const DataToSend = {
-    token: registrationToken, // Target a specific device using the token
+// Function to send FCM notification
+export async function sendNotification(fcmToken, title, body) {
+  await initializeFirebase();
+  
+  const message = {
+    token: fcmToken,  // The recipient device's FCM token
     notification: {
-      title: message.title, // Notification title
-      body: message.body, // Notification body
-    },
-    android: {
-      priority: "high", // Optional: Android-specific priority
+      title: title,    // Notification title
+      body: body,      // Notification body
     },
   };
-  // const DataToSend = {
-  //   token: registrationToken,
-  //    // Use the token if you're sending to a specific device
-  //   priority: "high",
-  //   notification: {
-  //     title: message.title,
-  //     body: message.body,
-  //   },
-  // };
 
-  admin
-    .messaging()
-    .send(DataToSend)
-
+  admin.messaging().send(message)
     .then((response) => {
-      console.log("Successfully sent message:", response);
+      console.log('Successfully sent message:', response);
     })
     .catch((error) => {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error);
     });
-};
+} 
+
+// Example usage
+// async function main() {
+//   // await initializeFirebase();
+
+//   const fcmToken = 'es3iZXxqRaCYJCqbFLMDe8:APA91bFOlaCTfjxuII2NeC7_y00uTDEYkcm4F3gtVsetGof5hp5DQZsepCP5NHQBlZDtmteAh1XnZMMB69bQqNMC7mRslq1HKuTAM8Wexcf94-fvMXLSz1w';  // Replace with the target device's FCM token
+//   const title = 'Test Notification';
+//   const body = 'This is a test notification from Firebase Cloud Messaging!';
+
+//   // Send notification
+//   sendNotification(fcmToken, title, body);
+// }
+
+// main();
