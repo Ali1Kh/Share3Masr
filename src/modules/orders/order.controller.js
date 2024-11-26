@@ -177,10 +177,13 @@ export const orderReady = async (req, res, next) => {
     waitingDelivery.map((delivery) => {
       if (delivery.socketId) {
         io.to(delivery.socketId).emit("newReadyOrder", order);
+        console.log(
+          order.resturants.map((resturant) => resturant.nameEN).join(",")
+        );
 
         sendNotification(delivery.fbToken, {
           title: "New Order is Ready To Deliver",
-          body: order.resturant.nameEN + " Has New Order",
+          body: order.resturants.map((resturant) => resturant.nameEN).join(",") + " Has New Order",
         });
       }
     });
