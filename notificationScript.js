@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Function to initialize Firebase using service account key stored securely in environment variables
-async function initializeFirebase() {
+
   try {
     // Get the base64-encoded key from the environment variable
     const base64Key = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
@@ -27,11 +27,11 @@ async function initializeFirebase() {
   } catch (error) {
     console.error('Error initializing Firebase:', error);
   }
-}
+
 
 // Function to send FCM notification
 export async function sendNotification(fcmToken, title, body) {
-  await initializeFirebase();
+  
   
   const message = {
     token: fcmToken,  // The recipient device's FCM token
