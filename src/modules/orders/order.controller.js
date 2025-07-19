@@ -292,8 +292,11 @@ export const getAllOrdersHistory = async (req, res, next) => {
 
   orders = orders.map((order) => {
     order.products = order.products.map((product) => {
+if(product.productId?.resturant){
+  
       if (!resturants.includes(product.productId?.resturant))
-        resturants.push(product.productId?.resturant);
+        resturants.push(product.productId?.resturant || {});
+}
 
       product.productId?.prices = product.productId?.prices.filter(
         (price) => price._id.toString() == product.sizeId
