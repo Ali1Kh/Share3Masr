@@ -186,11 +186,12 @@ export const orderReady = async (req, res, next) => {
     waitingDelivery.map((delivery) => {
       if (delivery.socketId) {
         io.to(delivery.socketId).emit("newReadyOrder", order);
-    
+
         sendNotification(
           delivery.fbToken,
           "New Order is Ready To Deliver",
-          order.resturants.map((resturant) => resturant.nameEN).join(",") + " Has New Order"
+          order.resturants.map((resturant) => resturant.nameEN).join(",") +
+            " Has New Order"
         );
       }
     });
@@ -292,18 +293,17 @@ export const getAllOrdersHistory = async (req, res, next) => {
 
   orders = orders.map((order) => {
     order.products = order.products.map((product) => {
-if(product.productId?.resturant){
-  
-      if (!resturants.includes(product.productId?.resturant))
-        resturants.push(product.productId?.resturant || {});
-}
+      if (product.productId?.resturant) {
+        if (!resturants.includes(product.productId?.resturant))
+          resturants.push(product.productId?.resturant || {});
 
-      product.productId.prices = product.productId.prices.filter(
-        (price) => price._id.toString() == product.sizeId
-      );
-      product.productId.extra = product.productId.extra.filter((extra) =>
-        product.extraId.includes(extra._id.toString())
-      );
+        product.productId.prices = product.productId.prices?.filter(
+          (price) => price._id.toString() == product.sizeId
+        );
+        product.productId.extra = product.productId.extra.filter((extra) =>
+          product.extraId.includes(extra._id.toString())
+        );
+      }
       return product;
     });
     order.resturants = resturants;
