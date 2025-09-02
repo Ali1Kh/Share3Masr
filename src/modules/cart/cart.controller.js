@@ -101,7 +101,7 @@ export const addToCart = async (req, res, next) => {
 export const getCart = async (req, res, next) => {
   const cart = await Cart.findOne({ user: req.user._id }).populate({
     path: "products.productId",
-    select: "descriptionEN prices extra descriptionAR nameAR nameEN image",
+    select: "descriptionEN prices extra descriptionAR nameAR nameEN image discount",
   });
   let products = cart.products.map((cartProduct) => {
     let product = cartProduct.toObject();
@@ -112,6 +112,7 @@ export const getCart = async (req, res, next) => {
       product.extraId.includes(extra._id.toString())
     );
     product.image = product.productId.image.secure_url;
+    product.discount = product.productId.discount;
     return product;
   });
 
