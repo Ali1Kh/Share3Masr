@@ -40,7 +40,7 @@ export const addToCart = async (req, res, next) => {
   let extraPrices = isExtraIds.map((extra) => extra.price);
 
   let totalExtraPrice =
-  extraPrices.length > 1
+    extraPrices.length > 1
       ? extraPrices.reduce((pv, cv) => {
           return Number(pv) + Number(cv);
         }, 0)
@@ -101,18 +101,26 @@ export const addToCart = async (req, res, next) => {
 export const getCart = async (req, res, next) => {
   const cart = await Cart.findOne({ user: req.user._id }).populate({
     path: "products.productId",
-    select: "descriptionEN prices extra descriptionAR nameAR nameEN",
+    select: "descriptionEN prices extra descriptionAR nameAR nameEN image",
   });
-  cart.products = cart.products.map((product) => {
+  let products = cart.products.map((cartProduct) => {
+    let product = cartProduct.toObject();
     product.productId.prices = product.productId.prices.filter(
       (price) => price._id.toString() == product.sizeId
     );
     product.productId.extra = product.productId.extra.filter((extra) =>
       product.extraId.includes(extra._id.toString())
     );
+    product.image = product.productId.image.secure_url;
     return product;
   });
-  return res.json({ success: true, cart });
+
+  let cartDisplay = {
+    ...cart.toObject(),
+    products,
+  };
+
+  return res.json({ success: true, cart: cartDisplay });
 };
 
 export const deleteFromCart = async (req, res, next) => {

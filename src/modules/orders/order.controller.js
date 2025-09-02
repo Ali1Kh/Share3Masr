@@ -298,10 +298,10 @@ if(product.productId?.resturant){
         resturants.push(product.productId?.resturant || {});
 }
 
-      product.productId?.prices = product.productId?.prices.filter(
+      product.productId.prices = product.productId.prices.filter(
         (price) => price._id.toString() == product.sizeId
       );
-      product.productId?.extra = product.productId?.extra.filter((extra) =>
+      product.productId.extra = product.productId.extra.filter((extra) =>
         product.extraId.includes(extra._id.toString())
       );
       return product;
