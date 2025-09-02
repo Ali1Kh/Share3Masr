@@ -62,6 +62,12 @@ export const addToCart = async (req, res, next) => {
       userCart.totalPrice +=
         Number(isProductSize.sizePrice) * quantity +
         Number(totalExtraPrice) * quantity;
+      userCart.totalPriceAfterDiscount +=
+        (Number(isProductSize.sizePrice) +
+          Number(totalExtraPrice) -
+          (Number(isProductSize.sizePrice) + Number(totalExtraPrice)) *
+            (Number(isProduct.discount) / 100)) *
+        Number(quantity);
       productIsInCart = true;
     }
   });
@@ -91,6 +97,12 @@ export const addToCart = async (req, res, next) => {
         totalPrice:
           (Number(isProductSize.sizePrice) + Number(totalExtraPrice)) *
           Number(quantity),
+        totalPriceAfterDiscount:
+          (Number(isProductSize.sizePrice) +
+            Number(totalExtraPrice) -
+            (Number(isProductSize.sizePrice) + Number(totalExtraPrice)) *
+              (Number(isProduct.discount) / 100)) *
+          Number(quantity),
       },
     }
   );
@@ -111,7 +123,9 @@ export const getCart = async (req, res, next) => {
     );
 
     product.productId.extra = product.productId.extra.filter((extra) => {
-      return product.extraId.map((item) => item.toString()).includes(extra._id.toString());
+      return product.extraId
+        .map((item) => item.toString())
+        .includes(extra._id.toString());
     });
     product.image = product.productId.image.secure_url;
     product.discount = product.productId.discount;
@@ -151,6 +165,11 @@ export const deleteFromCart = async (req, res, next) => {
         totalPrice:
           -(productInCart[0].productPrice * productInCart[0].quantity) -
           productInCart[0].totalExtraPrice * productInCart[0].quantity,
+        totalPriceAfterDiscount: -(productInCart[0].productPrice +
+          productInCart[0].totalExtraPrice -
+          (productInCart[0].productPrice + productInCart[0].totalExtraPrice) *
+            (Number(isProduct.discount) / 100)) *
+          productInCart[0].quantity,
       },
     }
   );

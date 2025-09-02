@@ -13,6 +13,7 @@ const cartSchema = new Schema(
       },
     ],
     totalPrice: { type: Number },
+    totalPriceAfterDiscount: { type: Number },
     user: { type: Types.ObjectId, ref: "User", required: true, unique: true },
   },
   {
