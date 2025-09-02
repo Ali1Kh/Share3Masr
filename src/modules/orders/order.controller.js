@@ -319,7 +319,7 @@ export const getUserOrders = async (req, res, next) => {
       {
         path: "products.productId",
         select:
-          "resturant prices extra nameAR nameEN descriptionAR descriptionEN ",
+          "resturant prices extra nameAR nameEN descriptionAR descriptionEN discount",
         populate: {
           path: "resturant",
           select: "nameAR nameEN",
