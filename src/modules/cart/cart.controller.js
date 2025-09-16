@@ -127,8 +127,8 @@ export const getCart = async (req, res, next) => {
         .map((item) => item.toString())
         .includes(extra._id.toString());
     });
-    product.image = product.productId.image.secure_url;
-    product.discount = product.productId.discount;
+    product.image = product.productId.image?.secure_url;
+    product.discount = product.productId?.discount;
     return product;
   });
 
