@@ -329,7 +329,9 @@ export const getUserOrders = async (req, res, next) => {
     .sort("-createdAt");
 
   orders = orders.map((order) => {
+    
     order.products = order.products.map((product) => {
+      if (!product.productId) return product;
       product.productId.prices = product.productId.prices.filter(
         (price) => price._id.toString() == product.sizeId
       );
