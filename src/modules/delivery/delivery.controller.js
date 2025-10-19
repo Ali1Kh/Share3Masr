@@ -186,7 +186,9 @@ export const getDelivereyOrderDetails = async (req, res, next) => {
         path: "resturants",
         select: "-password",
       },
-
+      {
+        path: "area",
+      },
       { path: "products.productId", populate: "resturant" },
     ])
     .sort({ createdAt: -1 });

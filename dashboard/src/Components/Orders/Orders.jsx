@@ -106,8 +106,8 @@ export default function Orders() {
                 width: 150,
                 resizable: true,
                 valueGetter: (params) =>
-                  params.row?.resturants
-                    .map((resturant) => resturant.nameEN)
+                  params.row?.products
+                    .map((product) => product.productId.resturant.nameEN)
                     .join(","),
               },
 

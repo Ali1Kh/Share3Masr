@@ -42,6 +42,7 @@ export const createOrder = async (req, res, next) => {
   });
 
   userCart.products = userCart.products.map((product) => {
+    if (!product.productId) return product;
     product.productId.prices = product.productId.prices.filter((price) => {
       return price._id.toString() == product.sizeId.toString();
     });
@@ -216,6 +217,7 @@ export const getResturantPendingOrders = async (req, res, next) => {
   orders.map((order) => {
     order.products.map((orderProduct) => {
       order.products = order.products.map((product) => {
+        if (!product.productId) return product;
         product.productId.prices = product.productId.prices.filter(
           (price) => price._id.toString() == product.sizeId
         );
@@ -238,6 +240,7 @@ export const getResturantAcceptedOrders = async (req, res, next) => {
   orders.map((order) => {
     order.products.map((orderProduct) => {
       order.products = order.products.map((product) => {
+        if (!product.productId) return product;
         product.productId.prices = product.productId.prices.filter(
           (price) => price._id.toString() == product.sizeId
         );
@@ -259,6 +262,7 @@ export const getResturantOrdersHistory = async (req, res, next) => {
   orders.map((order) => {
     order.products.map((orderProduct) => {
       order.products = order.products.map((product) => {
+        if (!product.productId) return product;
         product.productId.prices = product.productId.prices.filter(
           (price) => price._id.toString() == product.sizeId
         );
@@ -293,10 +297,10 @@ export const getAllOrdersHistory = async (req, res, next) => {
 
   orders = orders.map((order) => {
     order.products = order.products.map((product) => {
+      if (!product.productId) return product;
       if (product.productId?.resturant) {
         if (!resturants.includes(product.productId?.resturant))
           resturants.push(product.productId?.resturant || {});
-
         product.productId.prices = product.productId.prices?.filter(
           (price) => price._id.toString() == product.sizeId
         );
@@ -329,7 +333,6 @@ export const getUserOrders = async (req, res, next) => {
     .sort("-createdAt");
 
   orders = orders.map((order) => {
-    
     order.products = order.products.map((product) => {
       if (!product.productId) return product;
       product.productId.prices = product.productId.prices.filter(
