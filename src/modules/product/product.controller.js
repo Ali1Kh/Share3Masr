@@ -98,6 +98,10 @@ export const getProductDetails = async (req, res, next) => {
     },
   ]);
 
+  if (!product) {
+    return next(new Error("Product Not Found"));
+  }
+
   let subCategory = product.resturantSubCategory[0]?.subCategories?.filter(
     (subCategoryItem) =>
       subCategoryItem._id.toString() == product.resturantCategory.toString()

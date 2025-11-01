@@ -358,6 +358,7 @@ export default function Products() {
           itemNameEN: item.itemNameEN,
           itemNameAR: item.itemNameAR,
           price: item.price,
+          isAvailable: item.isAvailable,
         };
       });
       setExtraInputSets(extraInputSets);
@@ -394,6 +395,8 @@ export default function Products() {
           itemNameEN: item.itemNameEN,
           itemNameAR: item.itemNameAR,
           price: item.price,
+          isAvailable: item.isAvailable,
+          _id: item._id,
         };
       });
       setExtraInputSets(extraInputSets);
@@ -412,7 +415,9 @@ export default function Products() {
     $("#productImage").val("");
 
     setPriceInputSets([{ sizeNameEN: "", sizeNameAR: "", sizePrice: "" }]);
-    setExtraInputSets([{ itemNameEN: "", itemNameAR: "", price: "" }]);
+    setExtraInputSets([
+      { itemNameEN: "", itemNameAR: "", price: "", isAvailable: true },
+    ]);
 
     $("#headOfForm").text(`Add New Product`);
     $("#updateProductBtn").addClass("d-none");
@@ -446,13 +451,13 @@ export default function Products() {
   //
 
   const [extraInputSets, setExtraInputSets] = useState([
-    { itemNameEN: "", itemNameAR: "", price: "" },
+    { itemNameEN: "", itemNameAR: "", price: "", isAvailable: true },
   ]);
 
   const addExtraInputSet = () => {
     setExtraInputSets([
       ...extraInputSets,
-      { itemNameEN: "", itemNameAR: "", price: "" },
+      { itemNameEN: "", itemNameAR: "", price: "", isAvailable: true },
     ]);
   };
 
@@ -682,6 +687,19 @@ export default function Products() {
                   value={inputSet.price}
                   onChange={(e) =>
                     handleExtraInputChange(index, "price", e.target.value)
+                  }
+                />
+                <input
+                  type="checkbox"
+                  className="form-check-input mt-0 p-3"
+                  title="Is Available"
+                  checked={inputSet.isAvailable}
+                  onChange={(e) =>
+                    handleExtraInputChange(
+                      index,
+                      "isAvailable",
+                      !inputSet.isAvailable
+                    )
                   }
                 />
                 {index === extraInputSets.length - 1 && (

@@ -25,6 +25,7 @@ export const createProductSchema = joi.object({
       itemNameEN: joi.string().required(),
       itemNameAR: joi.string().required(),
       price: joi.string().required(),
+      isAvailable: joi.boolean(),
     })
   ),
 });
@@ -54,6 +55,7 @@ export const updateProductSchema = joi.object({
       itemNameEN: joi.string(),
       itemNameAR: joi.string(),
       price: joi.string(),
+      isAvailable: joi.boolean(),
     })
   ),
 });

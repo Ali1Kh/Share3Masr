@@ -20,6 +20,7 @@ const productSchema = Schema(
         itemNameEN: { type: String, required: true },
         itemNameAR: { type: String, required: true },
         price: { type: String, required: true },
+        isAvailable: { type: Boolean, default: true },
       },
     ],
     resturantCategory: {
