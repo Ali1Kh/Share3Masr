@@ -116,7 +116,10 @@ export const getCart = async (req, res, next) => {
     select:
       "descriptionEN prices extra descriptionAR nameAR nameEN image discount",
   });
-  let products = cart.products.map((cartProduct) => {
+  let products = cart.products?.map((cartProduct) => {
+    if (!cartProduct.productId) {
+      return;
+    }
     let product = cartProduct.toObject();
     product.productId.prices = product.productId.prices.filter(
       (price) => price._id.toString() == product.sizeId
@@ -134,7 +137,7 @@ export const getCart = async (req, res, next) => {
 
   let cartDisplay = {
     ...cart.toObject(),
-    products,
+    products: products.filter((product) => product != null),
   };
 
   return res.json({ success: true, cart: cartDisplay });
@@ -165,11 +168,13 @@ export const deleteFromCart = async (req, res, next) => {
         totalPrice:
           -(productInCart[0].productPrice * productInCart[0].quantity) -
           productInCart[0].totalExtraPrice * productInCart[0].quantity,
-        totalPriceAfterDiscount: -(productInCart[0].productPrice +
-          productInCart[0].totalExtraPrice -
-          (productInCart[0].productPrice + productInCart[0].totalExtraPrice) *
-            (Number(isProduct.discount) / 100)) *
-          productInCart[0].quantity,
+        totalPriceAfterDiscount:
+          -(
+            productInCart[0].productPrice +
+            productInCart[0].totalExtraPrice -
+            (productInCart[0].productPrice + productInCart[0].totalExtraPrice) *
+              (Number(isProduct.discount) / 100)
+          ) * productInCart[0].quantity,
       },
     }
   );

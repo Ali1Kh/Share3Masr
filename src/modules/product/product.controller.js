@@ -2,6 +2,7 @@ import { Product } from "../../../DB/models/product.model.js";
 import { Resturant } from "../../../DB/models/resturant.model.js";
 import { Category } from "../../../DB/models/category.model.js";
 import cloudinary from "../../utils/cloudinary.js";
+import { Cart } from "../../../DB/models/cart.model.js";
 
 export const createProduct = async (req, res, next) => {
   let isResturant = await Resturant.findById(req.body.resturant);
@@ -112,6 +113,41 @@ export const deleteProduct = async (req, res, next) => {
   if (!product) {
     return next(new Error("Product Not Found"));
   }
+  const carts = await Cart.find({ "products.productId": req.params.id });
+  if (carts.length > 0) {
+    for (const cart of carts) {
+      let userCart = await Cart.findById(cart._id);
+
+      let productInCart = userCart.products.filter(
+        (product) => product.productId.toString() == req.params.id
+      );
+
+      if (productInCart.length <= 0)
+        return next(new Error("Product Not Found In Cart"));
+
+      await Cart.findByIdAndUpdate(cart._id, {
+        $pull: {
+          products: {
+            productId: req.params.id,
+          },
+        },
+        $inc: {
+          totalPrice:
+            -(productInCart[0].productPrice * productInCart[0].quantity) -
+            productInCart[0].totalExtraPrice * productInCart[0].quantity,
+          totalPriceAfterDiscount:
+            -(
+              productInCart[0].productPrice +
+              productInCart[0].totalExtraPrice -
+              (productInCart[0].productPrice +
+                productInCart[0].totalExtraPrice) *
+                (Number(product.discount) / 100)
+            ) * productInCart[0].quantity,
+        },
+      });
+    }
+    console.log("Done");
+  }
   await product.deleteOne();
   return res.json({ success: true, message: "Product Deleted Successfully" });
 };
@@ -124,7 +160,7 @@ export const updateProduct = async (req, res, next) => {
   }
   let isCategory = await Category.findById(req.body.category);
   if (!isCategory) return next(new Error("Category Not Found"));
-  
+
   const product = await Product.findById(req.params.id);
   if (!product) {
     return next(new Error("Product Not Found"));
