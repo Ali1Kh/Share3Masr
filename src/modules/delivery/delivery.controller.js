@@ -104,7 +104,7 @@ export const getReadyOrders = async (req, res, next) => {
         select: "-password",
       },
 
-      { path: "products.productId", populate: "resturant" },
+      { path: "products.productId", populate: "resturant" },  { path: "area" }
     ])
     .sort({ createdAt: -1 });
   return res.json({
@@ -121,7 +121,7 @@ export const getOnWayOrders = async (req, res, next) => {
         select: "-password",
       },
 
-      { path: "products.productId", populate: "resturant" },
+      { path: "products.productId", populate: "resturant"  },  { path: "area" }
     ])
     .sort({ createdAt: -1 });
   return res.json({
